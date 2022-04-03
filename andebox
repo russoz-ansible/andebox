@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# (c) 2021, Alexei Znamensky <russoz@gmail.com>
+# (c) 2021-2022, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 __version__ = '0.18'
@@ -24,7 +24,7 @@ class AndeBox:
         self.actions.update({ac.name: ac() for ac in actions})
 
     def build_argparser(self):
-        self.parser = argparse.ArgumentParser(prog="andebox", description="Ansible Collection Developer's Box")
+        self.parser = argparse.ArgumentParser(prog="andebox", description="Ansible Collection Developer's Box v{}".format(__version__))
         self.parser.add_argument("--version", action="version", version="%(prog)s {0}".format(__version__))
         self.parser.add_argument("--collection", "-c",
                                  help="fully qualified collection name (not necessary if a proper galaxy.yml file is available)")
