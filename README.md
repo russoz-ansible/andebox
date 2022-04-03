@@ -1,8 +1,8 @@
 andebox
 =======
 
-Ansible Developer's (tool)Box, **andebox**, is a single script to assist Ansible developers
-by encapsulating some boilerplate tasks. Right now the core feature is the ability to run
+Ansible Developer's (tool)Box, **andebox**, is a script to assist Ansible developers
+by encapsulating some boilerplate tasks. One of the core features is the ability to run
 `ansible-test` on a collection dircetory without having to worry about your `ANSIBLE_COLLECTIONS_PATH`
 environment variable nor having the _expected_ directory structure _above_ the collection
 directory.
@@ -17,8 +17,8 @@ Install it as usual:
 
 ### Dependencies
 
-As of this version, the dependencies are `PyYAML` for reading `galaxy.yml`, and `ansible` itself for
-the drop-in `ansible-test` feature (see comments below).
+As of this version, the dependencies are `PyYAML` for reading `galaxy.yml`, and `ansible-core` itself
+for running `ansible-test`.
 
 ## Usage
 
@@ -29,65 +29,53 @@ After installing the tool (ensuring it is reachable in from `PATH`), there are d
 No need to clone in specific locations or keep track of env variables. Simply clone whichever collection you want and
 run the `ansible-test` command as:
 
-    $ andebox test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
-    $ andebox test -- unit --docker default test/units/plugins/modules/mymodule.py
-    $ andebox test -- integration --docker default mymodule
+```bash
+$ andebox test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
+$ andebox test -- unit --docker default test/units/plugins/modules/mymodule.py
+$ andebox test -- integration --docker default mymodule
+```
 
 By default, `andebox` will discover the full name of the collection by parsing the `galaxy.yml` file usually found in
 the local directory.
 If the file is not present or if it fails for any reason, the option `--collection` may be used to specify it, as in:
 
-    $ andebox test --collection community.general -- sanity --docker default -v --test validate-modules
+```bash
+$ andebox test --collection community.general -- sanity --docker default -v --test validate-modules
+```
 
 Please notice that `andebox` uses whichever `ansible-test` is available in `PATH` for execution
 
-### Multiply ansible-test
+### Multiple ansible-test
 
 Simply run one of :
 
-    $ andebox tox-test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
-    $ andebox tox-test -- unit --docker default test/units/plugins/modules/mymodule.py
-    $ andebox tox-test -- integration --docker default mymodule
+```bash
+$ andebox tox-test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
+$ andebox tox-test -- unit --docker default test/units/plugins/modules/mymodule.py
+$ andebox tox-test -- integration --docker default mymodule
+```
 
 Or specify the ansible versions you want tested:
 
-    $ andebox tox-test -e 29 -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
-    $ andebox tox-test -e 211 -- unit --docker default test/units/plugins/modules/mymodule.py
-    $ andebox tox-test -e a4 -- integration --docker default mymodule
-
 The `tox-test` will create a custom `tox.ini` file with the name `.andebox-tox-test.ini` in the current directory.
-That file will not be overwritten by `andebox`, and its default content is:
+That file will not be overwritten by `andebox`, and by default it will provide the following tox environments:
 
-```ini
-; andebox tox-test's tox.ini -- this file is not overwritten by andebox
-[tox]
-isolated_build = true
-envlist = 29, 210, 211, a3, a4, dev
-skipsdist = true
+    envlist = 29, 210, 211, 212, a3, a4, a5, dev
 
-[testenv]
-passenv = PWD HOME
-skip_install = true
-allowlist_externals = andebox
-deps =
-  andebox
-  29: ansible>=2.9,<2.10
-  210: ansible-base>=2.10,<2.11
-  211: ansible-core>=2.11,<2.12
-  a3: ansible>=3.0.0,<4.0.0
-  a4: ansible>=4.0.0,<5.0.0
-  dev: https://github.com/ansible/ansible/archive/devel.tar.gz
-commands = andebox test -- {posargs}
+You can run the test on all of them by default, or specify which ones to use, like:
+
+```bash
+$ andebox tox-test -e 29 -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
+$ andebox tox-test -e 211,212 -- unit --docker default test/units/plugins/modules/mymodule.py
+$ andebox tox-test -e a4,dev -- integration --docker default mymodule
 ```
 
 ### Stats on ignore files
 
 Gathering stats from the ignore files can be quite annoying, especially if they are long. One can run:
 
-    $ andebox ignores -v2.10 -d4 -fc '.*:parameter-list-no-elements'
-
-Producing an output similar to:
-
+```bash
+$ andebox ignores -v2.10 -d4 -fc '.*:parameter-list-no-elements'
     24  plugins/modules/cloud/ovirt validate-modules:parameter-list-no-elements
      8  plugins/modules/cloud/centurylink validate-modules:parameter-list-no-elements
      6  plugins/modules/remote_management/redfish validate-modules:parameter-list-no-elements
@@ -98,19 +86,20 @@ Producing an output similar to:
      3  plugins/modules/cloud/univention validate-modules:parameter-list-no-elements
      3  plugins/modules/clustering/consul validate-modules:parameter-list-no-elements
      3  plugins/modules/monitoring/sensu validate-modules:parameter-list-no-elements
+```
 
 ### Runtime config
 
 Quickly peek what is the `runtime.yml` status for a specific module:
 
-```
+```bash
 $ andebox runtime scaleway_ip_facts
 D modules scaleway_ip_facts: deprecation in 3.0.0 (current=2.4.0): Use community.general.scaleway_ip_info instead.
 ```
 
 Or using a regular expression:
 
-```
+```bash
 $ andebox runtime -r 'gc[pe]'
 R lookup gcp_storage_file: redirected to community.google.gcp_storage_file
 T modules gce: terminated in 2.0.0: Use google.cloud.gcp_compute_instance instead.
