@@ -31,6 +31,8 @@ class AndeboxAction:
 
     @contextmanager
     def ansible_collection_tree(self, namespace, collection, keep=False):
+        top_dir = ""
+        coll_dir = ""
         try:
             top_dir = tempfile.mkdtemp(prefix="andebox.")
             coll_dir = os.path.join(top_dir, "ansible_collections", namespace, collection)
