@@ -5,6 +5,8 @@
 import os
 import subprocess
 
+import yaml
+
 from andeboxlib.actions.base import AndeboxAction
 from andeboxlib.exceptions import AndeboxException
 
@@ -21,6 +23,9 @@ class AnsibleTestAction(AndeboxAction):
              specs=dict(action="store_true", help="Keep temporary directory after execution")),
         dict(names=("--exclude-from-ignore", "-efi", "-ei"),
              specs=dict(action="store_true", help="Matching lines in ignore files will be filtered out")),
+        dict(names=("--requirements", "-R"),
+             specs=dict(action="store_true",
+                        help="Install integration_tests_dependencies from tests/requirements.yml prior")),
         dict(names=("ansible_test_params", ),
              specs=dict(nargs="+")),
     ]
@@ -32,7 +37,11 @@ class AnsibleTestAction(AndeboxAction):
 
     def run(self, args):
         namespace, collection = self.determine_collection(args.collection)
+        if args.requirements:
+            reqs = self.obtain_reqs()
         with self.ansible_collection_tree(namespace, collection, args.keep) as collection_dir:
+            if args.requirements:
+                self.install_requirements(reqs)
             if args.exclude_from_ignore:
                 self.exclude_from_ignore(args.exclude_from_ignore, args.ansible_test_params, collection_dir)
             rc = subprocess.call(["ansible-test"] + args.ansible_test_params, cwd=collection_dir)
@@ -52,3 +61,17 @@ class AnsibleTestAction(AndeboxAction):
                         self.copy_exclude_lines(os.path.join(src_dir, ts_entry.name),
                                                 os.path.join(dest_dir, ts_entry.name),
                                                 files)
+
+    @staticmethod
+    def obtain_reqs():
+        reqs_path = os.path.join('.', 'tests', 'requirements.yml')
+        with open(reqs_path) as yaml_file:
+            reqs_yaml = yaml.load(yaml_file, Loader=yaml.BaseLoader)
+        return reqs_yaml['integration_tests_dependencies']
+
+    @staticmethod
+    def install_requirements(reqs):
+        rc = subprocess.call(["ansible-galaxy", "collection", "install"] + reqs)
+
+        if rc != 0:
+            raise AnsibleTestError("Error installing dependencies (rc={0})".format(rc))
