@@ -3,6 +3,7 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 import os
+import sys
 import subprocess
 
 from andeboxlib.actions.base import AndeboxAction
@@ -10,27 +11,27 @@ from andeboxlib.exceptions import AndeboxException
 
 
 def _make_default_tox_ini():
-    return """; andebox tox-test's tox.ini -- this file is not overwritten by andebox
+    return f"""; andebox tox-test's tox.ini -- this file is not overwritten by andebox
 [tox]
 isolated_build = true
-envlist = 29, 210, 211, 212, a3, a4, a5, dev
+envlist = 211, 212, 213, a4, a5, a6, dev
 skipsdist = true
 
 [testenv]
 passenv = PWD HOME
 skip_install = true
 allowlist_externals = andebox
+basepython = {sys.executable}
 deps =
   andebox
-  29: ansible>=2.9,<2.10
-  210: ansible-base>=2.10,<2.11
   211: ansible-core>=2.11,<2.12
   212: ansible-core>=2.12,<2.13
-  a3: ansible>=3.0.0,<4.0.0
+  213: ansible-core>=2.12,<2.13
   a4: ansible>=4.0.0,<5.0.0
   a5: ansible>=5.0.0,<6.0.0
+  a6: ansible>=6.0.0,<7.0.0
   dev: https://github.com/ansible/ansible/archive/devel.tar.gz
-commands = andebox test -- {posargs}
+commands = andebox test -- {{posargs}}
 """
 
 
