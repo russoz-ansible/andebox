@@ -26,7 +26,8 @@ deps =
   andebox
   211: ansible-core>=2.11,<2.12
   212: ansible-core>=2.12,<2.13
-  213: ansible-core>=2.12,<2.13
+  213: ansible-core>=2.13,<2.14
+  214: ansible-core>=2.14,<2.15
   a4: ansible>=4.0.0,<5.0.0
   a5: ansible>=5.0.0,<6.0.0
   a6: ansible>=6.0.0,<7.0.0
