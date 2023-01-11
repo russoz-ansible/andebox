@@ -11,7 +11,8 @@ from andeboxlib.exceptions import AndeboxException
 
 
 def _make_default_tox_ini():
-    return f"""; andebox tox-test's tox.ini -- this file is not overwritten by andebox
+    return f""";
+; andebox tox-test's tox.ini -- this file is not overwritten by andebox
 [tox]
 isolated_build = true
 envlist = 211, 212, 213, a4, a5, a6, dev
