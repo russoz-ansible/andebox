@@ -14,6 +14,7 @@ from andeboxlib.actions.ansibletest import AnsibleTestAction
 from andeboxlib.actions.ignorefile import IgnoreLinesAction
 from andeboxlib.actions.runtime import RuntimeAction
 from andeboxlib.actions.toxtest import ToxTestAction
+from andeboxlib.actions.vagrant import VagrantAction
 
 
 class AndeBox:
@@ -42,7 +43,7 @@ class AndeBox:
 
 def main():
     box = AndeBox()
-    box.add_actions(AnsibleTestAction, IgnoreLinesAction, RuntimeAction, ToxTestAction)
+    box.add_actions(AnsibleTestAction, IgnoreLinesAction, RuntimeAction, ToxTestAction, VagrantAction)
     box.run()
 
 
