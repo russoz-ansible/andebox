@@ -58,16 +58,16 @@ $ andebox tox-test -- integration --docker default mymodule
 Or specify the ansible versions you want tested:
 
 The `tox-test` will create a custom `tox.ini` file with the name `.andebox-tox-test.ini` in the current directory.
-That file will not be overwritten by `andebox`, and by default it will provide the following tox environments:
+That file will not be overwritten by `andebox`, and it will provide multiple tox environments, such as:
 
     envlist = 29, 210, 211, 212, a3, a4, a5, dev
 
 You can run the test on all of them by default, or specify which ones to use, like:
 
 ```bash
-$ andebox tox-test -e 29 -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
-$ andebox tox-test -e 211,212 -- unit --docker default test/units/plugins/modules/mymodule.py
-$ andebox tox-test -e a4,dev -- integration --docker default mymodule
+$ andebox tox-test -e 29 -- sanity --docker default --test validate-modules plugins/modules/mymodule.py   # ansible 2.9
+$ andebox tox-test -e 211,212 -- unit --docker default test/units/plugins/modules/mymodule.py             # ansible-core 2.11 & 2.12
+$ andebox tox-test -e a4,dev -- integration --docker default mymodule                                     # ansible 4 & development branch
 ```
 
 ### Stats on ignore files
