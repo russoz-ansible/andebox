@@ -15,92 +15,83 @@ Install it as usual:
 
     pip install andebox
 
-### Dependencies
+## Requirements
 
-As of this version, the dependencies are `PyYAML` for reading `galaxy.yml`, and `ansible-core` itself
-for running `ansible-test`.
+* ansible-core for actions `test` and `tox-test`
+* pyyaml for reading galaxy.yml
+* distutils for comparing `LooseVersion` objects for action `ignore`
+* vagrant for action `vagrant`
+  * `andebox` and any other dependency must be installed inside the VM, but that setup is the user responsibility
 
-## Usage
-
-After installing the tool (ensuring it is reachable in from `PATH`), there are different actions available, as described below.
-
-### Simplify ansible-test
+## Setup-less ansible-test
 
 No need to clone in specific locations or keep track of env variables. Simply clone whichever collection you want and
 run the `ansible-test` command as:
 
 ```bash
-$ andebox test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
-$ andebox test -- unit --docker default test/units/plugins/modules/mymodule.py
-$ andebox test -- integration --docker default mymodule
+# Run sanity test(s)
+andebox test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
+
+# Run sanity test(s) excluding the modules listed in the CLI from the sanity 'ignore-X.Y.txt' files
+andebox test -ei -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
+
+# Run unit test(s)
+andebox test -- unit --docker default test/units/plugins/modules/mymodule.py
+
+# Run integration test
+andebox test -- integration --docker default mymodule
+
+# Run tests in multiple Ansible versions using tox
+andebox tox-test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
+andebox tox-test -- unit --docker default test/units/plugins/modules/mymodule.py
+andebox tox-test -- integration --docker default mymodule
+
+# Run tests in multiple specific Ansible versions using tox
+andebox tox-test -e ac211,ac212 -- unit --docker default test/units/plugins/modules/mymodule.py     # ansible-core 2.11 & 2.12 only
+andebox tox-test -e a4,dev -- integration --docker default mymodule                                 # ansible 4 & development branch
 ```
 
-By default, `andebox` will discover the full name of the collection by parsing the `galaxy.yml` file usually found in
+By default, `andebox` will discover the full name of the collection by parsing the `galaxy.yml` file found in
 the local directory.
 If the file is not present or if it fails for any reason, the option `--collection` may be used to specify it, as in:
 
 ```bash
-$ andebox test --collection community.general -- sanity --docker default -v --test validate-modules
+andebox test --collection community.general -- sanity --docker default -v --test validate-modules
 ```
 
 Please notice that `andebox` uses whichever `ansible-test` is available in `PATH` for execution
 
-### Multiple ansible-test
-
-Simply run one of :
-
-```bash
-$ andebox tox-test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
-$ andebox tox-test -- unit --docker default test/units/plugins/modules/mymodule.py
-$ andebox tox-test -- integration --docker default mymodule
-```
-
-Or specify the ansible versions you want tested:
-
-The `tox-test` will create a custom `tox.ini` file with the name `.andebox-tox-test.ini` in the current directory.
-That file will not be overwritten by `andebox`, and it will provide multiple tox environments, such as:
-
-    envlist = 29, 210, 211, 212, a3, a4, a5, dev
-
-You can run the test on all of them by default, or specify which ones to use, like:
-
-```bash
-$ andebox tox-test -e 29 -- sanity --docker default --test validate-modules plugins/modules/mymodule.py   # ansible 2.9
-$ andebox tox-test -e 211,212 -- unit --docker default test/units/plugins/modules/mymodule.py             # ansible-core 2.11 & 2.12
-$ andebox tox-test -e a4,dev -- integration --docker default mymodule                                     # ansible 4 & development branch
-```
-
-### Stats on ignore files
+## Stats on ignore files
 
 Gathering stats from the ignore files can be quite annoying, especially if they are long. One can run:
 
 ```bash
-$ andebox ignores -v2.10 -d4 -fc '.*:parameter-list-no-elements'
-    24  plugins/modules/cloud/ovirt validate-modules:parameter-list-no-elements
-     8  plugins/modules/cloud/centurylink validate-modules:parameter-list-no-elements
-     6  plugins/modules/remote_management/redfish validate-modules:parameter-list-no-elements
-     5  plugins/modules/cloud/oneandone validate-modules:parameter-list-no-elements
-     4  plugins/modules/cloud/rackspace validate-modules:parameter-list-no-elements
-     4  plugins/modules/remote_management/oneview validate-modules:parameter-list-no-elements
-     3  plugins/modules/cloud/opennebula validate-modules:parameter-list-no-elements
-     3  plugins/modules/cloud/univention validate-modules:parameter-list-no-elements
-     3  plugins/modules/clustering/consul validate-modules:parameter-list-no-elements
-     3  plugins/modules/monitoring/sensu validate-modules:parameter-list-no-elements
+andebox ignores -v2.10 -d4 -fc '.*:parameter-list-no-elements'
+    24  plugins/modules/ovirt validate-modules:parameter-list-no-elements
+     8  plugins/modules/centurylink validate-modules:parameter-list-no-elements
+     6  plugins/modules/redfish validate-modules:parameter-list-no-elements
+     5  plugins/modules/oneandone validate-modules:parameter-list-no-elements
+     4  plugins/modules/rackspace validate-modules:parameter-list-no-elements
+     4  plugins/modules/oneview validate-modules:parameter-list-no-elements
+     3  plugins/modules/opennebula validate-modules:parameter-list-no-elements
+     3  plugins/modules/univention validate-modules:parameter-list-no-elements
+     3  plugins/modules/consul validate-modules:parameter-list-no-elements
+     3  plugins/modules/sensu validate-modules:parameter-list-no-elements
 ```
 
-### Runtime config
+## Runtime config
 
 Quickly peek what is the `runtime.yml` status for a specific module:
 
 ```bash
-$ andebox runtime scaleway_ip_facts
+andebox runtime scaleway_ip_facts
 D modules scaleway_ip_facts: deprecation in 3.0.0 (current=2.4.0): Use community.general.scaleway_ip_info instead.
 ```
 
 Or using a regular expression:
 
 ```bash
-$ andebox runtime -r 'gc[pe]'
+andebox runtime -r 'gc[pe]'
 R lookup gcp_storage_file: redirected to community.google.gcp_storage_file
 T modules gce: terminated in 2.0.0: Use google.cloud.gcp_compute_instance instead.
 R modules gce_eip: redirected to community.google.gce_eip
@@ -126,3 +117,19 @@ R module_utils gce: redirected to community.google.gce
 R module_utils gcp: redirected to community.google.gcp
 ```
 where D=Deprecated, T=Tombstone, R=Redirect.
+
+## Run in Vagrant VM
+
+To run the test inside a VM managed by [vagrant](https://www.vagrantup.com/):
+
+```bash
+# Run sanity test(s) in VM named "fedora37"
+andebox vagrant -n fedora37 -- test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
+
+# Run unit test(s) in VM named "ubuntu2204" using sudo
+andebox vagrant -s -n ubuntu2204 -- test -- unit --docker default test/units/plugins/modules/mymodule.py
+```
+
+Notice the use of two `--` markers, one to separate the `andebox vagrant` command from the rest and the second time to separate the action executed inside the VM, such as `test` in the examples above, from further arguments.
+
+Also beware that `andebox` does not create nor manage `Vagrantfile`. The user is responsible for creating and setting up the VM definition. Iit must have `andebox` installed and other dependencies required.
