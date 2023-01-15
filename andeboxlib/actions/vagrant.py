@@ -4,7 +4,6 @@
 
 import os
 
-import vagrant
 from fabric.connection import Connection
 
 from andeboxlib.actions.base import AndeboxAction
@@ -35,6 +34,8 @@ class VagrantAction(AndeboxAction):
         action_parser.usage = "%(prog)s usage: andebox vagrant [-h] [-n name] -- <andebox-cmd> [andebox-cmd-opts [-- test-params]]"
 
     def run(self, args):
+        import vagrant
+
         if not os.path.exists("Vagrantfile"):
             raise VagrantError("Missing Vagrantfile in the current directory")
 
