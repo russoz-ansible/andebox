@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# (c) 2021, Alexei Znamensky <russoz@gmail.com>
+# (c) 2021-2023, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 import os
@@ -15,23 +15,23 @@ def _make_default_tox_ini():
 ; andebox tox-test's tox.ini -- this file is not overwritten by andebox
 [tox]
 isolated_build = true
-envlist = 211, 212, 213, a4, a5, a6, dev
+envlist = ac211, ac212, ac213, a4, a5, a6, dev
 skipsdist = true
 
 [testenv]
-passenv = PWD HOME
+passenv = PWD, HOME
 skip_install = true
 allowlist_externals = andebox
 basepython = {sys.executable}
 deps =
   andebox
-  211: ansible-core>=2.11,<2.12
-  212: ansible-core>=2.12,<2.13
-  213: ansible-core>=2.13,<2.14
-  214: ansible-core>=2.14,<2.15
-  a4: ansible>=4.0.0,<5.0.0
-  a5: ansible>=5.0.0,<6.0.0
-  a6: ansible>=6.0.0,<7.0.0
+  ac211: ansible-core~=2.11.0
+  ac212: ansible-core~=2.12.0
+  ac213: ansible-core~=2.13.0
+  ac214: ansible-core~=2.14.0
+  a4: ansible~=4.0.0
+  a5: ansible~=5.0.0
+  a6: ansible~=6.0.0
   dev: https://github.com/ansible/ansible/archive/devel.tar.gz
 commands = andebox test -- {{posargs}}
 """
