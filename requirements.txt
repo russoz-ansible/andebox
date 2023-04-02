@@ -1,3 +1,4 @@
+ansible-core
 pyyaml>=5.4
 python-vagrant
 fabric
