@@ -28,35 +28,35 @@ Install it as usual:
 No need to clone in specific locations or keep track of env variables. Simply clone whichever collection you want and
 run the `ansible-test` command as:
 
-```bash
+```
 # Run sanity test(s)
-andebox test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
+$ andebox test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
 
 # Run sanity test(s) excluding the modules listed in the CLI from the sanity 'ignore-X.Y.txt' files
-andebox test -ei -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
+$ andebox test -ei -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
 
 # Run unit test(s)
-andebox test -- unit --docker default test/units/plugins/modules/mymodule.py
+$ andebox test -- unit --docker default test/units/plugins/modules/mymodule.py
 
 # Run integration test
-andebox test -- integration --docker default mymodule
+$ andebox test -- integration --docker default mymodule
 
 # Run tests in multiple Ansible versions using tox
-andebox tox-test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
-andebox tox-test -- unit --docker default test/units/plugins/modules/mymodule.py
-andebox tox-test -- integration --docker default mymodule
+$ andebox tox-test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
+$ andebox tox-test -- unit --docker default test/units/plugins/modules/mymodule.py
+$ andebox tox-test -- integration --docker default mymodule
 
 # Run tests in multiple specific Ansible versions using tox
-andebox tox-test -e ac211,ac212 -- unit --docker default test/units/plugins/modules/mymodule.py     # ansible-core 2.11 & 2.12 only
-andebox tox-test -e a4,dev -- integration --docker default mymodule                                 # ansible 4 & development branch
+$ andebox tox-test -e ac211,ac212 -- unit --docker default test/units/plugins/modules/mymodule.py     # ansible-core 2.11 & 2.12 only
+$ andebox tox-test -e a4,dev -- integration --docker default mymodule                                 # ansible 4 & development branch
 ```
 
 By default, `andebox` will discover the full name of the collection by parsing the `galaxy.yml` file found in
 the local directory.
-If the file is not present or if it fails for any reason, the option `--collection` may be used to specify it, as in:
+If the file is not present or if it fails for any reason, use the option `--collection` to specify it, as in:
 
-```bash
-andebox test --collection community.general -- sanity --docker default -v --test validate-modules
+```
+$ andebox test --collection community.general -- sanity --docker default -v --test validate-modules
 ```
 
 Please notice that `andebox` uses whichever `ansible-test` is available in `PATH` for execution
@@ -65,8 +65,8 @@ Please notice that `andebox` uses whichever `ansible-test` is available in `PATH
 
 Gathering stats from the ignore files can be quite annoying, especially if they are long. One can run:
 
-```bash
-andebox ignores -v2.10 -d4 -fc '.*:parameter-list-no-elements'
+```
+$ andebox ignores -v2.10 -d4 -fc '.*:parameter-list-no-elements'
     24  plugins/modules/ovirt validate-modules:parameter-list-no-elements
      8  plugins/modules/centurylink validate-modules:parameter-list-no-elements
      6  plugins/modules/redfish validate-modules:parameter-list-no-elements
@@ -83,15 +83,15 @@ andebox ignores -v2.10 -d4 -fc '.*:parameter-list-no-elements'
 
 Quickly peek what is the `runtime.yml` status for a specific module:
 
-```bash
-andebox runtime scaleway_ip_facts
+```
+$ andebox runtime scaleway_ip_facts
 D modules scaleway_ip_facts: deprecation in 3.0.0 (current=2.4.0): Use community.general.scaleway_ip_info instead.
 ```
 
 Or using a regular expression:
 
-```bash
-andebox runtime -r 'gc[pe]'
+```
+$ andebox runtime -r 'gc[pe]'
 R lookup gcp_storage_file: redirected to community.google.gcp_storage_file
 T modules gce: terminated in 2.0.0: Use google.cloud.gcp_compute_instance instead.
 R modules gce_eip: redirected to community.google.gce_eip
@@ -122,12 +122,12 @@ where D=Deprecated, T=Tombstone, R=Redirect.
 
 To run the test inside a VM managed by [vagrant](https://www.vagrantup.com/):
 
-```bash
+```
 # Run sanity test(s) in VM named "fedora37"
-andebox vagrant -n fedora37 -- test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
+$ andebox vagrant -n fedora37 -- test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
 
 # Run unit test(s) in VM named "ubuntu2204" using sudo
-andebox vagrant -s -n ubuntu2204 -- test -- unit --docker default test/units/plugins/modules/mymodule.py
+$ andebox vagrant -s -n ubuntu2204 -- test -- unit --docker default test/units/plugins/modules/mymodule.py
 ```
 
 Notice the use of two `--` markers, one to separate the `andebox vagrant` command from the rest and the second time to separate the action executed inside the VM, such as `test` in the examples above, from further arguments.
