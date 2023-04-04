@@ -41,6 +41,7 @@ class VagrantAction(AndeboxAction):
 
         machine_name = args.name
 
+        print(f"== SETUP vagrant VM: {machine_name} {'=' * 80}")
         v = vagrant.Vagrant()
         for line in v.up(vm_name=machine_name, stream_output=True):
             print(line, end="")
@@ -53,10 +54,14 @@ class VagrantAction(AndeboxAction):
                             "key_filename": v.keyfile(vm_name=machine_name),
                         },) as c:
 
-            print(f"== BEGIN vagrant VM: {machine_name} {'=' * 80}")
-            with c.cd("/vagrant"):
-                if args.sudo:
-                    c.run(f"sudo andebox {' '.join(args.andebox_params)}")
-                else:
-                    c.run(f"andebox {' '.join(args.andebox_params)}")
-            print(f"==== END vagrant VM: {machine_name} {'=' * 80}")
+            print(f"== BEGIN vagrant andebox: {machine_name} {'=' * 80}")
+            try:
+                with c.cd("/vagrant"):
+                    if args.sudo:
+                        c.run(f"sudo andebox {' '.join(args.andebox_params)}")
+                    else:
+                        c.run(f"andebox {' '.join(args.andebox_params)}")
+            except Exception as e:
+                raise VagrantError(str(e)) from e
+            finally:
+                print(f"==== END vagrant andebox: {machine_name} {'=' * 80}")
