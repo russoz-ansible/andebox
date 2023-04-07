@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 requirements = [line.strip() for line in open('requirements.txt').readlines()]
 
 setup(name='andebox',
-      version='0.29',
+      version='0.30',
       scripts=['andebox'],
       packages=find_packages(),
       install_requires=requirements,
