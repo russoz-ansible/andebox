@@ -57,10 +57,11 @@ class VagrantAction(AndeboxAction):
             print(f"== BEGIN vagrant andebox: {machine_name} {'=' * 80}")
             try:
                 with c.cd("/vagrant"):
+                    cmd = f"/venv/bin/andebox test --path /venv/bin/ansible-test -- integration {' '.join(args.andebox_params)}"
                     if args.sudo:
-                        c.run(f"sudo andebox {' '.join(args.andebox_params)}")
-                    else:
-                        c.run(f"andebox {' '.join(args.andebox_params)}")
+                        cmd = "sudo -E " + cmd
+
+                    c.run(cmd)
             except Exception as e:
                 raise VagrantError(str(e)) from e
             finally:

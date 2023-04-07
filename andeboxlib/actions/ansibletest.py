@@ -26,6 +26,8 @@ class AnsibleTestAction(AndeboxAction):
         dict(names=("--requirements", "-R"),
              specs=dict(action="store_true",
                         help="Install integration_tests_dependencies from tests/requirements.yml prior")),
+        dict(names=("--path", "-p"),
+             specs=dict(help="Specify path to the ansible-test script")),
         dict(names=("ansible_test_params", ),
              specs=dict(nargs="+")),
     ]
@@ -44,7 +46,8 @@ class AnsibleTestAction(AndeboxAction):
                 self.install_requirements(reqs)
             if args.exclude_from_ignore:
                 self.exclude_from_ignore(args.exclude_from_ignore, args.ansible_test_params, collection_dir)
-            rc = subprocess.call(["ansible-test"] + args.ansible_test_params, cwd=collection_dir)
+            binary = args.path if args.path else "ansible-test"
+            rc = subprocess.call([binary] + args.ansible_test_params, cwd=collection_dir)
 
             if rc != 0:
                 raise AnsibleTestError("Error running ansible-test (rc={0})".format(rc))
