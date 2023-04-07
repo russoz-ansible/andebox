@@ -29,6 +29,11 @@ class AndeboxAction:
                 else:
                     shutil.copy(entry.name, os.path.join(coll_dir, entry.name))
 
+    @staticmethod
+    def binary_path(venv, bin):
+        _list = ([venv, "bin"] if venv else []) + [bin]
+        return os.path.join(*_list)
+
     @contextmanager
     def ansible_collection_tree(self, namespace, collection, keep=False):
         top_dir = ""

@@ -16,7 +16,7 @@ class VagrantError(AndeboxException):
 
 class VagrantAction(AndeboxAction):
     name = "vagrant"
-    help = "runs andebox within a VM managed with vagrant"
+    help = "runs 'andebox test -- integration' within a VM managed with vagrant"
     args = [
         dict(names=("--name", "-n"),
              specs=dict(help="""name of the vagrant VM (default: "default")"""),
@@ -24,6 +24,9 @@ class VagrantAction(AndeboxAction):
         dict(names=("--sudo", "-s"),
              specs=dict(action="store_true",
                         help="""use sudo to run andebox""")),
+        dict(names=("--venv", "-V"),
+             specs=dict(help="""path to the virtual environment where andebox and ansible are installed (default: "/venv")"""),
+             default="/venv"),
         dict(names=("andebox_params", ),
              specs=dict(nargs="+")),
     ]
@@ -57,7 +60,8 @@ class VagrantAction(AndeboxAction):
             print(f"== BEGIN vagrant andebox: {machine_name} {'=' * 80}")
             try:
                 with c.cd("/vagrant"):
-                    cmd = f"/venv/bin/andebox test --path /venv/bin/ansible-test -- integration {' '.join(args.andebox_params)}"
+                    andebox_path = self.binary_path(args.venv, "andebox")
+                    cmd = f"{andebox_path} test --venv {args.venv} ansible-test -R -- integration {' '.join(args.andebox_params)}"
                     if args.sudo:
                         cmd = "sudo -E " + cmd
 

@@ -26,8 +26,8 @@ class AnsibleTestAction(AndeboxAction):
         dict(names=("--requirements", "-R"),
              specs=dict(action="store_true",
                         help="Install integration_tests_dependencies from tests/requirements.yml prior")),
-        dict(names=("--path", "-p"),
-             specs=dict(help="Specify path to the ansible-test script")),
+        dict(names=("--venv", "-V"),
+             specs=dict(help="""path to the virtual environment where andebox and ansible are installed""")),
         dict(names=("ansible_test_params", ),
              specs=dict(nargs="+")),
     ]
@@ -43,11 +43,10 @@ class AnsibleTestAction(AndeboxAction):
             reqs = self.obtain_reqs()
         with self.ansible_collection_tree(namespace, collection, args.keep) as collection_dir:
             if args.requirements:
-                self.install_requirements(reqs)
+                self.install_requirements(reqs, args.venv)
             if args.exclude_from_ignore:
                 self.exclude_from_ignore(args.exclude_from_ignore, args.ansible_test_params, collection_dir)
-            binary = args.path if args.path else "ansible-test"
-            rc = subprocess.call([binary] + args.ansible_test_params, cwd=collection_dir)
+            rc = subprocess.call([self.binary_path(args.venv, "ansible-test")] + args.ansible_test_params, cwd=collection_dir)
 
             if rc != 0:
                 raise AnsibleTestError("Error running ansible-test (rc={0})".format(rc))
@@ -73,8 +72,8 @@ class AnsibleTestAction(AndeboxAction):
         return reqs_yaml['integration_tests_dependencies']
 
     @staticmethod
-    def install_requirements(reqs):
-        rc = subprocess.call(["ansible-galaxy", "collection", "install"] + reqs)
+    def install_requirements(reqs, venv):
+        rc = subprocess.call([AnsibleTestAction.binary_path(venv, "ansible-galaxy"), "collection", "install"] + reqs)
 
         if rc != 0:
             raise AnsibleTestError("Error installing dependencies (rc={0})".format(rc))
