@@ -9,13 +9,15 @@ collection directory.
 
 It also allows some basic stats gathering from the `tests/sanity/ignore-X.Y.txt` files.
 
-## Installation
+Installation
+------------
 
 Install it as usual:
 
     pip install andebox
 
-## Requirements
+Requirements
+------------
 
 * ansible-core for actions `test` and `tox-test`
 * pyyaml for reading galaxy.yml
@@ -23,7 +25,8 @@ Install it as usual:
 * vagrant for action `vagrant`
   * `andebox` and any other dependency must be installed inside the VM, but that setup is the user responsibility
 
-## Setup-less ansible-test
+Setup-less ansible-test
+-----------------------
 
 No need to clone in specific locations or keep track of env variables. Simply clone whichever collection you want and
 run the `ansible-test` command as:
@@ -61,7 +64,8 @@ $ andebox test --collection community.general -- sanity --docker default -v --te
 
 Please notice that `andebox` uses whichever `ansible-test` is available in `PATH` for execution
 
-## Stats on ignore files
+Stats on ignore files
+---------------------
 
 Gathering stats from the ignore files can be quite annoying, especially if they are long. One can run:
 
@@ -79,7 +83,8 @@ $ andebox ignores -v2.10 -d4 -fc '.*:parameter-list-no-elements'
      3  plugins/modules/sensu validate-modules:parameter-list-no-elements
 ```
 
-## Runtime config
+Runtime config
+--------------
 
 Quickly peek what is the `runtime.yml` status for a specific module:
 
@@ -118,18 +123,14 @@ R module_utils gcp: redirected to community.google.gcp
 ```
 where D=Deprecated, T=Tombstone, R=Redirect.
 
-## Run in Vagrant VM
+Run Integration Tests in Vagrant VMs
+------------------------------------
 
 To run the test inside a VM managed by [vagrant](https://www.vagrantup.com/):
 
 ```
-# Run sanity test(s) in VM named "fedora37"
-$ andebox vagrant -n fedora37 -- test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
-
-# Run unit test(s) in VM named "ubuntu2204" using sudo
-$ andebox vagrant -s -n ubuntu2204 -- test -- unit --docker default test/units/plugins/modules/mymodule.py
+# Run test in VM named "fedora37" using sudo
+$ andebox vagrant -n fedora37 -s -- --python 3.9 xfs_quota --color yes
 ```
 
-Notice the use of two `--` markers, one to separate the `andebox vagrant` command from the rest and the second time to separate the action executed inside the VM, such as `test` in the examples above, from further arguments.
-
-Also beware that `andebox` does not create nor manage `Vagrantfile`. The user is responsible for creating and setting up the VM definition. Iit must have `andebox` installed and other dependencies required.
+Also beware that `andebox` does not create nor manage `Vagrantfile`. The user is responsible for creating and setting up the VM definition. It must have `andebox` and `ansible-core` (or `ansible-base` or `ansible`) installed on a virtual environment. By default, the venv is expected to be at `/venv` but the localtion can be specified using the `--venv` parameter.
