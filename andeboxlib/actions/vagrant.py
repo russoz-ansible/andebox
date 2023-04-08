@@ -19,17 +19,17 @@ class VagrantAction(AndeboxAction):
     help = "runs 'andebox test -- integration' within a VM managed with vagrant"
     args = [
         dict(names=("--name", "-n"),
-             specs=dict(help="""name of the vagrant VM (default: "default")"""),
-             default="default"),
+             specs=dict(help="""name of the vagrant VM (default: "default")""")),
         dict(names=("--sudo", "-s"),
              specs=dict(action="store_true",
                         help="""use sudo to run andebox""")),
         dict(names=("--venv", "-V"),
-             specs=dict(help="""path to the virtual environment where andebox and ansible are installed (default: "/venv")"""),
-             default="/venv"),
+             specs=dict(help="""path to the virtual environment where andebox and ansible are installed (default: "/venv")""")),
         dict(names=("andebox_params", ),
              specs=dict(nargs="+")),
     ]
+    default_name = "default"
+    default_venv = "/venv"
 
     def make_parser(self, subparser):
         action_parser = super().make_parser(subparser)
@@ -42,7 +42,9 @@ class VagrantAction(AndeboxAction):
         if not os.path.exists("Vagrantfile"):
             raise VagrantError("Missing Vagrantfile in the current directory")
 
-        machine_name = args.name
+        # argparse does not seem to honour defaults in subparsers, so making do with these
+        machine_name = args.name or self.default_name
+        venv = args.venv or self.default_venv
 
         print(f"== SETUP vagrant VM: {machine_name} {'=' * 80}")
         v = vagrant.Vagrant()
@@ -60,8 +62,8 @@ class VagrantAction(AndeboxAction):
             print(f"== BEGIN vagrant andebox: {machine_name} {'=' * 80}")
             try:
                 with c.cd("/vagrant"):
-                    andebox_path = self.binary_path(args.venv, "andebox")
-                    cmd = f"{andebox_path} test --venv {args.venv} ansible-test -R -- integration {' '.join(args.andebox_params)}"
+                    andebox_path = self.binary_path(venv, "andebox")
+                    cmd = f"{andebox_path} test --venv {venv} ansible-test -R -- integration {' '.join(args.andebox_params)}"
                     if args.sudo:
                         cmd = "sudo -E " + cmd
 
