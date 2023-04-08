@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# (c) 2021, Alexei Znamensky <russoz@gmail.com>
+# (c) 2021-2023, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 import os
@@ -65,7 +65,7 @@ class VagrantAction(AndeboxAction):
                     andebox_path = self.binary_path(venv, "andebox")
                     cmd = f"{andebox_path} test --venv {venv} -R -- integration {' '.join(args.andebox_params)}"
                     if args.sudo:
-                        cmd = "sudo -E " + cmd
+                        cmd = "sudo -HE " + cmd
 
                     c.run(cmd)
             except Exception as e:
