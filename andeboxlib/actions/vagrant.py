@@ -63,7 +63,7 @@ class VagrantAction(AndeboxAction):
             try:
                 with c.cd("/vagrant"):
                     andebox_path = self.binary_path(venv, "andebox")
-                    cmd = f"{andebox_path} test --venv {venv} ansible-test -R -- integration {' '.join(args.andebox_params)}"
+                    cmd = f"{andebox_path} test --venv {venv} -R -- integration {' '.join(args.andebox_params)}"
                     if args.sudo:
                         cmd = "sudo -E " + cmd
 
