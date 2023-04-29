@@ -34,8 +34,9 @@ class VagrantAction(AndeboxAction):
     default_name = "default"
     default_venv = "/venv"
 
-    def make_parser(self, subparser):
-        action_parser = super().make_parser(subparser)
+    @classmethod
+    def make_parser(cls, subparser):
+        action_parser = super(VagrantAction, cls).make_parser(subparser)
         action_parser.epilog = "Notice the use of '--' to delimit the vagrant command from the one running inside the VM"
         action_parser.usage = "%(prog)s usage: andebox vagrant [-h] [-n name] -- <andebox-cmd> [andebox-cmd-opts [-- test-params]]"
 

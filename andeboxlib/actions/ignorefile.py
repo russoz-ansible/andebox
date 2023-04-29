@@ -119,55 +119,53 @@ class ResultLine:
         return "".join(r)
 
 
-class IgnoreLinesAction(AndeboxAction):
-    ignore_path = os.path.join('.', 'tests', 'sanity')
+_ignore_path = os.path.join('.', 'tests', 'sanity')
+try:
+    with os.scandir(os.path.join(_ignore_path)) as it:
+        _ignore_versions = sorted([
+            str(LooseVersion(entry.name[7:-4]))
+            for entry in it
+            if entry.name.startswith("ignore-") and entry.name.endswith(".txt")
+        ])
+except FileNotFoundError:
+    _ignore_versions = []
 
+
+class IgnoreLinesAction(AndeboxAction):
     name = "ignores"
     help = "gathers stats on ignore*.txt file(s)"
-
-    @property
-    def args(self):
-        try:
-            with os.scandir(os.path.join(self.ignore_path)) as it:
-                ignore_versions = sorted([
-                    str(LooseVersion(entry.name[7:-4]))
-                    for entry in it
-                    if entry.name.startswith("ignore-") and entry.name.endswith(".txt")
-                ])
-        except FileNotFoundError:
-            ignore_versions = []
-
-        return [
-            dict(names=["--ignore-file-spec", "-ifs"],
-                 specs=dict(choices=ignore_versions + ["-"],
-                            help="Use the ignore file matching this Ansible version. "
-                                 "The special value '-' may be specified to read "
-                                 "from stdin instead. If not specified, will use all available files. "
-                                 "If no choices are presented, the collection structure was not recognized.")),
-            dict(names=["--depth", "-d"],
-                 specs=dict(type=int, help="Path depth for grouping files")),
-            dict(names=["--filter-files", "-ff"],
-                 specs=dict(type=re.compile, help="Regexp matching file names to be included")),
-            dict(names=["--filter-checks", "-fc"],
-                 specs=dict(type=re.compile, help="Regexp matching checks in ignore files to be included")),
-            dict(names=["--suppress-files", "-sf"],
-                 specs=dict(action="store_true", help="Supress file names from the output, consolidating the results")),
-            dict(names=["--suppress-checks", "-sc"],
-                 specs=dict(action="store_true", help="Suppress the checks from the output, consolidating the results")),
-            dict(names=["--head", "-H"],
-                 specs=dict(type=int, default=10, help="Number of lines to display in the output: leading lines if "
-                                                       "positive, trailing lines if negative, all lines if zero.")),
-        ]
+    args = [
+        dict(names=["--ignore-file-spec", "-ifs"],
+                specs=dict(choices=_ignore_versions + ["-"],
+                        help=(
+                            "Use the ignore file matching this Ansible version. "
+                            "The special value '-' may be specified to read "
+                            "from stdin instead. If not specified, will use all available files. "
+                            "If no choices are presented, the collection structure was not recognized."))),
+        dict(names=["--depth", "-d"],
+                specs=dict(type=int, help="Path depth for grouping files")),
+        dict(names=["--filter-files", "-ff"],
+                specs=dict(type=re.compile, help="Regexp matching file names to be included")),
+        dict(names=["--filter-checks", "-fc"],
+                specs=dict(type=re.compile, help="Regexp matching checks in ignore files to be included")),
+        dict(names=["--suppress-files", "-sf"],
+                specs=dict(action="store_true", help="Supress file names from the output, consolidating the results")),
+        dict(names=["--suppress-checks", "-sc"],
+                specs=dict(action="store_true", help="Suppress the checks from the output, consolidating the results")),
+        dict(names=["--head", "-H"],
+                specs=dict(type=int, default=10, help="Number of lines to display in the output: leading lines if "
+                                                    "positive, trailing lines if negative, all lines if zero.")),
+    ]
 
     # pylint: disable=consider-using-with
     def make_fh_list_for_version(self, version):
         if version == "-":
             return [sys.stdin]
         if version:
-            return [open(os.path.join(self.ignore_path, 'ignore-{0}.txt'.format(version)))]
+            return [open(os.path.join(_ignore_path, 'ignore-{0}.txt'.format(version)))]
 
-        with os.scandir(os.path.join(self.ignore_path)) as it:
-            return [open(os.path.join(self.ignore_path, entry.name))
+        with os.scandir(os.path.join(_ignore_path)) as it:
+            return [open(os.path.join(_ignore_path, entry.name))
                     for entry in it
                     if entry.name.startswith("ignore-") and entry.name.endswith(".txt")]
 

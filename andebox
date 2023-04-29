@@ -17,22 +17,34 @@ from andeboxlib.actions.toxtest import ToxTestAction
 from andeboxlib.actions.vagrant import VagrantAction
 
 
+_actions = [AnsibleTestAction, IgnoreLinesAction, RuntimeAction, ToxTestAction, VagrantAction]
+
+
+def _make_parser():
+    parser = argparse.ArgumentParser(prog="andebox", description="Ansible Developer (Tool)Box v{}".format(__version__))
+    parser.add_argument("--version", action="version", version="%(prog)s {0}".format(__version__))
+    parser.add_argument("--collection", "-c",
+                                help="fully qualified collection name (not necessary if a proper galaxy.yml file is available)")
+    subparser = parser.add_subparsers(dest="action", required=True)
+
+    for action in _actions:
+        action.make_parser(subparser)
+
+    return parser
+
+
 class AndeBox:
     actions = {}
     parser = None
+
+    def __init__(self) -> None:
+        self.add_actions(*_actions)
 
     def add_actions(self, *actions):
         self.actions.update({ac.name: ac() for ac in actions})
 
     def build_argparser(self):
-        self.parser = argparse.ArgumentParser(prog="andebox", description="Ansible Developer (Tool)Box v{}".format(__version__))
-        self.parser.add_argument("--version", action="version", version="%(prog)s {0}".format(__version__))
-        self.parser.add_argument("--collection", "-c",
-                                 help="fully qualified collection name (not necessary if a proper galaxy.yml file is available)")
-        subparser = self.parser.add_subparsers(dest="action", required=True)
-
-        for action in self.actions.values():
-            action.make_parser(subparser)
+        self.parser = _make_parser()
 
     def run(self):
         self.build_argparser()
@@ -43,7 +55,6 @@ class AndeBox:
 
 def main():
     box = AndeBox()
-    box.add_actions(AnsibleTestAction, IgnoreLinesAction, RuntimeAction, ToxTestAction, VagrantAction)
     box.run()
 
 

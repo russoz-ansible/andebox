@@ -56,8 +56,9 @@ class ToxTestAction(AndeboxAction):
     ]
     tox_ini_filename = ".andebox-tox-test.ini"
 
-    def make_parser(self, subparser):
-        action_parser = super().make_parser(subparser)
+    @classmethod
+    def make_parser(cls, subparser):
+        action_parser = super(ToxTestAction, cls).make_parser(subparser)
         action_parser.epilog = "Notice the use of '--' to delimit andebox's options from tox's"
         action_parser.usage = "%(prog)s usage: andebox tox-test [-h] [--env ENV] -- [ansible_test_params ...]"
 

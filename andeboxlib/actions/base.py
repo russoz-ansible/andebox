@@ -56,9 +56,10 @@ class AndeboxAction:
             else:
                 print('Keeping temporary directory: {0}'.format(coll_dir))
 
-    def make_parser(self, subparser):
-        action_parser = subparser.add_parser(self.name, help=self.help)
-        for arg in self.args:
+    @classmethod
+    def make_parser(cls, subparser):
+        action_parser = subparser.add_parser(cls.name, help=cls.help)
+        for arg in cls.args:
             action_parser.add_argument(*arg['names'], **arg['specs'])
         return action_parser
 
