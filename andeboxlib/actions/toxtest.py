@@ -24,7 +24,7 @@ skip_install = true
 allowlist_externals = andebox
 basepython = {sys.executable}
 deps =
-  andebox
+  andebox>=0.36
   ac211: ansible-core~=2.11.0
   ac212: ansible-core~=2.12.0
   ac213: ansible-core~=2.13.0
