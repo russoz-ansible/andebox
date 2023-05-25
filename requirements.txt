@@ -4,3 +4,4 @@ python-vagrant
 fabric
 decorator
 tox
+looseversion
