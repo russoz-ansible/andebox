@@ -5,8 +5,9 @@
 import os
 import re
 import sys
-from distutils.version import LooseVersion
 from functools import reduce
+
+from looseversion import LooseVersion
 
 from andeboxlib.actions.base import AndeboxAction
 
@@ -121,10 +122,10 @@ class ResultLine:
 
 _ignore_path = os.path.join('.', 'tests', 'sanity')
 try:
-    with os.scandir(os.path.join(_ignore_path)) as it:
+    with os.scandir(os.path.join(_ignore_path)) as sanity_dir:
         _ignore_versions = sorted([
             str(LooseVersion(entry.name[7:-4]))
-            for entry in it
+            for entry in sanity_dir
             if entry.name.startswith("ignore-") and entry.name.endswith(".txt")
         ])
 except FileNotFoundError:

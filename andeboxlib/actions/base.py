@@ -30,8 +30,8 @@ class AndeboxAction:
                     shutil.copy(entry.name, os.path.join(coll_dir, entry.name))
 
     @staticmethod
-    def binary_path(venv, bin):
-        _list = ([venv, "bin"] if venv else []) + [bin]
+    def binary_path(venv, binary):
+        _list = ([venv, "bin"] if venv else []) + [binary]
         return os.path.join(*_list)
 
     @contextmanager

@@ -41,7 +41,7 @@ class VagrantAction(AndeboxAction):
         action_parser.usage = "%(prog)s usage: andebox vagrant [-h] [-n name] -- <andebox-cmd> [andebox-cmd-opts [-- test-params]]"
 
     def run(self, args):
-        import vagrant
+        import vagrant          # pylint: disable=import-outside-toplevel
 
         if not os.path.exists("Vagrantfile"):
             raise VagrantError("Missing Vagrantfile in the current directory")
