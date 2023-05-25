@@ -6,7 +6,6 @@ import os
 import re
 import sys
 from functools import reduce
-
 from looseversion import LooseVersion
 
 from andeboxlib.actions.base import AndeboxAction
