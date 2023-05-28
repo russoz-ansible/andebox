@@ -22,9 +22,11 @@ _actions = [AnsibleTestAction, IgnoreLinesAction, RuntimeAction, ToxTestAction, 
 
 def _make_parser():
     parser = argparse.ArgumentParser(prog="andebox", description="Ansible Developer (Tool)Box v{}".format(__version__))
-    parser.add_argument("--version", action="version", version="%(prog)s {0}".format(__version__))
+    parser.add_argument("--version",
+                        action="version",
+                        version="%(prog)s {0}".format(__version__))
     parser.add_argument("--collection", "-c",
-                                help="fully qualified collection name (not necessary if a proper galaxy.yml file is available)")
+                        help="fully qualified collection name (not necessary if a proper galaxy.yml file is available)")
     subparser = parser.add_subparsers(dest="action", required=True)
 
     for action in _actions:
