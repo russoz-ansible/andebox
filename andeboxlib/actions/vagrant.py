@@ -57,12 +57,14 @@ class VagrantAction(AndeboxAction):
 
         try:
             print("\n")
-            with Connection(user=v.user(vm_name=machine_name),
-                            host=v.hostname(vm_name=machine_name),
-                            port=v.port(vm_name=machine_name),
-                            connect_kwargs={
-                                "key_filename": v.keyfile(vm_name=machine_name),
-                            },) as c:
+            with Connection(
+                user=v.user(vm_name=machine_name),
+                host=v.hostname(vm_name=machine_name),
+                port=v.port(vm_name=machine_name),
+                connect_kwargs={
+                    "key_filename": v.keyfile(vm_name=machine_name),
+                },
+            ) as c:
 
                 print(f"== BEGIN vagrant andebox: {machine_name} {'=' * 80}")
                 with c.cd("/vagrant"):
