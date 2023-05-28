@@ -36,4 +36,4 @@ jobs:
         poetry run flake8 -v . --count --exit-zero --statistics
     - name: Test with pytest
       run: |
-        poetry run pytest -v andebox andeboxlib
+        poetry run pytest -v
