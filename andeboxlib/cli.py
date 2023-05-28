@@ -60,11 +60,10 @@ def run():
         signal.signal(signal.SIGPIPE, signal.SIG_DFL)
         box = AndeBox()
         box.run()
+        return 0
     except KeyboardInterrupt:
         print("Interrupted by user", file=sys.stderr)
         return 2
-    except BrokenPipeError:
-        pass
-    except AndeboxException as e:
+    except (AndeboxException, BrokenPipeError) as e:
         print(str(e), file=sys.stderr)
         return 1
