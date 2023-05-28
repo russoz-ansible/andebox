@@ -29,6 +29,9 @@ packages = [
     { include = "andeboxlib" }
 ]
 
+[tool.poetry.scripts]
+andebox = "andeboxlib.cli:run"
+
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/russoz-ansible/andebox/issues"
 "Source Code" = "https://github.com/russoz-ansible/andebox"

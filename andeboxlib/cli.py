@@ -53,20 +53,16 @@ class AndeBox:
         action.run(args)
 
 
-def main():
-    box = AndeBox()
-    box.run()
-
-
-if __name__ == '__main__':
+def run():
     try:
         signal.signal(signal.SIGPIPE, signal.SIG_DFL)
-        main()
+        box = AndeBox()
+        box.run()
     except KeyboardInterrupt:
         print("Interrupted by user", file=sys.stderr)
-        sys.exit(2)
+        return 2
     except BrokenPipeError:
         pass
     except AndeboxException as e:
         print(str(e), file=sys.stderr)
-        sys.exit(1)
+        return 1
