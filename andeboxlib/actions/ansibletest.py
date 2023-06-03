@@ -40,11 +40,9 @@ class AnsibleTestAction(AndeboxAction):
 
     def run(self, args):
         namespace, collection = self.determine_collection(args.collection)
-        if args.requirements:
-            reqs = self.obtain_reqs()
         with self.ansible_collection_tree(namespace, collection, args.keep) as collection_dir:
             if args.requirements:
-                self.install_requirements(reqs, args.venv)
+                self.install_requirements(args.venv)
             if args.exclude_from_ignore:
                 self.exclude_from_ignore(args.exclude_from_ignore, args.ansible_test_params, collection_dir)
             rc = subprocess.call([self.binary_path(args.venv, "ansible-test")] + args.ansible_test_params, cwd=collection_dir)
@@ -66,15 +64,12 @@ class AnsibleTestAction(AndeboxAction):
                                                 files)
 
     @staticmethod
-    def obtain_reqs():
-        reqs_path = os.path.join('.', 'tests', 'requirements.yml')
-        with open(reqs_path) as yaml_file:
-            reqs_yaml = yaml.load(yaml_file, Loader=yaml.BaseLoader)
-        return reqs_yaml['integration_tests_dependencies']
-
-    @staticmethod
-    def install_requirements(reqs, venv):
-        rc = subprocess.call([AnsibleTestAction.binary_path(venv, "ansible-galaxy"), "collection", "install"] + reqs)
+    def install_requirements(venv):
+        rc = subprocess.call([AnsibleTestAction.binary_path(venv, "ansible-galaxy"),
+                              "collection",
+                              "install",
+                              "-r",
+                              os.path.join('.', 'tests', 'integration', 'requirements.yml')])
 
         if rc != 0:
             raise AnsibleTestError("Error installing dependencies (rc={0})".format(rc))
