@@ -39,3 +39,9 @@ jobs:
     - name: Test with pytest
       run: |
         poetry run pytest -v
+    - name: Publish to Test PyPI
+      env:
+        POETRY_PYPI_TOKEN_TEST_PYPI: ${{ env.test_pypi_token }}
+      run: |
+        poetry config --local repositories.test-pypi https://test.pypi.org/legacy/
+        poetry publish --repository test-pypi
