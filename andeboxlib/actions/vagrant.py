@@ -50,7 +50,7 @@ class VagrantAction(AndeboxAction):
         machine_name = args.name or self.default_name
         venv = args.venv or self.default_venv
 
-        print(f"== SETUP vagrant VM: {machine_name} {'=' * 80}")
+        print(f"== SETUP vagrant VM: {machine_name} ".ljust(80, "="))
         v = vagrant.Vagrant()
         for line in v.up(vm_name=machine_name, stream_output=True):
             print(line, end="")
@@ -66,7 +66,7 @@ class VagrantAction(AndeboxAction):
                 },
             ) as c:
 
-                print(f"== BEGIN vagrant andebox: {machine_name} {'=' * 80}")
+                print(f"== BEGIN vagrant andebox: {machine_name} ".ljust(80, "="))
                 with c.cd("/vagrant"):
                     andebox_path = self.binary_path(venv, "andebox")
                     cmd = f"{andebox_path} test --venv {venv} -R -- integration {' '.join(args.andebox_params)}"
@@ -79,4 +79,4 @@ class VagrantAction(AndeboxAction):
         finally:
             if args.destroy:
                 v.destroy()
-            print(f"==== END vagrant andebox: {machine_name} {'=' * 80}")
+            print(f"== END   vagrant andebox: {machine_name} ".ljust(80, "="))
