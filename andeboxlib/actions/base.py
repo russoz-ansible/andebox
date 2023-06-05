@@ -50,11 +50,11 @@ class AndeboxAction:
             yield coll_dir
 
         finally:
-            if not keep:
+            if keep:
+                print('Keeping temporary directory: {0}'.format(coll_dir))
+            else:
                 print('Removing temporary directory: {0}'.format(coll_dir))
                 shutil.rmtree(top_dir)
-            else:
-                print('Keeping temporary directory: {0}'.format(coll_dir))
 
     @classmethod
     def make_parser(cls, subparser):
