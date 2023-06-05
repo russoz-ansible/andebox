@@ -5,8 +5,6 @@
 import os
 import subprocess
 
-import yaml
-
 from andeboxlib.actions.base import AndeboxAction
 from andeboxlib.exceptions import AndeboxException
 
