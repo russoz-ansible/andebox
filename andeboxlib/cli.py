@@ -22,9 +22,11 @@ _actions = [AnsibleTestAction, IgnoreLinesAction, RuntimeAction, ToxTestAction, 
 
 def _make_parser():
     parser = argparse.ArgumentParser(prog="andebox", description="Ansible Developer (Tool)Box v{}".format(__version__))
-    parser.add_argument("--version", action="version", version="%(prog)s {0}".format(__version__))
+    parser.add_argument("--version",
+                        action="version",
+                        version="%(prog)s {0}".format(__version__))
     parser.add_argument("--collection", "-c",
-                                help="fully qualified collection name (not necessary if a proper galaxy.yml file is available)")
+                        help="fully qualified collection name (not necessary if a proper galaxy.yml file is available)")
     subparser = parser.add_subparsers(dest="action", required=True)
 
     for action in _actions:
@@ -53,20 +55,15 @@ class AndeBox:
         action.run(args)
 
 
-def main():
-    box = AndeBox()
-    box.run()
-
-
-if __name__ == '__main__':
+def run():
     try:
         signal.signal(signal.SIGPIPE, signal.SIG_DFL)
-        main()
+        box = AndeBox()
+        box.run()
+        return 0
     except KeyboardInterrupt:
         print("Interrupted by user", file=sys.stderr)
-        sys.exit(2)
-    except BrokenPipeError:
-        pass
-    except AndeboxException as e:
+        return 2
+    except (AndeboxException, BrokenPipeError) as e:
         print(str(e), file=sys.stderr)
-        sys.exit(1)
+        return 1
