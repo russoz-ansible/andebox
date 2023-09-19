@@ -15,7 +15,7 @@ def _make_default_tox_ini():
 ; andebox tox-test's tox.ini -- this file is not overwritten by andebox
 [tox]
 isolated_build = true
-envlist = ac211, ac212, ac213, a4, a5, a6, a7, a8, dev
+envlist = ac211, ac212, ac213, ac214, ac215, a4, a5, a6, a7, a8, dev
 skipsdist = true
 
 [testenv]
@@ -29,6 +29,7 @@ deps =
   ac212: ansible-core~=2.12.0
   ac213: ansible-core~=2.13.0
   ac214: ansible-core~=2.14.0
+  ac215: ansible-core~=2.15.0
   a4: ansible~=4.0.0
   a5: ansible~=5.0.0
   a6: ansible~=6.0.0
