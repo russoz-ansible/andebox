@@ -25,9 +25,9 @@ class AndeboxAction:
                 if any(entry.name.startswith(x) for x in AndeboxAction.coll_copy_exclusion):
                     continue
                 if entry.is_dir():
-                    shutil.copytree(entry.name, os.path.join(coll_dir, entry.name))
+                    shutil.copytree(entry.name, os.path.join(coll_dir, entry.name), symlinks=True, ignore_dangling_symlinks=True)
                 else:
-                    shutil.copy(entry.name, os.path.join(coll_dir, entry.name))
+                    shutil.copy(entry.name, os.path.join(coll_dir, entry.name), follow_symlinks=False)
 
     @staticmethod
     def binary_path(venv, binary):
