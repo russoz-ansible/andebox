@@ -5,8 +5,9 @@
 import os
 import subprocess
 
-from andeboxlib.actions.base import AndeboxAction
-from andeboxlib.exceptions import AndeboxException
+from .base import AndeboxAction
+from ..exceptions import AndeboxException
+from ..context import ansible_collection_tree, determine_collection, binary_path, copy_exclude_lines
 
 
 class AnsibleTestError(AndeboxException):
@@ -37,13 +38,13 @@ class AnsibleTestAction(AndeboxAction):
         action_parser.usage = "%(prog)s usage: andebox test [-h] [--keep] -- [ansible_test_params ...]"
 
     def run(self, args):
-        namespace, collection = self.determine_collection(args.collection)
-        with self.ansible_collection_tree(namespace, collection, args.keep) as collection_dir:
+        namespace, collection = determine_collection(args.collection)
+        with ansible_collection_tree(namespace, collection, args.keep) as collection_dir:
             if args.requirements:
                 self.install_requirements(args.venv)
             if args.exclude_from_ignore:
                 self.exclude_from_ignore(args.exclude_from_ignore, args.ansible_test_params, collection_dir)
-            rc = subprocess.call([self.binary_path(args.venv, "ansible-test")] + args.ansible_test_params, cwd=collection_dir)
+            rc = subprocess.call([binary_path(args.venv, "ansible-test")] + args.ansible_test_params, cwd=collection_dir)
 
             if rc != 0:
                 raise AnsibleTestError("Error running ansible-test (rc={0})".format(rc))
@@ -57,13 +58,13 @@ class AnsibleTestAction(AndeboxAction):
             with os.scandir(src_dir) as ts_dir:
                 for ts_entry in ts_dir:
                     if ts_entry.name.startswith('ignore-') and ts_entry.name.endswith('.txt'):
-                        self.copy_exclude_lines(os.path.join(src_dir, ts_entry.name),
-                                                os.path.join(dest_dir, ts_entry.name),
-                                                files)
+                        copy_exclude_lines(os.path.join(src_dir, ts_entry.name),
+                                           os.path.join(dest_dir, ts_entry.name),
+                                           files)
 
     @staticmethod
     def install_requirements(venv):
-        rc = subprocess.call([AnsibleTestAction.binary_path(venv, "ansible-galaxy"),
+        rc = subprocess.call([binary_path(venv, "ansible-galaxy"),
                               "collection",
                               "install",
                               "-r",

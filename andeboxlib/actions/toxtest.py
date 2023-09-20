@@ -6,8 +6,8 @@ import os
 import sys
 import subprocess
 
-from andeboxlib.actions.base import AndeboxAction
-from andeboxlib.exceptions import AndeboxException
+from .base import AndeboxAction
+from ..exceptions import AndeboxException
 
 
 def _make_default_tox_ini():

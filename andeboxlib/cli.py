@@ -9,12 +9,12 @@ import argparse
 import sys
 import signal
 
-from andeboxlib.exceptions import AndeboxException
-from andeboxlib.actions.ansibletest import AnsibleTestAction
-from andeboxlib.actions.ignorefile import IgnoreLinesAction
-from andeboxlib.actions.runtime import RuntimeAction
-from andeboxlib.actions.toxtest import ToxTestAction
-from andeboxlib.actions.vagrant import VagrantAction
+from .exceptions import AndeboxException
+from .actions.ansibletest import AnsibleTestAction
+from .actions.ignorefile import IgnoreLinesAction
+from .actions.runtime import RuntimeAction
+from .actions.toxtest import ToxTestAction
+from .actions.vagrant import VagrantAction
 
 
 _actions = [AnsibleTestAction, IgnoreLinesAction, RuntimeAction, ToxTestAction, VagrantAction]
