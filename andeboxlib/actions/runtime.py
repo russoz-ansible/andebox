@@ -9,7 +9,9 @@ from functools import partial
 
 import yaml
 
-from andeboxlib.actions.base import AndeboxAction
+from .base import AndeboxAction
+from ..context import read_coll_meta
+
 
 PLUGIN_TYPES = ('connection', 'lookup', 'modules', 'doc_fragments', 'module_utils', 'callback', 'inventory')
 
@@ -72,7 +74,7 @@ class RuntimeAction(AndeboxAction):
             runtime = yaml.load(runtime_yml, Loader=yaml.BaseLoader)
 
         plugin_types = [args.plugin_type] if args.plugin_type else PLUGIN_TYPES
-        _, _, self.current_version = self.read_coll_meta()
+        _, _, self.current_version = read_coll_meta()
         self.info_type = args.info_type
 
         def name_test(name, other):

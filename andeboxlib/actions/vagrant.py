@@ -6,8 +6,9 @@ import os
 
 from fabric.connection import Connection
 
-from andeboxlib.actions.base import AndeboxAction
-from andeboxlib.exceptions import AndeboxException
+from .base import AndeboxAction
+from ..exceptions import AndeboxException
+from ..context import binary_path
 
 
 class VagrantError(AndeboxException):
@@ -68,7 +69,7 @@ class VagrantAction(AndeboxAction):
 
                 print(f"== BEGIN vagrant andebox: {machine_name} ".ljust(80, "="))
                 with c.cd("/vagrant"):
-                    andebox_path = self.binary_path(venv, "andebox")
+                    andebox_path = binary_path(venv, "andebox")
                     cmd = f"{andebox_path} test --venv {venv} -R -- integration {' '.join(args.andebox_params)}"
                     if args.sudo:
                         cmd = "sudo -HE " + cmd
