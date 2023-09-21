@@ -50,7 +50,7 @@ def ansible_collection_tree(namespace, collection, keep=False):
 
 def read_coll_meta():
     with open("galaxy.yml") as galaxy_meta:
-        meta = yaml.load(galaxy_meta, Loader=yaml.BaseLoader)
+        meta = yaml.safe_load(galaxy_meta)
     return meta['namespace'], meta['name'], meta['version']
 
 
