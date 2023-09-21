@@ -71,7 +71,7 @@ class RuntimeAction(AndeboxAction):
 
     def run(self, args):
         with open(os.path.join("meta", "runtime.yml")) as runtime_yml:
-            runtime = yaml.load(runtime_yml, Loader=yaml.BaseLoader)
+            runtime = yaml.safe_load(runtime_yml)
 
         plugin_types = [args.plugin_type] if args.plugin_type else PLUGIN_TYPES
         _, _, self.current_version = read_coll_meta()
