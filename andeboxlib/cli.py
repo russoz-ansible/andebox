@@ -15,9 +15,10 @@ from .actions.ignorefile import IgnoreLinesAction
 from .actions.runtime import RuntimeAction
 from .actions.toxtest import ToxTestAction
 from .actions.vagrant import VagrantAction
+from .actions.docsite import DocsiteAction
 
 
-_actions = [AnsibleTestAction, IgnoreLinesAction, RuntimeAction, ToxTestAction, VagrantAction]
+_actions = [AnsibleTestAction, IgnoreLinesAction, RuntimeAction, ToxTestAction, VagrantAction, DocsiteAction]
 
 
 def _make_parser():
