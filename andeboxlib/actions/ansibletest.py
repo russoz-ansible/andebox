@@ -59,7 +59,7 @@ class AnsibleTestAction(AndeboxAction):
 
     @staticmethod
     def install_requirements(venv):
-        rc = subprocess.run([
+        subprocess.run([
                 binary_path(venv, "ansible-galaxy"), "collection", "install", "-r",
                 os.path.join('.', 'tests', 'integration', 'requirements.yml')
             ],
