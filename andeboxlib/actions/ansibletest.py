@@ -35,7 +35,7 @@ class AnsibleTestAction(AndeboxAction):
     def make_parser(cls, subparser):
         action_parser = super(AnsibleTestAction, cls).make_parser(subparser)
         action_parser.epilog = "Notice the use of '--' to delimit andebox's options from ansible-test's"
-        action_parser.usage = "%(prog)s usage: andebox test [-h] [--keep] -- [ansible_test_params ...]"
+        action_parser.usage = "%(prog)s [-h] [--keep] -- [ansible_test_params ...]"
 
     def run(self, args):
         namespace, collection = determine_collection(args.collection)

@@ -39,7 +39,7 @@ class VagrantAction(AndeboxAction):
     def make_parser(cls, subparser):
         action_parser = super(VagrantAction, cls).make_parser(subparser)
         action_parser.epilog = "Notice the use of '--' to delimit the vagrant command from the one running inside the VM"
-        action_parser.usage = "%(prog)s usage: andebox vagrant [-h] [-n name] -- <andebox-cmd> [andebox-cmd-opts [-- test-params]]"
+        action_parser.usage = "%(prog)s [-hsd] [-n name] [-V VENV] -- <andebox-cmd> [andebox-cmd-opts [-- test-params]]"
 
     def run(self, args):
         import vagrant          # pylint: disable=import-outside-toplevel
