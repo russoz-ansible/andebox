@@ -65,7 +65,7 @@ class ToxTestAction(AndeboxAction):
         action_parser.epilog = "Notice the use of '--' to delimit andebox's options from tox's"
         action_parser.usage = "%(prog)s [-h] [--env ENV] -- [ansible_test_params ...]"
 
-    def run(self, args):
+    def run(self, context, args):
         if not os.path.exists(self.tox_ini_filename):
             with open(self.tox_ini_filename, "w") as tox_ini:
                 tox_ini.write(_make_default_tox_ini())

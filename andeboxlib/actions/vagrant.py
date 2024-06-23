@@ -8,7 +8,6 @@ from fabric.connection import Connection
 
 from .base import AndeboxAction
 from ..exceptions import AndeboxException
-from ..context import binary_path
 
 
 class VagrantError(AndeboxException):
@@ -41,7 +40,7 @@ class VagrantAction(AndeboxAction):
         action_parser.epilog = "Notice the use of '--' to delimit the vagrant command from the one running inside the VM"
         action_parser.usage = "%(prog)s [-hsd] [-n name] [-V VENV] -- <andebox-cmd> [andebox-cmd-opts [-- test-params]]"
 
-    def run(self, args):
+    def run(self, context, args):
         import vagrant          # pylint: disable=import-outside-toplevel
 
         if not os.path.exists("Vagrantfile"):
@@ -69,7 +68,7 @@ class VagrantAction(AndeboxAction):
 
                 print(f"== BEGIN vagrant andebox: {machine_name} ".ljust(80, "="))
                 with c.cd("/vagrant"):
-                    andebox_path = binary_path(venv, "andebox")
+                    andebox_path = context.binary_path(venv, "andebox")
                     cmd = f"{andebox_path} test --venv {venv} -R -- integration {' '.join(args.andebox_params)}"
                     if args.sudo:
                         cmd = "sudo -HE " + cmd

@@ -10,7 +10,6 @@ from functools import partial
 import yaml
 
 from .base import AndeboxAction
-from ..context import read_coll_meta
 
 
 PLUGIN_TYPES = ('connection', 'lookup', 'modules', 'doc_fragments', 'module_utils', 'callback', 'inventory')
@@ -69,12 +68,12 @@ class RuntimeAction(AndeboxAction):
             for name in matching:
                 self.print_runtime('{0} {1}'.format(plugin_type, name), plugin_routing[plugin_type][name])
 
-    def run(self, args):
+    def run(self, context, args):
         with open(os.path.join("meta", "runtime.yml")) as runtime_yml:
             runtime = yaml.safe_load(runtime_yml)
 
         plugin_types = [args.plugin_type] if args.plugin_type else PLUGIN_TYPES
-        _, _, self.current_version = read_coll_meta()
+        _, _, self.current_version = context.read_coll_meta()
         self.info_type = args.info_type
 
         def name_test(name, other):
