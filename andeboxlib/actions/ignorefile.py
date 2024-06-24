@@ -197,7 +197,7 @@ class IgnoreLinesAction(AndeboxAction):
             return lines
         return lines[num:] if num < 0 else lines[:num]
 
-    def run(self, args):
+    def run(self, context, args):
         if args.filter_files:
             IgnoreFileEntry.filter_files = args.filter_files
         if args.filter_checks:

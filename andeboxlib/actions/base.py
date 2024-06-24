@@ -3,6 +3,9 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
+from ..context import Context
+
+
 class AndeboxAction:
     name = None
     help = None
@@ -15,7 +18,7 @@ class AndeboxAction:
             action_parser.add_argument(*arg['names'], **arg['specs'])
         return action_parser
 
-    def run(self, args):
+    def run(self, context: Context, args) -> None:
         raise NotImplementedError()
 
     def __str__(self):

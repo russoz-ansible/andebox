@@ -10,7 +10,6 @@ from pathlib import Path
 
 from .base import AndeboxAction
 from ..exceptions import AndeboxException
-from ..context import ansible_collection_tree, determine_collection, binary_path
 
 
 @contextmanager
@@ -37,15 +36,15 @@ class DocsiteAction(AndeboxAction):
              specs=dict(help="Directory which should contain the docsite", default=".builtdocs")),
     ]
 
-    def run(self, args):
+    def run(self, context, args):
         try:
-            namespace, collection = determine_collection(args.collection)
+            namespace, collection = context.determine_collection(args.collection)
 
-            with ansible_collection_tree(namespace, collection, args.keep) as collection_dir:
+            with context.ansible_collection_tree(namespace, collection, args.keep) as collection_dir:
                 os.makedirs(args.dest_dir, mode=0o755, exist_ok=True)
                 if not os.path.exists(os.path.join(args.dest_dir, "build.sh")):
                     subprocess.run([
-                            binary_path(args.venv, "antsibull-docs"),
+                            context.binary_path(args.venv, "antsibull-docs"),
                             "sphinx-init", "--use-current", "--lenient", f"{namespace}.{collection}", "--dest-dir", args.dest_dir
                         ],
                         cwd=collection_dir,
@@ -53,7 +52,7 @@ class DocsiteAction(AndeboxAction):
                     )
 
                 with set_dir(args.dest_dir):
-                    subprocess.run([binary_path(args.venv, "python"), "-m", "pip", "install", "-qr", "requirements.txt"], check=True)
+                    subprocess.run([context.binary_path(args.venv, "python"), "-m", "pip", "install", "-qr", "requirements.txt"], check=True)
                     subprocess.run(["./build.sh"], check=True)
         except Exception as e:
             raise AndeboxException("Error running when building docsite") from e

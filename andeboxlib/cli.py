@@ -10,6 +10,7 @@ import sys
 import signal
 
 from .exceptions import AndeboxException
+from .context import Context
 from .actions.ansibletest import AnsibleTestAction
 from .actions.ignorefile import IgnoreLinesAction
 from .actions.runtime import RuntimeAction
@@ -21,7 +22,7 @@ from .actions.docsite import DocsiteAction
 _actions = [AnsibleTestAction, IgnoreLinesAction, RuntimeAction, ToxTestAction, VagrantAction, DocsiteAction]
 
 
-def _make_parser():
+def _make_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="andebox", description="Ansible Developer (Tool)Box v{}".format(__version__))
     parser.add_argument("--version",
                         action="version",
@@ -37,23 +38,15 @@ def _make_parser():
 
 
 class AndeBox:
-    actions = {}
-    parser = None
-
     def __init__(self) -> None:
-        self.add_actions(*_actions)
-
-    def add_actions(self, *actions):
-        self.actions.update({ac.name: ac() for ac in actions})
-
-    def build_argparser(self):
+        self.actions = {ac.name: ac() for ac in _actions}
         self.parser = _make_parser()
 
     def run(self):
-        self.build_argparser()
         args = self.parser.parse_args()
+        context = Context(args)
         action = self.actions[args.action]
-        action.run(args)
+        action.run(context, args)
 
 
 def run():
