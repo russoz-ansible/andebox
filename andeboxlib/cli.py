@@ -44,7 +44,7 @@ class AndeBox:
 
     def run(self):
         args = self.parser.parse_args()
-        context = Context(args)
+        context = Context.create(args)
         with set_dir(context.base_dir):
             action = self.actions[args.action]
             action.run(context, args)

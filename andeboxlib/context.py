@@ -23,9 +23,10 @@ class AndeboxUnknownContext(AndeboxException):
     pass
 
 
-class BaseContextDriver(ABC):
+class AbstractContext(ABC):
 
-    def __init__(self, args) -> None:
+    def __init__(self, base_dir, args) -> None:
+        self.base_dir = base_dir
         self.args = args
         self.venv = args.venv
         self.top_dir = Path(tempfile.mkdtemp(prefix="andebox."))
@@ -57,7 +58,7 @@ class BaseContextDriver(ABC):
                     shutil.copy(entry.name, os.path.join(full_dir, entry.name), follow_symlinks=False)
 
     @contextmanager
-    def temp_dir(self):
+    def temp_tree(self):
         full_dir = self.top_dir / self.sub_dir
         os.makedirs(full_dir)
         print(f"directory  = {full_dir}", file=sys.stderr)
@@ -72,14 +73,24 @@ class BaseContextDriver(ABC):
             print(f'Removing temporary directory: {full_dir}')
             shutil.rmtree(self.top_dir)
 
+    def copy_exclude_lines(self, src, dest, exclusion_filenames):
+        with open(src, "r") as src_file, open(dest, "w") as dest_file:
+            for line in src_file.readlines():
+                if not any(line.startswith(f) for f in exclusion_filenames):
+                    dest_file.write(line)
 
-class AnsibleCoreContextDriver(BaseContextDriver):
+    def binary_path(self, venv, binary):
+        _list = ([venv, "bin"] if venv else []) + [binary]
+        return os.path.join(*_list)
+
+
+class AnsibleCoreContext(AbstractContext):
     @property
     def ansible_test(self) -> Path:
         return Path.cwd() / Path("bin") / Path("ansible-test")
 
 
-class CollectionContextDriver(BaseContextDriver):
+class CollectionContext(AbstractContext):
     @property
     def ansible_test(self) -> Path:
         return self.venv / Path("bin") / Path("ansible-test")
@@ -113,13 +124,13 @@ class CollectionContextDriver(BaseContextDriver):
 
 class Context:
     class Type(Enum):
-        ANSIBLE_CORE = AnsibleCoreContextDriver
-        COLLECTION = CollectionContextDriver
+        ANSIBLE_CORE = AnsibleCoreContext
+        COLLECTION = CollectionContext
 
-    def __init__(self, args) -> None:
-        self.base_dir, self.basedir_type = self.determine_base_dir()
-        self.driver = (self.basedir_type.value)(args)
-        self.args = args
+    @staticmethod
+    def create(args) -> AbstractContext:
+        base_dir, basedir_type = Context.determine_base_dir()
+        return (basedir_type.value)(base_dir, args)
 
     @staticmethod
     def base_dir_type(dir_) -> Literal[Type.ANSIBLE_CORE, Type.COLLECTION, None]:
@@ -129,32 +140,19 @@ class Context:
             return Context.Type.COLLECTION
         return None
 
-    def _determine_base_dir(self, dir_: Path) -> Tuple[Path, Literal[Type.ANSIBLE_CORE, Type.COLLECTION]]:
-        dir_type = self.base_dir_type(dir_)
+    @staticmethod
+    def _determine_base_dir(dir_: Path) -> Tuple[Path, Literal[Type.ANSIBLE_CORE, Type.COLLECTION]]:
+        dir_type = Context.base_dir_type(dir_)
         if dir_type is None:
             if dir_ == dir_.anchor:
                 raise AndeboxUnknownContext()
-            return self._determine_base_dir(dir_.parent)
+            return Context._determine_base_dir(dir_.parent)
         return dir_, dir_type
 
-    def determine_base_dir(self):
+    @staticmethod
+    def determine_base_dir():
         cur_dir = Path.cwd()
         try:
-            return self._determine_base_dir(cur_dir)
+            return Context._determine_base_dir(cur_dir)
         except AndeboxUnknownContext as e:
             raise AndeboxUnknownContext(f"Cannot determine current directory context: f{cur_dir}") from e
-
-    def copy_exclude_lines(self, src, dest, exclusion_filenames):
-        with open(src, "r") as src_file, open(dest, "w") as dest_file:
-            for line in src_file.readlines():
-                if not any(line.startswith(f) for f in exclusion_filenames):
-                    dest_file.write(line)
-
-    def binary_path(self, venv, binary):
-        _list = ([venv, "bin"] if venv else []) + [binary]
-        return os.path.join(*_list)
-
-    @contextmanager
-    def temp_tree(self):
-        with self.driver.temp_dir() as full_dir:
-            yield full_dir
