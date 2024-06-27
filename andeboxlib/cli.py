@@ -17,16 +17,16 @@ from .actions.runtime import RuntimeAction
 from .actions.toxtest import ToxTestAction
 from .actions.vagrant import VagrantAction
 from .actions.docsite import DocsiteAction
-
+from .util import set_dir
 
 _actions = [AnsibleTestAction, IgnoreLinesAction, RuntimeAction, ToxTestAction, VagrantAction, DocsiteAction]
 
 
 def _make_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="andebox", description="Ansible Developer (Tool)Box v{}".format(__version__))
+    parser = argparse.ArgumentParser(prog="andebox", description=f"Ansible Developer (Tool)Box v{__version__}")
     parser.add_argument("--version",
                         action="version",
-                        version="%(prog)s {0}".format(__version__))
+                        version=f"%(prog)s {__version__}")
     parser.add_argument("--collection", "-c",
                         help="fully qualified collection name (not necessary if a proper galaxy.yml file is available)")
     subparser = parser.add_subparsers(dest="action", required=True)
@@ -45,8 +45,9 @@ class AndeBox:
     def run(self):
         args = self.parser.parse_args()
         context = Context(args)
-        action = self.actions[args.action]
-        action.run(context, args)
+        with set_dir(context.base_dir):
+            action = self.actions[args.action]
+            action.run(context, args)
 
 
 def run():

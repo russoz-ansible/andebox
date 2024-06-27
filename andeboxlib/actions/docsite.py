@@ -5,21 +5,11 @@
 import os
 import subprocess
 import webbrowser
-from contextlib import contextmanager
-from pathlib import Path
+
+from ..util import set_dir
 
 from .base import AndeboxAction
 from ..exceptions import AndeboxException
-
-
-@contextmanager
-def set_dir(path):
-    previous = Path().absolute()
-    try:
-        os.chdir(path)
-        yield
-    finally:
-        os.chdir(previous)
 
 
 class DocsiteAction(AndeboxAction):
@@ -38,14 +28,14 @@ class DocsiteAction(AndeboxAction):
 
     def run(self, context, args):
         try:
-            namespace, collection = context.determine_collection(args.collection)
-
-            with context.ansible_collection_tree(namespace, collection, args.keep) as collection_dir:
+            with context.temp_tree() as collection_dir:
                 os.makedirs(args.dest_dir, mode=0o755, exist_ok=True)
                 if not os.path.exists(os.path.join(args.dest_dir, "build.sh")):
                     subprocess.run([
                             context.binary_path(args.venv, "antsibull-docs"),
-                            "sphinx-init", "--use-current", "--lenient", f"{namespace}.{collection}", "--dest-dir", args.dest_dir
+                            "sphinx-init", "--use-current", "--lenient",
+                            f"{context.driver.namespace}.{context.driver.name}",
+                            "--dest-dir", args.dest_dir
                         ],
                         cwd=collection_dir,
                         check=True
@@ -55,7 +45,7 @@ class DocsiteAction(AndeboxAction):
                     subprocess.run([context.binary_path(args.venv, "python"), "-m", "pip", "install", "-qr", "requirements.txt"], check=True)
                     subprocess.run(["./build.sh"], check=True)
         except Exception as e:
-            raise AndeboxException("Error running when building docsite") from e
+            raise AndeboxException(f"Error running when building docsite: {e}") from e
 
         if args.open:
             webbrowser.open(f"{os.path.join(args.dest_dir, 'build', 'html', 'index.html')}")

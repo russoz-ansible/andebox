@@ -16,7 +16,7 @@ import yaml
 
 from .exceptions import AndeboxException
 
-coll_copy_exclusion = ('.git', '.tox', '.venv', '.virtualvenv', 'venv', 'virtualenv')
+toplevel_exclusion = ('.git', '.tox', '.venv', '.virtualvenv', 'venv', 'virtualenv')
 
 
 class AndeboxUnknownContext(AndeboxException):
@@ -25,46 +25,52 @@ class AndeboxUnknownContext(AndeboxException):
 
 class BaseContextDriver(ABC):
 
-    def __init__(self, venv) -> None:
-        self.venv = venv
+    def __init__(self, args) -> None:
+        self.args = args
+        self.venv = args.venv
+        self.top_dir = Path(tempfile.mkdtemp(prefix="andebox."))
+
 
     @property
     @abstractmethod
     def ansible_test(self) -> Path:
         pass
 
-    def _copy_collection(self, coll_dir):
+    @property
+    @abstractmethod
+    def sub_dir(self, args) -> Path:
+        pass
+
+    @abstractmethod
+    def post_sub_dir(self, top_dir):
+        pass
+
+    def copy_tree(self, full_dir):
         # copy files to tmp ansible coll dir
         with os.scandir() as it:
             for entry in it:
-                if any(entry.name.startswith(x) for x in coll_copy_exclusion):
+                if any(entry.name.startswith(x) for x in toplevel_exclusion):
                     continue
                 if entry.is_dir():
-                    shutil.copytree(entry.name, os.path.join(coll_dir, entry.name), symlinks=True, ignore_dangling_symlinks=True)
+                    shutil.copytree(entry.name, os.path.join(full_dir, entry.name), symlinks=True, ignore_dangling_symlinks=True)
                 else:
-                    shutil.copy(entry.name, os.path.join(coll_dir, entry.name), follow_symlinks=False)
+                    shutil.copy(entry.name, os.path.join(full_dir, entry.name), follow_symlinks=False)
 
     @contextmanager
-    def ansible_collection_tree(self, namespace, collection, keep=False):
-        top_dir = ""
-        coll_dir = ""
-        try:
-            top_dir = tempfile.mkdtemp(prefix="andebox.")
-            coll_dir = os.path.join(top_dir, "ansible_collections", namespace, collection)
-            os.makedirs(coll_dir)
-            print(f"collection = {namespace}.{collection}", file=sys.stderr)
-            print(f"directory  = {coll_dir}", file=sys.stderr)
+    def temp_dir(self):
+        full_dir = self.top_dir / self.sub_dir
+        os.makedirs(full_dir)
+        print(f"directory  = {full_dir}", file=sys.stderr)
+        self.copy_tree(full_dir)
 
-            self._copy_collection(coll_dir)
-            os.putenv('ANSIBLE_COLLECTIONS_PATH', ':'.join([top_dir] + os.environ.get('ANSIBLE_COLLECTIONS_PATH', '').split(':')))
-            yield coll_dir
+        self.post_sub_dir(self.top_dir)
+        yield full_dir
 
-        finally:
-            if keep:
-                print('Keeping temporary directory: {0}'.format(coll_dir))
-            else:
-                print('Removing temporary directory: {0}'.format(coll_dir))
-                shutil.rmtree(top_dir)
+        if self.args.keep:
+            print(f'Keeping temporary directory: {full_dir}')
+        else:
+            print(f'Removing temporary directory: {full_dir}')
+            shutil.rmtree(self.top_dir)
 
 
 class AnsibleCoreContextDriver(BaseContextDriver):
@@ -78,29 +84,49 @@ class CollectionContextDriver(BaseContextDriver):
     def ansible_test(self) -> Path:
         return self.venv / Path("bin") / Path("ansible-test")
 
+    @property
+    def sub_dir(self):
+        namespace, collection = self.determine_collection(self.args.collection)
+        coll_dir = Path("ansible_collections") / namespace / collection
+        print(f"collection = {namespace}.{collection}", file=sys.stderr)
+        return coll_dir
 
-class RoleContextDriver(BaseContextDriver):
-    pass
+    def post_sub_dir(self, top_dir):
+        os.putenv('ANSIBLE_COLLECTIONS_PATH',
+                  ':'.join(
+                      [str(top_dir)] +
+                      os.environ.get('ANSIBLE_COLLECTIONS_PATH', '').split(':'))
+        )
+
+    def read_coll_meta(self):
+        with open("galaxy.yml") as galaxy_meta:
+            meta = yaml.safe_load(galaxy_meta)
+        self.namespace, self.name, self.version = meta['namespace'], meta['name'], meta['version']
+        return meta['namespace'], meta['name'], meta['version']
+
+    def determine_collection(self, coll_arg):
+        if coll_arg:
+            coll_split = coll_arg.split('.')
+            return '.'.join(coll_split[:-1]), coll_split[-1]
+        return self.read_coll_meta()[:2]
 
 
 class Context:
     class Type(Enum):
         ANSIBLE_CORE = AnsibleCoreContextDriver
         COLLECTION = CollectionContextDriver
-        ROLE = RoleContextDriver
 
     def __init__(self, args) -> None:
         self.base_dir, self.basedir_type = self.determine_base_dir()
-        self.driver = (self.basedir_type.value)(venv=args.venv)
+        self.driver = (self.basedir_type.value)(args)
+        self.args = args
 
     @staticmethod
-    def base_dir_type(dir_):
+    def base_dir_type(dir_) -> Literal[Type.ANSIBLE_CORE, Type.COLLECTION, None]:
         if (dir_ / Path("bin") / Path("ansible-playbook")).exists():
             return Context.Type.ANSIBLE_CORE
         if (dir_ / Path("meta") / Path("runtime.yml")).exists():
             return Context.Type.COLLECTION
-        # if (dir_ / Path("meta") / Path("main.yml")).exists():
-        #     return Context.Type.ROLE
         return None
 
     def _determine_base_dir(self, dir_: Path) -> Tuple[Path, Literal[Type.ANSIBLE_CORE, Type.COLLECTION]]:
@@ -118,20 +144,6 @@ class Context:
         except AndeboxUnknownContext as e:
             raise AndeboxUnknownContext(f"Cannot determine current directory context: f{cur_dir}") from e
 
-    def ansible_collection_tree(self, *args, **kwargs):
-        return self.driver.ansible_collection_tree(*args, **kwargs)
-
-    def read_coll_meta(self):
-        with open("galaxy.yml") as galaxy_meta:
-            meta = yaml.safe_load(galaxy_meta)
-        return meta['namespace'], meta['name'], meta['version']
-
-    def determine_collection(self, coll_arg):
-        if coll_arg:
-            coll_split = coll_arg.split('.')
-            return '.'.join(coll_split[:-1]), coll_split[-1]
-        return self.read_coll_meta()[:2]
-
     def copy_exclude_lines(self, src, dest, exclusion_filenames):
         with open(src, "r") as src_file, open(dest, "w") as dest_file:
             for line in src_file.readlines():
@@ -141,3 +153,8 @@ class Context:
     def binary_path(self, venv, binary):
         _list = ([venv, "bin"] if venv else []) + [binary]
         return os.path.join(*_list)
+
+    @contextmanager
+    def temp_tree(self):
+        with self.driver.temp_dir() as full_dir:
+            yield full_dir

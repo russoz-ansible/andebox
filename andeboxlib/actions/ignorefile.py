@@ -29,11 +29,11 @@ class IgnoreFileEntry:
 
     @property
     def ignore_check(self):
-        return "{0}:{1}".format(self.ignore, self.error_code) if self.error_code else self.ignore
+        return "{self.ignore}:{self.error_code}" if self.error_code else self.ignore
 
     @property
     def rebuilt_comment(self):
-        return " # {0}".format(self.comment) if self.comment else ""
+        return " # {self.comment}" if self.comment else ""
 
     @property
     def file_parts(self):
@@ -43,7 +43,7 @@ class IgnoreFileEntry:
         return os.path.join(*self._file_parts[:self.file_parts_depth])
 
     def __str__(self):
-        return "<IgnoreFileEntry: {0} {1}{2}>".format(self.filename, self.ignore_check, self.rebuilt_comment)
+        return f"<IgnoreFileEntry: {self.filename} {self.ignore_check}{self.rebuilt_comment}>"
 
     def __repr__(self):
         return str(self)
@@ -52,7 +52,7 @@ class IgnoreFileEntry:
     def parse(line):
         match = IgnoreFileEntry.pattern.match(line)
         if not match:
-            raise ValueError("Line cannot be parsed as an ignore-file entry: {0}".format(line))
+            raise ValueError(f"Line cannot be parsed as an ignore-file entry: {line}")
 
         ffilter = IgnoreFileEntry.filter_files
         if ffilter is not None:
@@ -98,7 +98,7 @@ class ResultLine:
         return self.count != other.count
 
     def __str__(self):
-        r = ["{0:6} ".format(self.count)]
+        r = [f"{self.count:6} "]
         if self.file_part:
             r.append(" ")
             r.append(self.file_part)
@@ -170,7 +170,7 @@ class IgnoreLinesAction(AndeboxAction):
         if version == "-":
             return [sys.stdin]
         if version:
-            return [open(os.path.join(_ignore_path, 'ignore-{0}.txt'.format(version)))]
+            return [open(os.path.join(_ignore_path, f'ignore-{version}.txt'))]
 
         with os.scandir(os.path.join(_ignore_path)) as it:
             return [open(os.path.join(_ignore_path, entry.name))
@@ -208,7 +208,7 @@ class IgnoreLinesAction(AndeboxAction):
         try:
             ignore_entries = self.retrieve_ignore_entries(args.ignore_file_spec)
         except Exception as e:
-            print("Error reading ignore file {0}: {1}".format(args.ignore_file_spec, str(e)), file=sys.stderr)
+            print("Error reading ignore file {args.ignore_file_spec}: {e}", file=sys.stderr)
             raise e
 
         count_map = {}

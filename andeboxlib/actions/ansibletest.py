@@ -33,20 +33,19 @@ class AnsibleTestAction(AndeboxAction):
         action_parser.usage = "%(prog)s [-h] [--keep] -- [ansible_test_params ...]"
 
     def run(self, context, args):
-        try:
-            namespace, collection = context.determine_collection(args.collection)
-            with context.ansible_collection_tree(namespace, collection, args.keep) as collection_dir:
+        # try:
+            with context.temp_tree() as collection_dir:
                 if args.requirements:
                     self.install_requirements(context, args.venv)
                 if args.exclude_from_ignore:
                     self.exclude_from_ignore(context, args.exclude_from_ignore, args.ansible_test_params, collection_dir)
                 subprocess.run([context.binary_path(args.venv, "ansible-test")] + args.ansible_test_params, cwd=collection_dir, check=True)
-        except Exception as e:
-            raise AndeboxException("Error running ansible-test") from e
+        # except Exception as e:
+        #     raise AndeboxException(f"Error running ansible-test: {e}") from e
 
     def exclude_from_ignore(self, context, exclude_from_ignore, ansible_test_params, coll_dir):
         files = [f for f in ansible_test_params if os.path.isfile(f)]
-        print("Excluding from ignore files: {files}".format(files=files))
+        print(f"Excluding from ignore files: {files}")
         if exclude_from_ignore:
             src_dir = os.path.join(os.getcwd(), 'tests', 'sanity')
             dest_dir = os.path.join(coll_dir, 'tests', 'sanity')
