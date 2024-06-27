@@ -33,7 +33,7 @@ class AbstractContext(ABC):
 
     @property
     @abstractmethod
-    def ansible_test(self) -> Path:
+    def ansible_test(self) -> str:
         pass
 
     @property
@@ -59,11 +59,12 @@ class AbstractContext(ABC):
     @contextmanager
     def temp_tree(self):
         full_dir = self.top_dir / self.sub_dir
-        os.makedirs(full_dir, exist_ok=True)
+        full_dir.mkdir(parents=True, exist_ok=True)
         print(f"directory  = {full_dir}", file=sys.stderr)
         self.copy_tree(full_dir)
 
         self.post_sub_dir(self.top_dir)
+
         yield full_dir
 
         if self.args.keep:
@@ -78,15 +79,17 @@ class AbstractContext(ABC):
                 if not any(line.startswith(f) for f in exclusion_filenames):
                     dest_file.write(line)
 
-    def binary_path(self, venv, binary):
-        _list = ([venv, "bin"] if venv else []) + [binary]
-        return os.path.join(*_list)
+    def binary_path(self, binary) -> Path:
+        if self.args.venv:
+            return str(Path(self.args.venv) / "bin" /  binary)
+        else:
+            return str(Path(binary))
 
 
 class AnsibleCoreContext(AbstractContext):
     @property
-    def ansible_test(self) -> Path:
-        return Path.cwd() / Path("bin") / Path("ansible-test")
+    def ansible_test(self):
+        return str(self.top_dir / "bin" / "ansible-test")
 
     @property
     def sub_dir(self):
@@ -97,8 +100,8 @@ class AnsibleCoreContext(AbstractContext):
 
 class CollectionContext(AbstractContext):
     @property
-    def ansible_test(self) -> Path:
-        return str(self.venv / Path("bin") / Path("ansible-test"))
+    def ansible_test(self):
+        return self.binary_path("ansible-test")
 
     @property
     def sub_dir(self):

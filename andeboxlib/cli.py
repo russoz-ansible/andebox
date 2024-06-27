@@ -6,17 +6,17 @@
 __version__ = '0.52'
 
 import argparse
-import sys
 import signal
+import sys
 
-from .exceptions import AndeboxException
-from .context import Context
 from .actions.ansibletest import AnsibleTestAction
+from .actions.docsite import DocsiteAction
 from .actions.ignorefile import IgnoreLinesAction
 from .actions.runtime import RuntimeAction
 from .actions.toxtest import ToxTestAction
 from .actions.vagrant import VagrantAction
-from .actions.docsite import DocsiteAction
+from .context import Context
+from .exceptions import AndeboxException
 from .util import set_dir
 
 _actions = [AnsibleTestAction, IgnoreLinesAction, RuntimeAction, ToxTestAction, VagrantAction, DocsiteAction]

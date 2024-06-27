@@ -3,14 +3,13 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 import argparse
-import os
 import re
 from functools import partial
+from pathlib import Path
 
 import yaml
 
 from .base import AndeboxAction
-
 
 PLUGIN_TYPES = ('connection', 'lookup', 'modules', 'doc_fragments', 'module_utils', 'callback', 'inventory')
 RUNTIME_TYPES = ('redirect', 'tombstone', 'deprecation')
@@ -67,7 +66,7 @@ class RuntimeAction(AndeboxAction):
                 self.print_runtime('{plugin_type} {name}', plugin_routing[plugin_type][name])
 
     def run(self, context, args):
-        with open(os.path.join("meta", "runtime.yml")) as runtime_yml:
+        with open(Path("meta") / "runtime.yml") as runtime_yml:
             runtime = yaml.safe_load(runtime_yml)
 
         plugin_types = [args.plugin_type] if args.plugin_type else PLUGIN_TYPES
