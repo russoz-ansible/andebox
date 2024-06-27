@@ -22,4 +22,4 @@ class AndeboxAction:
         raise NotImplementedError()
 
     def __str__(self):
-        return "<AndeboxAction: {name}>".format(name=self.name)
+        return f"<AndeboxAction: {self.name}>"

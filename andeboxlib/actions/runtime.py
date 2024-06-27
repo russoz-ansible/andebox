@@ -3,16 +3,16 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 import argparse
-import os
 import re
 from functools import partial
+from pathlib import Path
 
 import yaml
 
 from .base import AndeboxAction
 
-
 PLUGIN_TYPES = ('connection', 'lookup', 'modules', 'doc_fragments', 'module_utils', 'callback', 'inventory')
+RUNTIME_TYPES = ('redirect', 'tombstone', 'deprecation')
 
 
 def info_type(types, v):
@@ -20,11 +20,10 @@ def info_type(types, v):
         r = [t for t in types if t.startswith(v.lower())]
         return r[0][0].upper()
     except IndexError as e:
-        raise argparse.ArgumentTypeError("invalid value: {0}".format(v)) from e
+        raise argparse.ArgumentTypeError("invalid value: {v}") from e
 
 
 class RuntimeAction(AndeboxAction):
-    RUNTIME_TYPES = ('redirect', 'tombstone', 'deprecation')
     name = "runtime"
     help = "returns information from runtime.yml"
     args = [
@@ -36,8 +35,8 @@ class RuntimeAction(AndeboxAction):
                         help="Treat plugin names as regular expressions")),
         dict(names=["--info-type", "-it"],
              specs=dict(type=partial(info_type, RUNTIME_TYPES),
-                        help="Restrict type of response elements. Must be in {0}, may be shortened "
-                             "down to one letter.".format(RUNTIME_TYPES))),
+                        help=f"Restrict type of response elements. Must be in {RUNTIME_TYPES}, "
+                             "may be shortened down to one letter.")),
         dict(names=["plugin_names"],
              specs=dict(nargs='+')),
     ]
@@ -49,14 +48,13 @@ class RuntimeAction(AndeboxAction):
         def is_info_type(_type):
             return self.info_type is None or self.info_type.lower() == _type.lower()
 
-        redir, tomb, depre = [node.get(x) for x in self.RUNTIME_TYPES]
+        redir, tomb, depre = [node.get(x) for x in RUNTIME_TYPES]
         if redir and is_info_type('R'):
-            print('R {0}: redirected to {1}'.format(name, redir))
+            print(f"R {name}: redirected to {redir}")
         elif tomb and is_info_type('T'):
-            print('T {0}: terminated in {1}: {2}'.format(name, tomb['removal_version'], tomb['warning_text']))
+            print(f"T {name}: terminated in {tomb['removal_version']}: {tomb['warning_text']}")
         elif depre and is_info_type('D'):
-            print('D {0}: deprecation in {1} (current={2}): {3}'.format(
-                  name, depre['removal_version'], self.current_version, depre['warning_text']))
+            print(f"D {name}: deprecation in {depre['removal_version']} (current={self.current_version}): {depre['warning_text']}")
 
     def runtime_process_plugin(self, plugin_routing, plugin_types):
         for plugin_type in plugin_types:
@@ -66,10 +64,10 @@ class RuntimeAction(AndeboxAction):
                 if any(test(name) for test in self.name_tests)
             ]
             for name in matching:
-                self.print_runtime('{0} {1}'.format(plugin_type, name), plugin_routing[plugin_type][name])
+                self.print_runtime('{plugin_type} {name}', plugin_routing[plugin_type][name])
 
     def run(self, context, args):
-        with open(os.path.join("meta", "runtime.yml")) as runtime_yml:
+        with open(Path("meta") / "runtime.yml") as runtime_yml:
             runtime = yaml.safe_load(runtime_yml)
 
         plugin_types = [args.plugin_type] if args.plugin_type else PLUGIN_TYPES

@@ -4,9 +4,10 @@
 
 import os
 import subprocess
+from pathlib import Path
 
-from .base import AndeboxAction
 from ..exceptions import AndeboxException
+from .base import AndeboxAction
 
 
 class AnsibleTestAction(AndeboxAction):
@@ -21,7 +22,8 @@ class AnsibleTestAction(AndeboxAction):
              specs=dict(action="store_true",
                         help="Install integration_tests_dependencies from tests/requirements.yml prior")),
         dict(names=("--venv", "-V"),
-             specs=dict(help="""path to the virtual environment where andebox and ansible are installed""")),
+             specs=dict(help="path to the virtual environment where andebox and ansible are installed",
+                        type=Path)),
         dict(names=("ansible_test_params", ),
              specs=dict(nargs="+")),
     ]
@@ -34,19 +36,18 @@ class AnsibleTestAction(AndeboxAction):
 
     def run(self, context, args):
         try:
-            namespace, collection = context.determine_collection(args.collection)
-            with context.ansible_collection_tree(namespace, collection, args.keep) as collection_dir:
+            with context.temp_tree() as collection_dir:
                 if args.requirements:
                     self.install_requirements(context, args.venv)
                 if args.exclude_from_ignore:
                     self.exclude_from_ignore(context, args.exclude_from_ignore, args.ansible_test_params, collection_dir)
-                subprocess.run([context.binary_path(args.venv, "ansible-test")] + args.ansible_test_params, cwd=collection_dir, check=True)
+                subprocess.run([context.ansible_test] + args.ansible_test_params, cwd=collection_dir, check=True)
         except Exception as e:
-            raise AndeboxException("Error running ansible-test") from e
+            raise AndeboxException(f"Error running ansible-test: {e}") from e
 
     def exclude_from_ignore(self, context, exclude_from_ignore, ansible_test_params, coll_dir):
         files = [f for f in ansible_test_params if os.path.isfile(f)]
-        print("Excluding from ignore files: {files}".format(files=files))
+        print(f"Excluding from ignore files: {files}")
         if exclude_from_ignore:
             src_dir = os.path.join(os.getcwd(), 'tests', 'sanity')
             dest_dir = os.path.join(coll_dir, 'tests', 'sanity')
@@ -62,8 +63,8 @@ class AnsibleTestAction(AndeboxAction):
     @staticmethod
     def install_requirements(context, venv):
         subprocess.run([
-                context.binary_path(venv, "ansible-galaxy"), "collection", "install", "-r",
-                os.path.join('.', 'tests', 'integration', 'requirements.yml')
+                context.binary_path("ansible-galaxy"), "collection", "install", "-r",
+                f"{Path('tests') / 'integration' / 'requirements.yml'}"
             ],
             check=True
         )

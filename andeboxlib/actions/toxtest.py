@@ -82,4 +82,4 @@ class ToxTestAction(AndeboxAction):
         rc = subprocess.call(cmd_args)
 
         if rc != 0:
-            raise ToxTestError("Error running tox (rc={0})".format(rc))
+            raise ToxTestError(f"Error running tox (rc={rc})")

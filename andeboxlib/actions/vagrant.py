@@ -2,12 +2,12 @@
 # (c) 2021-2023, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-import os
+from pathlib import Path
 
 from fabric.connection import Connection
 
-from .base import AndeboxAction
 from ..exceptions import AndeboxException
+from .base import AndeboxAction
 
 
 class VagrantError(AndeboxException):
@@ -41,9 +41,9 @@ class VagrantAction(AndeboxAction):
         action_parser.usage = "%(prog)s [-hsd] [-n name] [-V VENV] -- <andebox-cmd> [andebox-cmd-opts [-- test-params]]"
 
     def run(self, context, args):
-        import vagrant          # pylint: disable=import-outside-toplevel
+        import vagrant  # pylint: disable=import-outside-toplevel
 
-        if not os.path.exists("Vagrantfile"):
+        if not Path("Vagrantfile").exists():
             raise VagrantError("Missing Vagrantfile in the current directory")
 
         # argparse does not seem to honour defaults in subparsers, so making do with these
@@ -68,7 +68,7 @@ class VagrantAction(AndeboxAction):
 
                 print(f"== BEGIN vagrant andebox: {machine_name} ".ljust(80, "="))
                 with c.cd("/vagrant"):
-                    andebox_path = context.binary_path(venv, "andebox")
+                    andebox_path = context.binary_path("andebox")
                     cmd = f"{andebox_path} test --venv {venv} -R -- integration {' '.join(args.andebox_params)}"
                     if args.sudo:
                         cmd = "sudo -HE " + cmd

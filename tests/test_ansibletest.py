@@ -20,7 +20,7 @@ def patch_get_bin_path(mocker):
     Function used for mocking AnsibleModule.get_bin_path
     """
     def mockie(self, path, *args, **kwargs):
-        return "/testbin/{0}".format(path)
+        return f"/testbin/{path}"
     mocker.patch("ansible.module_utils.basic.AnsibleModule.get_bin_path", mockie)
 
 

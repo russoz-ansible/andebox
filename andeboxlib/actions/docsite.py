@@ -3,23 +3,13 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 import os
+from pathlib import Path
 import subprocess
 import webbrowser
-from contextlib import contextmanager
-from pathlib import Path
 
-from .base import AndeboxAction
 from ..exceptions import AndeboxException
-
-
-@contextmanager
-def set_dir(path):
-    previous = Path().absolute()
-    try:
-        os.chdir(path)
-        yield
-    finally:
-        os.chdir(previous)
+from ..util import set_dir
+from .base import AndeboxAction
 
 
 class DocsiteAction(AndeboxAction):
@@ -27,35 +17,40 @@ class DocsiteAction(AndeboxAction):
     help = "builds collection docsite"
     args = [
         dict(names=("--keep", "-k"),
-             specs=dict(action="store_true", help="Keep temporary collection directory after execution")),
+             specs=dict(help="Keep temporary collection directory after execution",
+                        action="store_true")),
         dict(names=("--venv", "-V"),
-             specs=dict(help="""path to the virtual environment where andebox and ansible are installed""")),
+             specs=dict(help="path to the virtual environment where andebox and ansible are installed",
+                        type=Path)),
         dict(names=("--open", "-o"),
-             specs=dict(action="store_true", help="Open browser pointing to main page after build")),
+             specs=dict(help="Open browser pointing to main page after build",
+                        action="store_true")),
         dict(names=("--dest-dir", "-d"),
-             specs=dict(help="Directory which should contain the docsite", default=".builtdocs")),
+             specs=dict(help="Directory which should contain the docsite",
+                        default=".builtdocs",
+                        type=Path)),
     ]
 
     def run(self, context, args):
         try:
-            namespace, collection = context.determine_collection(args.collection)
-
-            with context.ansible_collection_tree(namespace, collection, args.keep) as collection_dir:
-                os.makedirs(args.dest_dir, mode=0o755, exist_ok=True)
-                if not os.path.exists(os.path.join(args.dest_dir, "build.sh")):
+            with context.temp_tree() as collection_dir:
+                os.makedirs(context.args.dest_dir, mode=0o755, exist_ok=True)
+                if not (context.args.dest_dir / "build.sh").exists():
                     subprocess.run([
-                            context.binary_path(args.venv, "antsibull-docs"),
-                            "sphinx-init", "--use-current", "--lenient", f"{namespace}.{collection}", "--dest-dir", args.dest_dir
+                            context.binary_path("antsibull-docs"),
+                            "sphinx-init", "--use-current", "--lenient",
+                            f"{context.namespace}.{context.name}",
+                            "--dest-dir", f"{context.args.dest_dir}"
                         ],
                         cwd=collection_dir,
                         check=True
                     )
 
-                with set_dir(args.dest_dir):
-                    subprocess.run([context.binary_path(args.venv, "python"), "-m", "pip", "install", "-qr", "requirements.txt"], check=True)
+                with set_dir(context.args.dest_dir):
+                    subprocess.run([context.binary_path("python"), "-m", "pip", "install", "-qr", "requirements.txt"], check=True)
                     subprocess.run(["./build.sh"], check=True)
         except Exception as e:
-            raise AndeboxException("Error running when building docsite") from e
+            raise AndeboxException(f"Error running when building docsite: {e}") from e
 
-        if args.open:
-            webbrowser.open(f"{os.path.join(args.dest_dir, 'build', 'html', 'index.html')}")
+        if context.args.open:
+            webbrowser.open(f"{context.args.dest_dir / 'build' / 'html' / 'index.html'}")
