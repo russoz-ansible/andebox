@@ -30,7 +30,6 @@ class AbstractContext(ABC):
         self.venv = args.venv
         self.top_dir = Path(tempfile.mkdtemp(prefix="andebox."))
 
-
     @property
     @abstractmethod
     def ansible_test(self) -> str:
@@ -81,7 +80,7 @@ class AbstractContext(ABC):
 
     def binary_path(self, binary) -> Path:
         if self.args.venv:
-            return str(Path(self.args.venv) / "bin" /  binary)
+            return str(Path(self.args.venv) / "bin" / binary)
         else:
             return str(Path(binary))
 
@@ -98,6 +97,7 @@ class AnsibleCoreContext(AbstractContext):
     def post_sub_dir(self, top_dir):
         pass
 
+
 class CollectionContext(AbstractContext):
     @property
     def ansible_test(self):
@@ -111,10 +111,11 @@ class CollectionContext(AbstractContext):
         return coll_dir
 
     def post_sub_dir(self, top_dir):
-        os.putenv('ANSIBLE_COLLECTIONS_PATH',
-                  ':'.join(
-                      [str(top_dir)] +
-                      os.environ.get('ANSIBLE_COLLECTIONS_PATH', '').split(':'))
+        os.putenv(
+            'ANSIBLE_COLLECTIONS_PATH',
+            ':'.join(
+                [str(top_dir)] +
+                os.environ.get('ANSIBLE_COLLECTIONS_PATH', '').split(':'))
         )
 
     def read_coll_meta(self):

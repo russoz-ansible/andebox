@@ -14,6 +14,7 @@ from .base import AndeboxAction
 PLUGIN_TYPES = ('connection', 'lookup', 'modules', 'doc_fragments', 'module_utils', 'callback', 'inventory')
 RUNTIME_TYPES = ('redirect', 'tombstone', 'deprecation')
 
+
 def info_type(types, v):
     try:
         r = [t for t in types if t.startswith(v.lower())]
