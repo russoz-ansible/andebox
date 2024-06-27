@@ -6,11 +6,10 @@ import os
 import shutil
 import sys
 import tempfile
-from contextlib import contextmanager
-from enum import Enum
-from pathlib import Path
-from typing import Tuple, Literal
 from abc import ABC, abstractmethod
+from contextlib import contextmanager
+from pathlib import Path
+from typing import Tuple
 
 import yaml
 
@@ -60,7 +59,7 @@ class AbstractContext(ABC):
     @contextmanager
     def temp_tree(self):
         full_dir = self.top_dir / self.sub_dir
-        os.makedirs(full_dir)
+        os.makedirs(full_dir, exist_ok=True)
         print(f"directory  = {full_dir}", file=sys.stderr)
         self.copy_tree(full_dir)
 
@@ -89,11 +88,17 @@ class AnsibleCoreContext(AbstractContext):
     def ansible_test(self) -> Path:
         return Path.cwd() / Path("bin") / Path("ansible-test")
 
+    @property
+    def sub_dir(self):
+        return ""
+
+    def post_sub_dir(self, top_dir):
+        pass
 
 class CollectionContext(AbstractContext):
     @property
     def ansible_test(self) -> Path:
-        return self.venv / Path("bin") / Path("ansible-test")
+        return str(self.venv / Path("bin") / Path("ansible-test"))
 
     @property
     def sub_dir(self):
@@ -122,37 +127,33 @@ class CollectionContext(AbstractContext):
         return self.read_coll_meta()[:2]
 
 
-class Context:
-    class Type(Enum):
-        ANSIBLE_CORE = AnsibleCoreContext
-        COLLECTION = CollectionContext
+def _base_dir_type(dir_):
+    if (dir_ / "bin" / "ansible-playbook").exists():
+        return AnsibleCoreContext
+    if (dir_ / "meta" / "runtime.yml").exists():
+        return CollectionContext
+    raise ValueError()
 
+
+def _determine_base_dir_rec(dir_: Path) -> Tuple[Path, type[AnsibleCoreContext] | type[CollectionContext]]:
+    try:
+        return dir_, _base_dir_type(dir_)
+    except ValueError:
+        if dir_ == dir_.anchor:
+            raise AndeboxUnknownContext()
+        return _determine_base_dir_rec(dir_.parent)
+
+
+def _determine_base_dir():
+    cur_dir = Path.cwd()
+    try:
+        return _determine_base_dir_rec(cur_dir)
+    except AndeboxUnknownContext as e:
+        raise AndeboxUnknownContext(f"Cannot determine current directory context: f{cur_dir}") from e
+
+
+class Context:
     @staticmethod
     def create(args) -> AbstractContext:
-        base_dir, basedir_type = Context.determine_base_dir()
-        return (basedir_type.value)(base_dir, args)
-
-    @staticmethod
-    def base_dir_type(dir_) -> Literal[Type.ANSIBLE_CORE, Type.COLLECTION, None]:
-        if (dir_ / Path("bin") / Path("ansible-playbook")).exists():
-            return Context.Type.ANSIBLE_CORE
-        if (dir_ / Path("meta") / Path("runtime.yml")).exists():
-            return Context.Type.COLLECTION
-        return None
-
-    @staticmethod
-    def _determine_base_dir(dir_: Path) -> Tuple[Path, Literal[Type.ANSIBLE_CORE, Type.COLLECTION]]:
-        dir_type = Context.base_dir_type(dir_)
-        if dir_type is None:
-            if dir_ == dir_.anchor:
-                raise AndeboxUnknownContext()
-            return Context._determine_base_dir(dir_.parent)
-        return dir_, dir_type
-
-    @staticmethod
-    def determine_base_dir():
-        cur_dir = Path.cwd()
-        try:
-            return Context._determine_base_dir(cur_dir)
-        except AndeboxUnknownContext as e:
-            raise AndeboxUnknownContext(f"Cannot determine current directory context: f{cur_dir}") from e
+        base_dir, basedir_type = _determine_base_dir()
+        return (basedir_type)(base_dir, args)
