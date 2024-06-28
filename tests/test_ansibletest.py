@@ -20,6 +20,8 @@ TEST_CASES = [
                 "sanity",
                 "--docker",
                 "default",
+                "--python",
+                "3.11",
                 "plugins/module_utils/deps.py",
             ],
         ),
