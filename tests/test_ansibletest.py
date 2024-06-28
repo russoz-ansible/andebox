@@ -1,44 +1,54 @@
 # -*- coding: utf-8 -*-
 # (c) 2024, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from collections import namedtuple
+import os
 
-import pytest
-
-# from andeboxlib.actions.ansibletest import AnsibleTestAction, AnsibleTestError
+from andeboxlib.cli import run
 
 
-Args = namedtuple(
-    "Args",
-    ["keep", "exclude_from_ignore", "requirements", "venv", "ansible_test_params"],
-    defaults=[False, False, False, None, []],
-)
-AndeboxTestCase = namedtuple("AndeboxTestCase", ["id", "args"])
+def test_sanity(monkeypatch, git_repo):
+    repo = "https://github.com/ansible-collections/community.general.git"
+    repo_dir = git_repo(repo)
+
+    try:
+        os.chdir(next(repo_dir))
+        monkeypatch.setattr(
+            "sys.argv",
+            [
+                "andebox",
+                "test",
+                "--",
+                "sanity",
+                "--docker",
+                "default",
+                "plugins/module_utils/deps.py",
+            ],
+        )
+        run()
+    finally:
+        next(repo_dir, None)
 
 
-@pytest.fixture
-def patch_get_bin_path(mocker):
-    """
-    Function used for mocking AnsibleModule.get_bin_path
-    """
+def test_unit(monkeypatch, git_repo):
+    repo = "https://github.com/ansible-collections/community.general.git"
+    repo_dir = git_repo(repo)
 
-    def mockie(self, path, *args, **kwargs):
-        return f"/testbin/{path}"
-
-    mocker.patch("ansible.module_utils.basic.AnsibleModule.get_bin_path", mockie)
-
-
-TEST_CASES = [
-    AndeboxTestCase(
-        id="ansibletest-simple",
-        args=Args(),
-    )
-]
-TEST_CASES_IDS = [item.id for item in TEST_CASES]
-
-
-@pytest.mark.parametrize(
-    "testcase", [[x.args, x] for x in TEST_CASES], ids=TEST_CASES_IDS
-)
-def test_args(mocker, testcase):
-    pass
+    try:
+        os.chdir(next(repo_dir))
+        monkeypatch.setattr(
+            "sys.argv",
+            [
+                "andebox",
+                "test",
+                "--",
+                "units",
+                "--docker",
+                "default",
+                "--python",
+                "3.11",
+                "tests/unit/plugins/module_utils/test_cmd_runner.py",
+            ],
+        )
+        run()
+    finally:
+        next(repo_dir, None)
