@@ -4,6 +4,7 @@
 import shutil
 import subprocess
 import tempfile
+from pathlib import Path
 
 import pytest
 
@@ -12,23 +13,24 @@ import pytest
 def git_repo():
     clones = {}
 
+    temp_dir = Path(tempfile.mkdtemp(prefix="andebox-test-tmp."))
+
     def _shallow_clone_git_repo(repo_url):
         if repo_url not in clones:
             # Setup: Create a temporary directory
-            temp_dir = tempfile.mkdtemp()
+            stem = Path(repo_url).stem
+            dest = str(temp_dir / stem)
 
             # Perform shallow clone
-            subprocess.run(
-                ["git", "clone", "--depth", "1", repo_url, temp_dir], check=True
-            )
+            subprocess.run(["git", "clone", "--depth", "1", repo_url, dest], check=True)
 
             # Store the path for later cleanup
-            clones[repo_url] = temp_dir
+            clones[repo_url] = dest
 
-        yield clones[repo_url]
+        while repo_url in clones:
+            yield clones[repo_url]
 
     # Teardown: Remove all temporary directories at the end of the session
     yield _shallow_clone_git_repo
 
-    for temp_dir in clones.values():
-        shutil.rmtree(temp_dir)
+    shutil.rmtree(temp_dir)
