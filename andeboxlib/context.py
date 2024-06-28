@@ -3,6 +3,7 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 import os
 import shutil
+import subprocess
 import sys
 import tempfile
 from abc import ABC
@@ -36,7 +37,16 @@ class AbstractContext(ABC):
 
     @property
     @abstractmethod
-    def sub_dir(self, args) -> Path:
+    def sub_dir(self) -> str:
+        pass
+
+    @property
+    def full_dir(self) -> Path:
+        return self.top_dir / self.sub_dir
+
+    @property
+    @abstractmethod
+    def sanity_test_subdir(self) -> Path:
         pass
 
     @abstractmethod
@@ -65,19 +75,18 @@ class AbstractContext(ABC):
 
     @contextmanager
     def temp_tree(self):
-        full_dir = self.top_dir / self.sub_dir
-        full_dir.mkdir(parents=True, exist_ok=True)
-        print(f"directory  = {full_dir}", file=sys.stderr)
-        self.copy_tree(full_dir)
+        self.full_dir.mkdir(parents=True, exist_ok=True)
+        print(f"directory  = {self.full_dir}", file=sys.stderr)
+        self.copy_tree(self.full_dir)
 
         self.post_sub_dir(self.top_dir)
 
-        yield full_dir
+        yield self.full_dir
 
         if self.args.keep:
-            print(f"Keeping temporary directory: {full_dir}")
+            print(f"Keeping temporary directory: {self.full_dir}")
         else:
-            print(f"Removing temporary directory: {full_dir}")
+            print(f"Removing temporary directory: {self.full_dir}")
             shutil.rmtree(self.top_dir)
 
     def copy_exclude_lines(self, src, dest, exclusion_filenames):
@@ -86,11 +95,28 @@ class AbstractContext(ABC):
                 if not any(line.startswith(f) for f in exclusion_filenames):
                     dest_file.write(line)
 
-    def binary_path(self, binary) -> Path:
+    def binary_path(self, binary) -> str:
         if self.args.venv:
             return str(Path(self.args.venv) / "bin" / binary)
-        else:
-            return str(Path(binary))
+
+        return str(Path(binary))
+
+    def exclude_from_ignore(self):
+        files = [f for f in self.args.ansible_test_params if os.path.isfile(f)]
+        print(f"Excluding from ignore files: {files}")
+        if self.args.exclude_from_ignore:
+            src_dir = Path.cwd() / self.sanity_test_subdir
+            dest_dir = self.full_dir / self.sanity_test_subdir
+            with os.scandir(src_dir) as ts_dir:
+                for ts_entry in ts_dir:
+                    if ts_entry.name.startswith("ignore") and ts_entry.name.endswith(
+                        ".txt"
+                    ):
+                        self.copy_exclude_lines(
+                            os.path.join(src_dir, ts_entry.name),
+                            os.path.join(dest_dir, ts_entry.name),
+                            files,
+                        )
 
 
 class AnsibleCoreContext(AbstractContext):
@@ -105,20 +131,29 @@ class AnsibleCoreContext(AbstractContext):
     def post_sub_dir(self, top_dir):
         pass
 
+    @property
+    def sanity_test_subdir(self):
+        return Path("test") / "sanity"
+
 
 class CollectionContext(AbstractContext):
+    def __init__(self, base_dir, args) -> None:
+        super().__init__(base_dir, args)
+        self.namespace, self.collection = self.determine_collection(
+            self.args.collection
+        )
+
     @property
     def ansible_test(self):
         return self.binary_path("ansible-test")
 
     @property
     def sub_dir(self):
-        namespace, collection = self.determine_collection(self.args.collection)
-        coll_dir = Path("ansible_collections") / namespace / collection
-        print(f"collection = {namespace}.{collection}", file=sys.stderr)
+        coll_dir = Path("ansible_collections") / self.namespace / self.collection
         return coll_dir
 
     def post_sub_dir(self, top_dir):
+        print(f"collection = {self.namespace}.{self.collection}", file=sys.stderr)
         os.putenv(
             "ANSIBLE_COLLECTIONS_PATH",
             ":".join(
@@ -126,6 +161,22 @@ class CollectionContext(AbstractContext):
                 + os.environ.get("ANSIBLE_COLLECTIONS_PATH", "").split(":")
             ),
         )
+
+    def install_requirements(self):
+        subprocess.run(
+            [
+                self.binary_path("ansible-galaxy"),
+                "collection",
+                "install",
+                "-r",
+                f"{Path('tests') / 'integration' / 'requirements.yml'}",
+            ],
+            check=True,
+        )
+
+    @property
+    def sanity_test_subdir(self):
+        return str(Path("tests") / "sanity")
 
     def read_coll_meta(self):
         with open("galaxy.yml") as galaxy_meta:

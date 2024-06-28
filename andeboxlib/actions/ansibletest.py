@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # (c) 2021, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-import os
 import subprocess
 from pathlib import Path
 
@@ -53,52 +52,15 @@ class AnsibleTestAction(AndeboxAction):
 
     def run(self, context, args):
         try:
-            with context.temp_tree() as collection_dir:
+            with context.temp_tree() as temp_dir:
                 if args.requirements:
-                    self.install_requirements(context, args.venv)
+                    context.install_requirements()
                 if args.exclude_from_ignore:
-                    self.exclude_from_ignore(
-                        context,
-                        args.exclude_from_ignore,
-                        args.ansible_test_params,
-                        collection_dir,
-                    )
+                    context.exclude_from_ignore()
                 subprocess.run(
                     [context.ansible_test] + args.ansible_test_params,
-                    cwd=collection_dir,
+                    cwd=temp_dir,
                     check=True,
                 )
         except Exception as e:
             raise AndeboxException(f"Error running ansible-test: {e}") from e
-
-    def exclude_from_ignore(
-        self, context, exclude_from_ignore, ansible_test_params, coll_dir
-    ):
-        files = [f for f in ansible_test_params if os.path.isfile(f)]
-        print(f"Excluding from ignore files: {files}")
-        if exclude_from_ignore:
-            src_dir = os.path.join(os.getcwd(), "tests", "sanity")
-            dest_dir = os.path.join(coll_dir, "tests", "sanity")
-            with os.scandir(src_dir) as ts_dir:
-                for ts_entry in ts_dir:
-                    if ts_entry.name.startswith("ignore-") and ts_entry.name.endswith(
-                        ".txt"
-                    ):
-                        context.copy_exclude_lines(
-                            os.path.join(src_dir, ts_entry.name),
-                            os.path.join(dest_dir, ts_entry.name),
-                            files,
-                        )
-
-    @staticmethod
-    def install_requirements(context, venv):
-        subprocess.run(
-            [
-                context.binary_path("ansible-galaxy"),
-                "collection",
-                "install",
-                "-r",
-                f"{Path('tests') / 'integration' / 'requirements.yml'}",
-            ],
-            check=True,
-        )
