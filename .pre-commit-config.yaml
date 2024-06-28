@@ -17,4 +17,5 @@ repos:
     hooks:
       - id: fix-byte-order-marker
       - id: trailing-whitespace
+        exclude: ^.bumpversion\.cfg
       - id: end-of-file-fixer
