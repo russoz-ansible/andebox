@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 # (c) 2021-2023, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-
 import os
-import sys
 import subprocess
+import sys
 
-from .base import AndeboxAction
 from ..exceptions import AndeboxException
+from .base import AndeboxAction
 
 
 def _make_default_tox_ini():
@@ -48,21 +47,31 @@ class ToxTestAction(AndeboxAction):
     name = "tox-test"
     help = "runs ansible-test within tox, for testing in multiple ansible versions"
     args = [
-        dict(names=("--env", "-e"),
-             specs=dict(help="tox environments to run the test in")),
-        dict(names=("--list", "-l"),
-             specs=dict(action="store_true", help="list all tox environments (tox -a)")),
-        dict(names=("--recreate", "-r"),
-             specs=dict(action="store_true", help="force recreation of virtual environments (tox -r)")),
-        dict(names=("ansible_test_params", ),
-             specs=dict(nargs="*")),
+        dict(
+            names=("--env", "-e"),
+            specs=dict(help="tox environments to run the test in"),
+        ),
+        dict(
+            names=("--list", "-l"),
+            specs=dict(action="store_true", help="list all tox environments (tox -a)"),
+        ),
+        dict(
+            names=("--recreate", "-r"),
+            specs=dict(
+                action="store_true",
+                help="force recreation of virtual environments (tox -r)",
+            ),
+        ),
+        dict(names=("ansible_test_params",), specs=dict(nargs="*")),
     ]
     tox_ini_filename = ".andebox-tox-test.ini"
 
     @classmethod
     def make_parser(cls, subparser):
         action_parser = super(ToxTestAction, cls).make_parser(subparser)
-        action_parser.epilog = "Notice the use of '--' to delimit andebox's options from tox's"
+        action_parser.epilog = (
+            "Notice the use of '--' to delimit andebox's options from tox's"
+        )
         action_parser.usage = "%(prog)s [-h] [--env ENV] -- [ansible_test_params ...]"
 
     def run(self, context, args):
