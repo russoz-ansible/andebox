@@ -34,5 +34,3 @@ def git_repo():
     yield _shallow_clone_git_repo
 
     shutil.rmtree(temp_dir)
-    for temp_dir in clones.values():
-        shutil.rmtree(temp_dir)
