@@ -3,7 +3,7 @@
 # (c) 2021-2022, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-__version__ = '0.52'
+__version__ = "0.52"
 
 import argparse
 import signal
@@ -19,16 +19,28 @@ from .context import Context
 from .exceptions import AndeboxException
 from .util import set_dir
 
-_actions = [AnsibleTestAction, IgnoreLinesAction, RuntimeAction, ToxTestAction, VagrantAction, DocsiteAction]
+_actions = [
+    AnsibleTestAction,
+    IgnoreLinesAction,
+    RuntimeAction,
+    ToxTestAction,
+    VagrantAction,
+    DocsiteAction,
+]
 
 
 def _make_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="andebox", description=f"Ansible Developer (Tool)Box v{__version__}")
-    parser.add_argument("--version",
-                        action="version",
-                        version=f"%(prog)s {__version__}")
-    parser.add_argument("--collection", "-c",
-                        help="fully qualified collection name (not necessary if a proper galaxy.yml file is available)")
+    parser = argparse.ArgumentParser(
+        prog="andebox", description=f"Ansible Developer (Tool)Box v{__version__}"
+    )
+    parser.add_argument(
+        "--version", action="version", version=f"%(prog)s {__version__}"
+    )
+    parser.add_argument(
+        "--collection",
+        "-c",
+        help="fully qualified collection name (not necessary if a proper galaxy.yml file is available)",
+    )
     subparser = parser.add_subparsers(dest="action", required=True)
 
     for action in _actions:

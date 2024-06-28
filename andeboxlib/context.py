@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
 # (c) 2023, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-
 import os
 import shutil
 import sys
 import tempfile
-from abc import ABC, abstractmethod
+from abc import ABC
+from abc import abstractmethod
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Tuple
 
 import yaml
 
 from .exceptions import AndeboxException
 
-toplevel_exclusion = ('.git', '.tox', '.venv', '.virtualvenv', 'venv', 'virtualenv')
+toplevel_exclusion = (".git", ".tox", ".venv", ".virtualvenv", "venv", "virtualenv")
 
 
 class AndeboxUnknownContext(AndeboxException):
@@ -51,9 +50,18 @@ class AbstractContext(ABC):
                 if any(entry.name.startswith(x) for x in toplevel_exclusion):
                     continue
                 if entry.is_dir():
-                    shutil.copytree(entry.name, os.path.join(full_dir, entry.name), symlinks=True, ignore_dangling_symlinks=True)
+                    shutil.copytree(
+                        entry.name,
+                        os.path.join(full_dir, entry.name),
+                        symlinks=True,
+                        ignore_dangling_symlinks=True,
+                    )
                 else:
-                    shutil.copy(entry.name, os.path.join(full_dir, entry.name), follow_symlinks=False)
+                    shutil.copy(
+                        entry.name,
+                        os.path.join(full_dir, entry.name),
+                        follow_symlinks=False,
+                    )
 
     @contextmanager
     def temp_tree(self):
@@ -67,9 +75,9 @@ class AbstractContext(ABC):
         yield full_dir
 
         if self.args.keep:
-            print(f'Keeping temporary directory: {full_dir}')
+            print(f"Keeping temporary directory: {full_dir}")
         else:
-            print(f'Removing temporary directory: {full_dir}')
+            print(f"Removing temporary directory: {full_dir}")
             shutil.rmtree(self.top_dir)
 
     def copy_exclude_lines(self, src, dest, exclusion_filenames):
@@ -112,22 +120,27 @@ class CollectionContext(AbstractContext):
 
     def post_sub_dir(self, top_dir):
         os.putenv(
-            'ANSIBLE_COLLECTIONS_PATH',
-            ':'.join(
-                [str(top_dir)] +
-                os.environ.get('ANSIBLE_COLLECTIONS_PATH', '').split(':'))
+            "ANSIBLE_COLLECTIONS_PATH",
+            ":".join(
+                [str(top_dir)]
+                + os.environ.get("ANSIBLE_COLLECTIONS_PATH", "").split(":")
+            ),
         )
 
     def read_coll_meta(self):
         with open("galaxy.yml") as galaxy_meta:
             meta = yaml.safe_load(galaxy_meta)
-        self.namespace, self.name, self.version = meta['namespace'], meta['name'], meta['version']
-        return meta['namespace'], meta['name'], meta['version']
+        self.namespace, self.name, self.version = (
+            meta["namespace"],
+            meta["name"],
+            meta["version"],
+        )
+        return meta["namespace"], meta["name"], meta["version"]
 
     def determine_collection(self, coll_arg):
         if coll_arg:
-            coll_split = coll_arg.split('.')
-            return '.'.join(coll_split[:-1]), coll_split[-1]
+            coll_split = coll_arg.split(".")
+            return ".".join(coll_split[:-1]), coll_split[-1]
         return self.read_coll_meta()[:2]
 
 
@@ -139,7 +152,9 @@ def _base_dir_type(dir_):
     raise ValueError()
 
 
-def _determine_base_dir_rec(dir_: Path) -> Tuple[Path, type[AnsibleCoreContext] | type[CollectionContext]]:
+def _determine_base_dir_rec(
+    dir_: Path,
+):
     try:
         return dir_, _base_dir_type(dir_)
     except ValueError:
@@ -153,7 +168,9 @@ def _determine_base_dir():
     try:
         return _determine_base_dir_rec(cur_dir)
     except AndeboxUnknownContext as e:
-        raise AndeboxUnknownContext(f"Cannot determine current directory context: f{cur_dir}") from e
+        raise AndeboxUnknownContext(
+            f"Cannot determine current directory context: f{cur_dir}"
+        ) from e
 
 
 class Context:

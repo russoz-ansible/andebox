@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # (c) 2021-2023, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-
 from pathlib import Path
 
 from fabric.connection import Connection
@@ -18,18 +17,25 @@ class VagrantAction(AndeboxAction):
     name = "vagrant"
     help = "runs 'andebox test -- integration' within a VM managed with vagrant"
     args = [
-        dict(names=("--name", "-n"),
-             specs=dict(help="""name of the vagrant VM (default: "default")""")),
-        dict(names=("--sudo", "-s"),
-             specs=dict(action="store_true",
-                        help="""use sudo to run andebox""")),
-        dict(names=("--venv", "-V"),
-             specs=dict(help="""path to the virtual environment where andebox and ansible are installed (default: "/venv")""")),
-        dict(names=("--destroy", "-d"),
-             specs=dict(action="store_true",
-                        help="""destroy the VM after the test""")),
-        dict(names=("andebox_params", ),
-             specs=dict(nargs="+")),
+        dict(
+            names=("--name", "-n"),
+            specs=dict(help="""name of the vagrant VM (default: "default")"""),
+        ),
+        dict(
+            names=("--sudo", "-s"),
+            specs=dict(action="store_true", help="""use sudo to run andebox"""),
+        ),
+        dict(
+            names=("--venv", "-V"),
+            specs=dict(
+                help="""path to the virtual environment where andebox and ansible are installed (default: "/venv")"""
+            ),
+        ),
+        dict(
+            names=("--destroy", "-d"),
+            specs=dict(action="store_true", help="""destroy the VM after the test"""),
+        ),
+        dict(names=("andebox_params",), specs=dict(nargs="+")),
     ]
     default_name = "default"
     default_venv = "/venv"
