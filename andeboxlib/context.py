@@ -9,7 +9,6 @@ from abc import ABC
 from abc import abstractmethod
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Tuple
 
 import yaml
 
@@ -155,7 +154,7 @@ def _base_dir_type(dir_):
 
 def _determine_base_dir_rec(
     dir_: Path,
-) -> Tuple[Path, type[AnsibleCoreContext] | type[CollectionContext]]:
+):
     try:
         return dir_, _base_dir_type(dir_)
     except ValueError:
