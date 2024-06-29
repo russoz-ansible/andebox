@@ -20,6 +20,24 @@ PyYAML = ">=5.1"
 resolvelib = ">=0.5.3,<1.1.0"
 
 [[package]]
+name = "ansible-core"
+version = "2.17.1"
+description = "Radically simple IT automation"
+optional = false
+python-versions = ">=3.10"
+files = [
+    {file = "ansible_core-2.17.1-py3-none-any.whl", hash = "sha256:aaaccf6a9fe05968821a02079c5ec4c33a7fe5f02d9f5d94f7c3a69f71eab675"},
+    {file = "ansible_core-2.17.1.tar.gz", hash = "sha256:46449d71bbd17c3ce85fe379721d88d333fd23637b5c3798e83fae5fa38def00"},
+]
+
+[package.dependencies]
+cryptography = "*"
+jinja2 = ">=3.0.0"
+packaging = "*"
+PyYAML = ">=5.1"
+resolvelib = ">=0.5.3,<1.1.0"
+
+[[package]]
 name = "astroid"
 version = "2.15.8"
 description = "An abstract syntax tree for Python with inference support."
@@ -34,8 +52,8 @@ files = [
 lazy-object-proxy = ">=1.4.0"
 typing-extensions = {version = ">=4.0.0", markers = "python_version < \"3.11\""}
 wrapt = [
-    {version = ">=1.11,<2", markers = "python_version < \"3.11\""},
     {version = ">=1.14,<2", markers = "python_version >= \"3.11\""},
+    {version = ">=1.11,<2", markers = "python_version < \"3.11\""},
 ]
 
 [[package]]
@@ -651,6 +669,17 @@ files = [
 ]
 
 [[package]]
+name = "pyenv-inspect"
+version = "0.4.0"
+description = "An auxiliary library for the virtualenv-pyenv and tox-pyenv-redux plugins"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pyenv-inspect-0.4.0.tar.gz", hash = "sha256:ec429d1d81b67ab0b08a0408414722a79d24fd1845a5b264267e44e19d8d60f0"},
+    {file = "pyenv_inspect-0.4.0-py3-none-any.whl", hash = "sha256:618683ae7d3e6db14778d58aa0fc6b3170180d944669b5d35a8aa4fb7db550d2"},
+]
+
+[[package]]
 name = "pyflakes"
 version = "3.1.0"
 description = "passive checker of Python programs"
@@ -676,8 +705,8 @@ files = [
 astroid = ">=2.15.8,<=2.17.0-dev0"
 colorama = {version = ">=0.4.5", markers = "sys_platform == \"win32\""}
 dill = [
-    {version = ">=0.2", markers = "python_version < \"3.11\""},
     {version = ">=0.3.6", markers = "python_version >= \"3.11\""},
+    {version = ">=0.2", markers = "python_version < \"3.11\""},
 ]
 isort = ">=4.2.5,<6"
 mccabe = ">=0.6,<0.8"
@@ -946,6 +975,21 @@ docs = ["furo (>=2023.7.26)", "proselint (>=0.13)", "sphinx (>=7.1.2,!=7.3)", "s
 test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess (>=1)", "flaky (>=3.7)", "packaging (>=23.1)", "pytest (>=7.4)", "pytest-env (>=0.8.2)", "pytest-freezer (>=0.4.8)", "pytest-mock (>=3.11.1)", "pytest-randomly (>=3.12)", "pytest-timeout (>=2.1)", "setuptools (>=68)", "time-machine (>=2.10)"]
 
 [[package]]
+name = "virtualenv-pyenv"
+version = "0.5.0"
+description = "A virtualenv Python discovery plugin for pyenv-installed interpreters"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "virtualenv-pyenv-0.5.0.tar.gz", hash = "sha256:7b0e5fe3dfbdf484f4cf9b01e1f98111e398db6942237910f666356e6293597f"},
+    {file = "virtualenv_pyenv-0.5.0-py3-none-any.whl", hash = "sha256:21750247e36c55b3c547cfdeb08f51a3867fe7129922991a4f9c96980c0a4a5d"},
+]
+
+[package.dependencies]
+pyenv-inspect = ">=0.4,<0.5"
+virtualenv = "*"
+
+[[package]]
 name = "wrapt"
 version = "1.16.0"
 description = "Module for decorators, wrappers and monkey patching."
@@ -1027,4 +1071,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "4a8f81f36a45011063fd7e0724da206406db8f8a9475ffe8b02b3d3795a55f4b"
+content-hash = "7e14104e0fd9d7d13c7c2a8d09189fa2ba2c618e3a5d8fc0fec897d33832d250"

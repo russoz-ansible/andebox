@@ -14,7 +14,7 @@ jobs:
   build:
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
     runs-on: ubuntu-latest
 
     steps:
@@ -28,4 +28,4 @@ jobs:
           python -m pip install --upgrade pip
           pip install tox
       - name: Test package
-        run: tox
+        run: tox -e py
