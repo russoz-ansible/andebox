@@ -4,6 +4,7 @@
 import os
 import re
 import subprocess
+import sys
 
 import pytest
 
@@ -46,6 +47,7 @@ TEST_CASES = [
     ),
     dict(
         id="ac-sanity-ei",
+        skip_py={"3.9", "3.10"},
         input=dict(
             repo=GIT_REPO_AC,
             argv=[
@@ -73,6 +75,10 @@ def test_ansibletest(install_andebox, git_repo, testcase):
     repo = testcase["input"]["repo"]
     repo_dir = git_repo(repo)
 
+    skip_py = testcase.get("skip_py")
+    if skip_py and f"{sys.version_info.major}.{sys.version_info.minor}" in skip_py:
+        pytest.skip("Unsupported python version")
+
     try:
         os.chdir(next(repo_dir))
         proc = subprocess.run(
@@ -93,13 +99,13 @@ def test_ansibletest(install_andebox, git_repo, testcase):
             print(f"{patt_out=}")
             match = re.search(patt_out, proc.stdout, re.M)
             print(f"{match=}")
-            assert bool(match), f"Pattern {patt_out} not found in stdout! {msg}"
+            assert bool(match), f"Pattern ({patt_out}) not found in stdout! {msg}"
         patt_err = testcase["output"].get("in_stderr")
         if patt_err:
             print(f"{patt_err=}")
-            assert re.search(
-                patt_err, proc.stderr, re.M
-            ), f"Pattern {patt_err} not found in stderr! {msg}"
+            match = re.search(patt_err, proc.stderr, re.M)
+            print(f"{match=}")
+            assert bool(match), f"Pattern ({patt_err}) not found in stderr! {msg}"
 
     finally:
         next(repo_dir, None)
