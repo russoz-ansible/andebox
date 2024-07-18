@@ -2,45 +2,41 @@
 # (c) 2024, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 import os
+import re
+import subprocess
 
 import pytest
-from andeboxlib.cli import run
 
-GIT_CG = "https://github.com/ansible-collections/community.general.git"
-GIT_AC = "https://github.com/ansible/ansible.git"
+GIT_REPO_CG = "https://github.com/ansible-collections/community.general.git"
+GIT_REPO_AC = "https://github.com/ansible/ansible.git"
 
 
 TEST_CASES = [
     dict(
-        id="sanity",
+        id="cg-sanity",
         input=dict(
-            repo=GIT_CG,
+            repo=GIT_REPO_CG,
             argv=[
                 "--",
                 "sanity",
                 "--docker",
                 "default",
-                "--python",
-                "3.11",
                 "plugins/module_utils/deps.py",
             ],
         ),
         output=dict(
             rc=0,
-            in_stdout="ERROR: lib/ansible/modules/dnf5.py:0:0: parameter-invalid: Argument 'expire-cache' in argument_spec is not a valid python identifier",
         ),
     ),
     dict(
-        id="unit",
+        id="cg-unit",
         input=dict(
-            repo=GIT_CG,
+            repo=GIT_REPO_CG,
             argv=[
                 "--",
                 "units",
                 "--docker",
                 "default",
-                "--python",
-                "3.11",
                 "tests/unit/plugins/module_utils/test_cmd_runner.py",
             ],
         ),
@@ -49,9 +45,9 @@ TEST_CASES = [
         ),
     ),
     dict(
-        id="ei",
+        id="ac-sanity-ei",
         input=dict(
-            repo=GIT_CG,
+            repo=GIT_REPO_AC,
             argv=[
                 "-ei",
                 "--",
@@ -65,6 +61,7 @@ TEST_CASES = [
         ),
         output=dict(
             rc=1,
+            in_stdout=r"ERROR: lib/ansible/modules/dnf5\.py:0:0: parameter-invalid: Argument 'expire-cache' in argument_spec is not a valid python identifier",
         ),
     ),
 ]
@@ -72,18 +69,37 @@ TEST_CASES_IDS = [item["id"] for item in TEST_CASES]
 
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
-def test_andebox_test(monkeypatch, git_repo, capfd, testcase):
+def test_ansibletest(install_andebox, git_repo, testcase):
     repo = testcase["input"]["repo"]
     repo_dir = git_repo(repo)
 
     try:
         os.chdir(next(repo_dir))
-        monkeypatch.setattr(
-            "sys.argv",
+        proc = subprocess.run(
             ["andebox", "test"] + testcase["input"]["argv"],
+            check=False,
+            encoding="utf-8",
+            capture_output=True,
         )
-        rc = run()
+        msg = (
+            f"rc={proc.returncode}, stdout=\n"
+            f"{proc.stdout}\n\nstderr=\n"
+            f"{proc.stderr}"
+        )
+        rc = testcase["output"].get("rc", 0)
+        assert proc.returncode == rc, f"Unexpected return code! {msg}"
+        patt_out = testcase["output"].get("in_stdout")
+        if patt_out:
+            print(f"{patt_out=}")
+            match = re.search(patt_out, proc.stdout, re.M)
+            print(f"{match=}")
+            assert bool(match), f"Pattern {patt_out} not found in stdout! {msg}"
+        patt_err = testcase["output"].get("in_stderr")
+        if patt_err:
+            print(f"{patt_err=}")
+            assert re.search(
+                patt_err, proc.stderr, re.M
+            ), f"Pattern {patt_err} not found in stderr! {msg}"
 
-        assert rc == testcase["output"]["rc"]
     finally:
         next(repo_dir, None)
