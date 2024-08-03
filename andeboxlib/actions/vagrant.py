@@ -19,7 +19,10 @@ class VagrantAction(AndeboxAction):
     args = [
         dict(
             names=("--name", "-n"),
-            specs=dict(help="""name of the vagrant VM (default: "default")"""),
+            specs=dict(
+                help="""name of the vagrant VM (default: "default")""",
+                default="default",
+            ),
         ),
         dict(
             names=("--sudo", "-s"),
@@ -28,7 +31,8 @@ class VagrantAction(AndeboxAction):
         dict(
             names=("--venv", "-V"),
             specs=dict(
-                help="""path to the virtual environment where andebox and ansible are installed (default: "/venv")"""
+                help="""path to the virtual environment where andebox and ansible are installed (default: "/venv")""",
+                default="/venv",
             ),
         ),
         dict(
@@ -37,8 +41,6 @@ class VagrantAction(AndeboxAction):
         ),
         dict(names=("andebox_params",), specs=dict(nargs="+")),
     ]
-    default_name = "default"
-    default_venv = "/venv"
 
     @classmethod
     def make_parser(cls, subparser):
@@ -46,15 +48,15 @@ class VagrantAction(AndeboxAction):
         action_parser.epilog = "Notice the use of '--' to delimit the vagrant command from the one running inside the VM"
         action_parser.usage = "%(prog)s [-hsd] [-n name] [-V VENV] -- <andebox-cmd> [andebox-cmd-opts [-- test-params]]"
 
-    def run(self, context, args):
+    def run(self, context):
         import vagrant  # pylint: disable=import-outside-toplevel
 
         if not Path("Vagrantfile").exists():
             raise VagrantError("Missing Vagrantfile in the current directory")
 
         # argparse does not seem to honour defaults in subparsers, so making do with these
-        machine_name = args.name or self.default_name
-        venv = args.venv or self.default_venv
+        machine_name = context.args.name
+        venv = context.args.venv
 
         print(f"== SETUP vagrant VM: {machine_name} ".ljust(80, "="))
         v = vagrant.Vagrant()
@@ -75,14 +77,14 @@ class VagrantAction(AndeboxAction):
                 print(f"== BEGIN vagrant andebox: {machine_name} ".ljust(80, "="))
                 with c.cd("/vagrant"):
                     andebox_path = context.binary_path("andebox")
-                    cmd = f"{andebox_path} test --venv {venv} -R -- integration {' '.join(args.andebox_params)}"
-                    if args.sudo:
+                    cmd = f"{andebox_path} test --venv {venv} -R -- integration {' '.join(context.args.andebox_params)}"
+                    if context.args.sudo:
                         cmd = "sudo -HE " + cmd
 
                     c.run(cmd)
         except Exception as e:
             raise VagrantError(str(e)) from e
         finally:
-            if args.destroy:
+            if context.args.destroy:
                 v.destroy()
             print(f"== END   vagrant andebox: {machine_name} ".ljust(80, "="))

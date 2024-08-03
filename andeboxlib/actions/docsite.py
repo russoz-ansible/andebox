@@ -46,7 +46,7 @@ class DocsiteAction(AndeboxAction):
         ),
     ]
 
-    def run(self, context, args):
+    def run(self, context):
         try:
             with context.temp_tree() as collection_dir:
                 os.makedirs(context.args.dest_dir, mode=0o755, exist_ok=True)

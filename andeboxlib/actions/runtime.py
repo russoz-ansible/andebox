@@ -88,13 +88,15 @@ class RuntimeAction(AndeboxAction):
                     "{plugin_type} {name}", plugin_routing[plugin_type][name]
                 )
 
-    def run(self, context, args):
+    def run(self, context):
         with open(Path("meta") / "runtime.yml") as runtime_yml:
             runtime = yaml.safe_load(runtime_yml)
 
-        plugin_types = [args.plugin_type] if args.plugin_type else PLUGIN_TYPES
+        plugin_types = (
+            [context.args.plugin_type] if context.args.plugin_type else PLUGIN_TYPES
+        )
         _, _, self.current_version = context.read_coll_meta()
-        self.info_type = args.info_type
+        self.info_type = context.args.info_type
 
         def name_test(name, other):
             if name.endswith(".py"):
@@ -102,7 +104,7 @@ class RuntimeAction(AndeboxAction):
                 name = name.split(".")[0]
             return name == other
 
-        test_func = re.search if args.regex else name_test
-        self.name_tests = [partial(test_func, n) for n in args.plugin_names]
+        test_func = re.search if context.args.regex else name_test
+        self.name_tests = [partial(test_func, n) for n in context.args.plugin_names]
 
         self.runtime_process_plugin(runtime["plugin_routing"], plugin_types)
