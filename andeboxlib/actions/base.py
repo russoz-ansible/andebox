@@ -16,7 +16,7 @@ class AndeboxAction:
             action_parser.add_argument(*arg["names"], **arg["specs"])
         return action_parser
 
-    def run(self, context: Context, args) -> None:
+    def run(self, context: Context) -> None:
         raise NotImplementedError()
 
     def __str__(self):

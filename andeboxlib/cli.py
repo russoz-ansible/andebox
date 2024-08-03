@@ -59,7 +59,7 @@ class AndeBox:
         context = Context.create(args)
         with set_dir(context.base_dir):
             action = self.actions[args.action]
-            action.run(context, args)
+            action.run(context)
 
 
 def run():

@@ -240,29 +240,29 @@ class IgnoreLinesAction(AndeboxAction):
             return lines
         return lines[num:] if num < 0 else lines[:num]
 
-    def run(self, context, args):
-        if args.filter_files:
-            IgnoreFileEntry.filter_files = args.filter_files
-        if args.filter_checks:
-            IgnoreFileEntry.filter_checks = args.filter_checks
-        if args.depth:
-            IgnoreFileEntry.file_parts_depth = args.depth
+    def run(self, context):
+        if context.args.filter_files:
+            IgnoreFileEntry.filter_files = context.args.filter_files
+        if context.args.filter_checks:
+            IgnoreFileEntry.filter_checks = context.args.filter_checks
+        if context.args.depth:
+            IgnoreFileEntry.file_parts_depth = context.args.depth
 
         try:
-            ignore_entries = self.retrieve_ignore_entries(args.ignore_file_spec)
+            ignore_entries = self.retrieve_ignore_entries(context.args.ignore_file_spec)
         except Exception as e:
             print(
-                "Error reading ignore file {args.ignore_file_spec}: {e}",
+                "Error reading ignore file {context.args.ignore_file_spec}: {e}",
                 file=sys.stderr,
             )
             raise e
 
         count_map = {}
         for entry in ignore_entries:
-            fp = entry.file_parts if not args.suppress_files else ""
-            ic = entry.ignore_check if not args.suppress_checks else ""
+            fp = entry.file_parts if not context.args.suppress_files else ""
+            ic = entry.ignore_check if not context.args.suppress_checks else ""
             key = fp + "|" + ic
             count_map[key] = count_map.get(key, ResultLine(fp, ic, 0)).increase()
 
         lines = [str(s) for s in sorted(count_map.values(), reverse=True)]
-        print("\n".join(self.filter_lines(lines, args.head)))
+        print("\n".join(self.filter_lines(lines, context.args.head)))

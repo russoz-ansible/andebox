@@ -74,20 +74,20 @@ class ToxTestAction(AndeboxAction):
         )
         action_parser.usage = "%(prog)s [-h] [--env ENV] -- [ansible_test_params ...]"
 
-    def run(self, context, args):
+    def run(self, context):
         if not os.path.exists(self.tox_ini_filename):
             with open(self.tox_ini_filename, "w") as tox_ini:
                 tox_ini.write(_make_default_tox_ini())
 
         cmd_args = ["tox", "-c", self.tox_ini_filename]
-        if args.list:
+        if context.args.list:
             cmd_args.append("-a")
-        if args.recreate:
+        if context.args.recreate:
             cmd_args.append("-r")
-        if args.env:
-            cmd_args.extend(["-e", args.env])
+        if context.args.env:
+            cmd_args.extend(["-e", context.args.env])
         cmd_args.append("--")
-        cmd_args.extend(args.ansible_test_params)
+        cmd_args.extend(context.args.ansible_test_params)
         rc = subprocess.call(cmd_args)
 
         if rc != 0:

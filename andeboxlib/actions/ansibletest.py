@@ -50,15 +50,15 @@ class AnsibleTestAction(AndeboxAction):
         )
         action_parser.usage = "%(prog)s [-h] [--keep] -- [ansible_test_params ...]"
 
-    def run(self, context, args):
+    def run(self, context):
         try:
             with context.temp_tree() as temp_dir:
-                if args.requirements:
+                if context.args.requirements:
                     context.install_requirements()
-                if args.exclude_from_ignore:
+                if context.args.exclude_from_ignore:
                     context.exclude_from_ignore()
                 subprocess.run(
-                    [context.ansible_test] + args.ansible_test_params,
+                    [context.ansible_test] + context.args.ansible_test_params,
                     cwd=temp_dir,
                     check=True,
                 )
