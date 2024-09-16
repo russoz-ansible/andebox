@@ -2,7 +2,6 @@
 # (c) 2021, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 import subprocess
-from pathlib import Path
 
 from ..exceptions import AndeboxException
 from .base import AndeboxAction
@@ -30,13 +29,6 @@ class AnsibleTestAction(AndeboxAction):
             specs=dict(
                 action="store_true",
                 help="Install integration_tests_dependencies from tests/requirements.yml prior",
-            ),
-        ),
-        dict(
-            names=("--venv", "-V"),
-            specs=dict(
-                help="path to the virtual environment where andebox and ansible are installed",
-                type=Path,
             ),
         ),
         dict(names=("ansible_test_params",), specs=dict(nargs="+")),

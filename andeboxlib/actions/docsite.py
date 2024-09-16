@@ -23,13 +23,6 @@ class DocsiteAction(AndeboxAction):
             ),
         ),
         dict(
-            names=("--venv", "-V"),
-            specs=dict(
-                help="path to the virtual environment where andebox and ansible are installed",
-                type=Path,
-            ),
-        ),
-        dict(
             names=("--open", "-o"),
             specs=dict(
                 help="Open browser pointing to main page after build",

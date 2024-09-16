@@ -133,4 +133,4 @@ To run the test inside a VM managed by [vagrant](https://www.vagrantup.com/):
 $ andebox vagrant -n fedora37 -s -- --python 3.9 xfs_quota --color yes
 ```
 
-Also beware that `andebox` does not create nor manage `Vagrantfile`. The user is responsible for creating and setting up the VM definition. It must have `andebox` and `ansible-core` (or `ansible-base` or `ansible`) installed on a virtual environment. By default, the venv is expected to be at `/venv` but the localtion can be specified using the `--venv` parameter.
+Also beware that `andebox` does not create nor manage `Vagrantfile`. The user is responsible for creating and setting up the VM definition. It must have `andebox` and `ansible-core` (or `ansible-base` or `ansible`) installed on a virtual environment. By default, the venv is expected to be at `/venv` but the location can be specified using the `--venv` parameter.

@@ -8,6 +8,7 @@ __version__ = "0.59"
 import argparse
 import signal
 import sys
+from pathlib import Path
 
 from .actions.ansibletest import AnsibleTestAction
 from .actions.docsite import DocsiteAction
@@ -40,6 +41,12 @@ def _make_parser() -> argparse.ArgumentParser:
         "--collection",
         "-c",
         help="fully qualified collection name (not necessary if a proper galaxy.yml file is available)",
+    )
+    parser.add_argument(
+        "--venv",
+        "-V",
+        help="path to the virtual environment where andebox and ansible are installed",
+        type=Path,
     )
     subparser = parser.add_subparsers(dest="action", required=True)
 

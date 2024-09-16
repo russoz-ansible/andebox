@@ -29,13 +29,6 @@ class VagrantAction(AndeboxAction):
             specs=dict(action="store_true", help="""use sudo to run andebox"""),
         ),
         dict(
-            names=("--venv", "-V"),
-            specs=dict(
-                help="""path to the virtual environment where andebox and ansible are installed (default: "/venv")""",
-                default="/venv",
-            ),
-        ),
-        dict(
             names=("--destroy", "-d"),
             specs=dict(action="store_true", help="""destroy the VM after the test"""),
         ),
@@ -45,7 +38,10 @@ class VagrantAction(AndeboxAction):
     @classmethod
     def make_parser(cls, subparser):
         action_parser = super(VagrantAction, cls).make_parser(subparser)
-        action_parser.epilog = "Notice the use of '--' to delimit the vagrant command from the one running inside the VM"
+        action_parser.epilog = (
+            "Notice the use of '--' to delimit the vagrant command from the one running inside the VM\n"
+            "If VENV is not provided, it is assumed to be `/venv`."
+        )
         action_parser.usage = "%(prog)s [-hsd] [-n name] [-V VENV] -- <andebox-cmd> [andebox-cmd-opts [-- test-params]]"
 
     def run(self, context):
@@ -56,7 +52,8 @@ class VagrantAction(AndeboxAction):
 
         # argparse does not seem to honour defaults in subparsers, so making do with these
         machine_name = context.args.name
-        venv = context.args.venv
+        if not context.args.venv:
+            context.args.venv = "/venv"
 
         print(f"== SETUP vagrant VM: {machine_name} ".ljust(80, "="))
         v = vagrant.Vagrant()
@@ -77,7 +74,7 @@ class VagrantAction(AndeboxAction):
                 print(f"== BEGIN vagrant andebox: {machine_name} ".ljust(80, "="))
                 with c.cd("/vagrant"):
                     andebox_path = context.binary_path("andebox")
-                    cmd = f"{andebox_path} test --venv {venv} -R -- integration {' '.join(context.args.andebox_params)}"
+                    cmd = f"{andebox_path} test --venv {context.args.venv} -R -- integration {' '.join(context.args.andebox_params)}"
                     if context.args.sudo:
                         cmd = "sudo -HE " + cmd
 
