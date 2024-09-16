@@ -6,8 +6,6 @@ import re
 from io import StringIO
 from pathlib import Path
 
-from ruamel.yaml import YAML
-
 from .base import AndeboxAction
 
 
@@ -35,6 +33,8 @@ class ReformatYAMLAction(AndeboxAction):
 
     @staticmethod
     def format_yaml(yaml_content: str) -> str:
+        from ruamel.yaml import YAML
+
         yaml = YAML()
         yaml.preserve_quotes = True
         yaml.indent(2)
