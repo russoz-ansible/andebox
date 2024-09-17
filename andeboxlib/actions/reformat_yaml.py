@@ -39,7 +39,7 @@ class ReformatYAMLAction(AndeboxAction):
         yaml.preserve_quotes = True
         yaml.indent(2)
         yaml.explicit_start = True
-        yaml.width = 160
+        yaml.width = 140
         yaml.preserve_quotes = True
         yaml.top_level_colon_align = False
         yaml.compact_seq_seq = False
