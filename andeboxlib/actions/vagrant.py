@@ -74,7 +74,7 @@ class VagrantAction(AndeboxAction):
                 print(f"== BEGIN vagrant andebox: {machine_name} ".ljust(80, "="))
                 with c.cd("/vagrant"):
                     andebox_path = context.binary_path("andebox")
-                    cmd = f"{andebox_path} test --venv {context.args.venv} -R -- integration {' '.join(context.args.andebox_params)}"
+                    cmd = f"{andebox_path} --venv {context.args.venv} test -R -- integration {' '.join(context.args.andebox_params)}"
                     if context.args.sudo:
                         cmd = "sudo -HE " + cmd
 
