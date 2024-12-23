@@ -17,7 +17,10 @@ def info_type(types, v):
         raise argparse.ArgumentTypeError("invalid value: {v}") from e
 
 
-def fix_period(line: str) -> str:
+def fix_desc_line(line: str) -> str:
+    line = re.sub(r"\s\s+", " ", line)
+    if not line[0].isupper():
+        line = line[0].upper() + line[1:]
     if line.endswith(".)"):
         return f"{line[:-2]})."
     if line.endswith("."):
@@ -27,17 +30,19 @@ def fix_period(line: str) -> str:
 
 def process_description(desc):
     if isinstance(desc, str):
-        return fix_period(desc)
+        return fix_desc_line(desc)
     else:  # assume list
-        return [fix_period(x) for x in desc]
+        return [fix_desc_line(x) for x in desc]
 
 
-def process_options(opts):
+def process_options(opts, suboptions_kw):
     for option in opts.values():
         if "description" in option:
             option["description"] = process_description(option["description"])
-        if "suboptions" in option:
-            option["suboptions"] = process_options(option["suboptions"])
+        if suboptions_kw in option:
+            option[suboptions_kw] = process_options(
+                option[suboptions_kw], suboptions_kw
+            )
     return opts
 
 
@@ -45,9 +50,24 @@ def process_documentation(data):
     if data["short_description"].endswith("."):
         data["short_description"] = data["short_description"].rstrip(".")
     data["description"] = process_description(data["description"])
+    if "notes" in data:
+        data["notes"] = process_description(data["notes"])
+    if "seealso" in data:
+        for sa in data["seealso"]:
+            if "description" in sa:
+                sa["description"] = process_description(sa["description"])
     if "options" in data:
-        data["options"] = process_options(data["options"])
+        data["options"] = process_options(data["options"], "suboptions")
 
+    return data
+
+
+def process_return(data):
+    for rv in data.values():
+        rv["description"] = process_description(rv["description"])
+        if "contains" in rv:
+            for cont in rv["contains"]:
+                rv["contains"] = process_return(rv["contains"])
     return data
 
 
@@ -55,6 +75,13 @@ class ReformatYAMLAction(AndeboxAction):
     name = "reformat-yaml"
     help = "reformat YAML content in plugins"
     args = [
+        dict(
+            names=("--backticks", "-bt"),
+            specs=dict(
+                action="store_true",
+                help="Notifies of backtick characters inside the docs",
+            ),
+        ),
         dict(
             names=("files",),
             specs=dict(
@@ -86,7 +113,37 @@ class ReformatYAMLAction(AndeboxAction):
         self.yaml.dump(data, output)
         return output.getvalue()
 
-    def reformat_yaml_in_python_file(self, file_path):
+    def _process_block(self, first_line, quoted_content, in_variable, backticks):
+        lines = [first_line]
+
+        data = self.read_yaml("\n".join(quoted_content))
+        if data:
+            if in_variable == "DOCUMENTATION":
+                data = process_documentation(data)
+            elif in_variable == "RETURN":
+                data = process_return(data)
+            yaml_content = self.dump_yaml(data)
+            yaml_content = yaml_content.splitlines()
+            if isinstance(data, list):
+                yaml_content = [
+                    (line[2:] if line.startswith("  ") else line)
+                    for line in yaml_content
+                ]
+            while yaml_content[0] == "":
+                yaml_content = yaml_content[1:]
+            if backticks:
+                for num, line in enumerate(yaml_content):
+                    if "`" in line:
+                        print(f"  {num:4}: {line}")
+            lines.extend(yaml_content)
+        else:
+            # If no data (e.g. an empty or comment-only block), then keep original content
+            lines.extend(quoted_content)
+
+        lines.append('"""')
+        return lines
+
+    def reformat_yaml_in_python_file(self, file_path, backticks):
         QUOTE_RE_FRAG = r'(?:"|\'){3}'
         VAR_RE_FRAG = r"(?:DOCUMENTATION|EXAMPLES|RETURN)"
         ONELINE_RE = re.compile(
@@ -111,28 +168,11 @@ class ReformatYAMLAction(AndeboxAction):
                     quoted_content.append(line)
                     continue
 
-                updated_lines.append(first_line)
-
-                data = self.read_yaml("\n".join(quoted_content))
-                if data:
-                    if in_variable == "DOCUMENTATION":
-                        data = process_documentation(data)
-                    yaml_content = self.dump_yaml(data)
-                    yaml_content = yaml_content.splitlines()
-                    if isinstance(data, list):
-                        yaml_content = [
-                            (line[2:] if line.startswith("  ") else line)
-                            for line in yaml_content
-                        ]
-                    while yaml_content[0] == "":
-                        yaml_content = yaml_content[1:]
-                    updated_lines.extend(yaml_content)
-                else:
-                    # If no data (e.g. an empty or comment-only block), then keep original content
-                    updated_lines.extend(quoted_content)
-
-                updated_lines.append('"""')
-
+                updated_lines.extend(
+                    self._process_block(
+                        first_line, quoted_content, in_variable, backticks
+                    )
+                )
                 in_variable = ""
                 quoted_content = []
 
@@ -152,4 +192,4 @@ class ReformatYAMLAction(AndeboxAction):
     def run(self, context):
         self.yaml = self.make_yaml()
         for file_path in context.args.files:
-            self.reformat_yaml_in_python_file(file_path)
+            self.reformat_yaml_in_python_file(file_path, context.args.backticks)
