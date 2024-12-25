@@ -24,7 +24,7 @@ def fix_desc_value(line: str) -> str:
         line = line[0].upper() + line[1:]
     if line.endswith(".)"):
         return f"{line[:-2]})."
-    if line.endswith("."):
+    if line.endswith((".", "!", ":", ";", ",")):
         return line
     return f"{line}."
 
@@ -86,14 +86,13 @@ OFFENDING_REGEXPS = [
     re.compile(exp)
     for exp in [
         r"`",
-        r"\bi\.e\b",
-        r"\be\.g\.?\b",
-        r"[^/]etc\b",
-        r"\bvia\b",
+        r"\bi\.e\b",  # i.e
+        r"\be\.g\.?\b",  # e.g.
+        r"[^/]etc\b",  # etc, but not /etc
+        r"\bvia\b",  # via
         r"\bversus\b",
         r"\bvs\.?\b",
         r"\bversa\b",
-        r"\S\s\s+\S",
     ]
 ]
 
@@ -206,7 +205,7 @@ class ReformatYAMLAction(AndeboxAction):
                 outbound_content = self.process_yaml_block(
                     quoted_content, get_processor(in_variable), dry_run
                 )
-                if offenders:
+                if offenders and in_variable != "EXAMPLES":
                     report_offenders(outbound_content, first_line_no)
                 updated_lines.extend(outbound_content)
                 updated_lines.append('"""')
