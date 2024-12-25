@@ -67,8 +67,7 @@ def process_return(data):
     for rv in data.values():
         rv["description"] = process_description(rv["description"])
         if "contains" in rv:
-            for cont in rv["contains"]:
-                rv["contains"] = process_return(rv["contains"])
+            rv["contains"] = process_return(rv["contains"])
     return data
 
 
@@ -93,6 +92,8 @@ OFFENDING_REGEXPS = [
         r"\bversus\b",
         r"\bvs\.?\b",
         r"\bversa\b",
+        r"[a-z]'(re|t|d|ll)",
+        r"(there|let|he)'s",
     ]
 ]
 
