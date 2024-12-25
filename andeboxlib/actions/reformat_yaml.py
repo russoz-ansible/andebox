@@ -17,22 +17,23 @@ def info_type(types, v):
         raise argparse.ArgumentTypeError("invalid value: {v}") from e
 
 
-def fix_desc_line(line: str) -> str:
+def fix_desc_value(line: str) -> str:
+    line = line.strip()  # remove extraneous whitespace chars from heads and tails
     line = re.sub(r"\s\s+", " ", line)
     if not line[0].isupper():
         line = line[0].upper() + line[1:]
     if line.endswith(".)"):
         return f"{line[:-2]})."
-    if line.endswith("."):
+    if line.endswith((".", "!", ":", ";", ",")):
         return line
     return f"{line}."
 
 
 def process_description(desc):
     if isinstance(desc, str):
-        return fix_desc_line(desc)
+        return fix_desc_value(desc)
     else:  # assume list
-        return [fix_desc_line(x) for x in desc]
+        return [fix_desc_value(x) for x in desc]
 
 
 def process_options(opts, suboptions_kw):
@@ -71,15 +72,54 @@ def process_return(data):
     return data
 
 
+def get_processor(variable, in_doc_fragments=False):
+    processors_map = {
+        "DOCUMENTATION": process_documentation,
+        "RETURN": process_return,
+    }
+    return processors_map.get(
+        variable, process_documentation if in_doc_fragments else lambda x: x
+    )
+
+
+OFFENDING_REGEXPS = [
+    re.compile(exp)
+    for exp in [
+        r"`",
+        r"\bi\.e\b",  # i.e
+        r"\be\.g\.?\b",  # e.g.
+        r"[^/]etc\b",  # etc, but not /etc
+        r"\bvia\b",  # via
+        r"\bversus\b",
+        r"\bvs\.?\b",
+        r"\bversa\b",
+    ]
+]
+
+
+def report_offenders(content, content_first_line):
+    for num, line in enumerate(content):
+        if any(offender.search(line) for offender in OFFENDING_REGEXPS):
+            # both vars come from enumerate(), which starts at 0, so must add 2
+            print(f"  {2 + content_first_line + num:4}: {line}")
+
+
 class ReformatYAMLAction(AndeboxAction):
     name = "reformat-yaml"
     help = "reformat YAML content in plugins"
     args = [
         dict(
-            names=("--backticks", "-bt"),
+            names=("--offenders", "-bt", "-o"),
             specs=dict(
                 action="store_true",
                 help="Notifies of backtick characters inside the docs",
+            ),
+        ),
+        dict(
+            names=("--dry_run", "-n"),
+            specs=dict(
+                action="store_true",
+                help="Do not modify files",
             ),
         ),
         dict(
@@ -113,37 +153,29 @@ class ReformatYAMLAction(AndeboxAction):
         self.yaml.dump(data, output)
         return output.getvalue()
 
-    def _process_block(self, first_line, quoted_content, in_variable, backticks):
-        lines = [first_line]
+    def process_yaml_block(self, quoted_content, processor, dry_run):
 
         data = self.read_yaml("\n".join(quoted_content))
-        if data:
-            if in_variable == "DOCUMENTATION":
-                data = process_documentation(data)
-            elif in_variable == "RETURN":
-                data = process_return(data)
-            yaml_content = self.dump_yaml(data)
-            yaml_content = yaml_content.splitlines()
-            if isinstance(data, list):
-                yaml_content = [
-                    (line[2:] if line.startswith("  ") else line)
-                    for line in yaml_content
-                ]
-            while yaml_content[0] == "":
-                yaml_content = yaml_content[1:]
-            if backticks:
-                for num, line in enumerate(yaml_content):
-                    if "`" in line:
-                        print(f"  {num:4}: {line}")
-            lines.extend(yaml_content)
-        else:
+        if not data:
             # If no data (e.g. an empty or comment-only block), then keep original content
-            lines.extend(quoted_content)
+            return quoted_content
 
-        lines.append('"""')
-        return lines
+        data = processor(data)
+        yaml_content = self.dump_yaml(data)
+        yaml_content = yaml_content.splitlines()
+        if isinstance(data, list):
+            yaml_content = [
+                (line[2:] if line.startswith("  ") else line) for line in yaml_content
+            ]
+        while yaml_content[0] == "":
+            yaml_content = yaml_content[1:]
 
-    def reformat_yaml_in_python_file(self, file_path, backticks):
+        # Do the YAML parsing in dry run, but return the original content
+        if dry_run:
+            return quoted_content
+        return yaml_content
+
+    def reformat_yaml_in_python_file(self, file_path, offenders, dry_run):
         QUOTE_RE_FRAG = r'(?:"|\'){3}'
         VAR_RE_FRAG = r"(?:DOCUMENTATION|EXAMPLES|RETURN)"
         ONELINE_RE = re.compile(
@@ -160,21 +192,27 @@ class ReformatYAMLAction(AndeboxAction):
         in_variable = ""
         first_line = ""
         quoted_content = []
+        first_line_no = 0
 
-        for line in lines:
+        for line_no, line in enumerate(lines):
             line = line.rstrip()
             if in_variable:
                 if not re.match(rf"^\s*{QUOTE_RE_FRAG}", line):
                     quoted_content.append(line)
                     continue
 
-                updated_lines.extend(
-                    self._process_block(
-                        first_line, quoted_content, in_variable, backticks
-                    )
+                updated_lines.append(first_line)
+                outbound_content = self.process_yaml_block(
+                    quoted_content, get_processor(in_variable), dry_run
                 )
+                if offenders and in_variable != "EXAMPLES":
+                    report_offenders(outbound_content, first_line_no)
+                updated_lines.extend(outbound_content)
+                updated_lines.append('"""')
+
                 in_variable = ""
                 quoted_content = []
+                first_line_no = 0
 
             else:
                 if ONELINE_RE.search(line):
@@ -182,14 +220,18 @@ class ReformatYAMLAction(AndeboxAction):
                 elif match := FIRST_LINE_RE.search(line):
                     in_variable, yaml_first_line = match.groups()
                     first_line = f'{in_variable} = r"""{yaml_first_line}'
+                    first_line_no = line_no
                 else:
                     updated_lines.append(line)
 
-        # Write the updated lines back to the file
-        with open(file_path, "w") as file:
-            file.writelines([f"{x}\n" for x in updated_lines])
+        if not dry_run:
+            # Write the updated lines back to the file
+            with open(file_path, "w") as file:
+                file.writelines([f"{x}\n" for x in updated_lines])
 
     def run(self, context):
         self.yaml = self.make_yaml()
         for file_path in context.args.files:
-            self.reformat_yaml_in_python_file(file_path, context.args.backticks)
+            self.reformat_yaml_in_python_file(
+                file_path, context.args.offenders, context.args.dry_run
+            )
