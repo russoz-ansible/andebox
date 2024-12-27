@@ -1,20 +1,24 @@
 # -*- coding: utf-8 -*-
 # (c) 2024, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-import argparse
 import re
 from io import StringIO
 from pathlib import Path
+from typing import Any
+from typing import Callable
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Union
+
+try:
+    from ruamel.yaml import YAML
+
+    HAS_RUAMEL = True
+except ImportError:
+    HAS_RUAMEL = False
 
 from .base import AndeboxAction
-
-
-def info_type(types, v):
-    try:
-        r = [t for t in types if t.startswith(v.lower())]
-        return r[0][0].upper()
-    except IndexError as e:
-        raise argparse.ArgumentTypeError("invalid value: {v}") from e
 
 
 def fix_desc_value(line: str) -> str:
@@ -24,19 +28,19 @@ def fix_desc_value(line: str) -> str:
         line = line[0].upper() + line[1:]
     if line.endswith(".)"):
         return f"{line[:-2]})."
-    if line.endswith((".", "!", ":", ";", ",")):
+    if line.endswith((".", "!", ":", ";", ",", "?")):
         return line
     return f"{line}."
 
 
-def process_description(desc):
+def process_description(desc: Union[List[str], str]) -> Union[List[str], str]:
     if isinstance(desc, str):
         return fix_desc_value(desc)
     else:  # assume list
         return [fix_desc_value(x) for x in desc]
 
 
-def process_options(opts, suboptions_kw):
+def process_options(opts: Dict[str, Any], suboptions_kw: str) -> Dict[str, Any]:
     for option in opts.values():
         if "description" in option:
             option["description"] = process_description(option["description"])
@@ -47,7 +51,7 @@ def process_options(opts, suboptions_kw):
     return opts
 
 
-def process_documentation(data):
+def process_documentation(data: Dict[str, Any]) -> Dict[str, Any]:
     if data["short_description"].endswith("."):
         data["short_description"] = data["short_description"].rstrip(".")
     data["description"] = process_description(data["description"])
@@ -63,16 +67,15 @@ def process_documentation(data):
     return data
 
 
-def process_return(data):
+def process_return(data: Dict[str, Dict]) -> Dict[str, Dict]:
     for rv in data.values():
         rv["description"] = process_description(rv["description"])
         if "contains" in rv:
-            for cont in rv["contains"]:
-                rv["contains"] = process_return(rv["contains"])
+            rv["contains"] = process_return(rv["contains"])
     return data
 
 
-def get_processor(variable, in_doc_fragments=False):
+def get_processor(variable: str, in_doc_fragments: bool = False) -> Callable:
     processors_map = {
         "DOCUMENTATION": process_documentation,
         "RETURN": process_return,
@@ -86,30 +89,32 @@ OFFENDING_REGEXPS = [
     re.compile(exp)
     for exp in [
         r"`",
-        r"\bi\.e\b",  # i.e
+        r"\bi\.e\.?\b",  # i.e
         r"\be\.g\.?\b",  # e.g.
         r"[^/]etc\b",  # etc, but not /etc
         r"\bvia\b",  # via
         r"\bversus\b",
         r"\bvs\.?\b",
         r"\bversa\b",
+        r"[a-zI]'(re|t|d|ll|ve)",
+        r"(there|let|he)'s",
     ]
 ]
 
 
-def report_offenders(content, content_first_line):
+def report_offenders(content: List[str], content_first_line: int) -> None:
     for num, line in enumerate(content):
         if any(offender.search(line) for offender in OFFENDING_REGEXPS):
             # both vars come from enumerate(), which starts at 0, so must add 2
             print(f"  {2 + content_first_line + num:4}: {line}")
 
 
-class ReformatYAMLAction(AndeboxAction):
-    name = "reformat-yaml"
-    help = "reformat YAML content in plugins"
+class YAMLDocAction(AndeboxAction):
+    name = "yaml-doc"
+    help = "analyze and/or reformat YAML documentation in plugins"
     args = [
         dict(
-            names=("--offenders", "-bt", "-o"),
+            names=("--offenders", "-o"),
             specs=dict(
                 action="store_true",
                 help="Notifies of backtick characters inside the docs",
@@ -132,28 +137,31 @@ class ReformatYAMLAction(AndeboxAction):
         ),
     ]
 
-    def make_yaml(self):
-        from ruamel.yaml import YAML
+    def make_yaml(self) -> YAML:
+        if not HAS_RUAMEL:
+            raise ValueError("This action requires ruamel.yaml to be installed")
 
         yaml = YAML()
         yaml.preserve_quotes = True
         yaml.indent(mapping=2, sequence=4, offset=2)
         yaml.explicit_start = False
-        yaml.width = 140
+        yaml.width = 120
         yaml.preserve_quotes = True
         yaml.top_level_colon_align = False
         yaml.compact_seq_seq = False
         return yaml
 
-    def read_yaml(self, content: str):
+    def read_yaml(self, content: str) -> Optional[Union[Dict[str, Any], list]]:
         return self.yaml.load(content)
 
-    def dump_yaml(self, data) -> str:
+    def dump_yaml(self, data: Union[Dict[str, Any], list]) -> str:
         output = StringIO()
         self.yaml.dump(data, output)
         return output.getvalue()
 
-    def process_yaml_block(self, quoted_content, processor, dry_run):
+    def process_yaml_block(
+        self, quoted_content: List[str], processor: Callable, dry_run: bool
+    ) -> List[str]:
 
         data = self.read_yaml("\n".join(quoted_content))
         if not data:
@@ -175,7 +183,9 @@ class ReformatYAMLAction(AndeboxAction):
             return quoted_content
         return yaml_content
 
-    def reformat_yaml_in_python_file(self, file_path, offenders, dry_run):
+    def reformat_yaml_in_python_file(
+        self, file_path: str, offenders: bool, dry_run: bool
+    ):
         QUOTE_RE_FRAG = r'(?:"|\'){3}'
         VAR_RE_FRAG = r"(?:DOCUMENTATION|EXAMPLES|RETURN)"
         ONELINE_RE = re.compile(

@@ -13,7 +13,7 @@ from pathlib import Path
 from .actions.ansibletest import AnsibleTestAction
 from .actions.docsite import DocsiteAction
 from .actions.ignorefile import IgnoreLinesAction
-from .actions.reformat_yaml import ReformatYAMLAction
+from .actions.yaml_doc import YAMLDocAction
 from .actions.runtime import RuntimeAction
 from .actions.toxtest import ToxTestAction
 from .actions.vagrant import VagrantAction
@@ -24,7 +24,7 @@ from .util import set_dir
 _actions = [
     AnsibleTestAction,
     IgnoreLinesAction,
-    ReformatYAMLAction,
+    YAMLDocAction,
     RuntimeAction,
     ToxTestAction,
     VagrantAction,
