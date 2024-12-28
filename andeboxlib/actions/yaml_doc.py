@@ -21,70 +21,7 @@ except ImportError:
 from .base import AndeboxAction
 
 
-def fix_desc_value(line: str) -> str:
-    line = line.strip()  # remove extraneous whitespace chars from heads and tails
-    line = re.sub(r"\s\s+", " ", line)
-    if not line[0].isupper():
-        line = line[0].upper() + line[1:]
-    if line.endswith(".)"):
-        return f"{line[:-2]})."
-    if line.endswith((".", "!", ":", ";", ",", "?")):
-        return line
-    return f"{line}."
-
-
-def process_description(desc: Union[List[str], str]) -> Union[List[str], str]:
-    if isinstance(desc, str):
-        return fix_desc_value(desc)
-    else:  # assume list
-        return [fix_desc_value(x) for x in desc]
-
-
-def process_options(opts: Dict[str, Any], suboptions_kw: str) -> Dict[str, Any]:
-    for option in opts.values():
-        if "description" in option:
-            option["description"] = process_description(option["description"])
-        if suboptions_kw in option:
-            option[suboptions_kw] = process_options(
-                option[suboptions_kw], suboptions_kw
-            )
-    return opts
-
-
-def process_documentation(data: Dict[str, Any]) -> Dict[str, Any]:
-    if data["short_description"].endswith("."):
-        data["short_description"] = data["short_description"].rstrip(".")
-    data["description"] = process_description(data["description"])
-    if "notes" in data:
-        data["notes"] = process_description(data["notes"])
-    if "seealso" in data:
-        for sa in data["seealso"]:
-            if "description" in sa:
-                sa["description"] = process_description(sa["description"])
-    if "options" in data:
-        data["options"] = process_options(data["options"], "suboptions")
-
-    return data
-
-
-def process_return(data: Dict[str, Dict]) -> Dict[str, Dict]:
-    for rv in data.values():
-        rv["description"] = process_description(rv["description"])
-        if "contains" in rv:
-            rv["contains"] = process_return(rv["contains"])
-    return data
-
-
-def get_processor(variable: str, in_doc_fragments: bool = False) -> Callable:
-    processors_map = {
-        "DOCUMENTATION": process_documentation,
-        "RETURN": process_return,
-    }
-    return processors_map.get(
-        variable, process_documentation if in_doc_fragments else lambda x: x
-    )
-
-
+DESCRIPTION_ACCEPTED_END_CHARS = (".", "!", ":", ";", ",", "?")
 OFFENDING_REGEXPS = [
     re.compile(exp)
     for exp in [
@@ -96,10 +33,91 @@ OFFENDING_REGEXPS = [
         r"\bversus\b",
         r"\bvs\.?\b",
         r"\bversa\b",
-        r"[a-zI]'(re|t|d|ll|ve)",
+        r"\b[Ww]ill\b" r"[a-zI]'(re|t|d|ll|ve)",
         r"(there|let|he)'s",
+        r"\s([Aa]pis?|[Jj]son|[Ii]ps?|[Dd]ns)[\s\.,]",
     ]
 ]
+
+
+class YAMLDocException(Exception):
+    def __init__(self, *args: object) -> None:
+        super().__init__()
+        self.args = args
+
+
+def fix_desc_value(line: str) -> str:
+    line = line.strip()  # remove extraneous whitespace chars from heads and tails
+    line = re.sub(r"\s\s+", " ", line)
+    if not line[0].isupper():
+        line = line[0].upper() + line[1:]
+    if line.endswith(".)"):
+        return f"{line[:-2]})."
+    if line.endswith(DESCRIPTION_ACCEPTED_END_CHARS):
+        return line
+    return f"{line}."
+
+
+def process_description(desc: Union[List[str], str]) -> Union[List[str], str]:
+    try:
+        if isinstance(desc, str):
+            return fix_desc_value(desc)
+        else:  # assume list
+            return [fix_desc_value(x) for x in desc]
+    except Exception as e:
+        raise YAMLDocException(desc) from e
+
+
+def process_options(opts: Dict[str, Any], suboptions_kw: str) -> Dict[str, Any]:
+    try:
+        for option in opts.values():
+            if "description" in option:
+                option["description"] = process_description(option["description"])
+            if suboptions_kw in option:
+                option[suboptions_kw] = process_options(
+                    option[suboptions_kw], suboptions_kw
+                )
+        return opts
+    except Exception as e:
+        raise YAMLDocException(opts, suboptions_kw) from e
+
+
+def process_documentation(data: Dict[str, Any]) -> Dict[str, Any]:
+    try:
+        if data.get("short_description", " ").endswith("."):
+            data["short_description"] = data["short_description"].rstrip(".")
+        if desc := data.get("description"):
+            data["description"] = process_description(desc)
+        if notes := data.get("notes"):
+            data["notes"] = process_description(notes)
+        if seealso := data.get("seealso"):
+            for sa in seealso:
+                if sa_desc := sa.get("description"):
+                    sa["description"] = process_description(sa_desc)
+        if options := data.get("options"):
+            data["options"] = process_options(options, "suboptions")
+
+        return data
+    except Exception as e:
+        raise YAMLDocException(data) from e
+
+
+def process_return(data: Dict[str, Dict]) -> Dict[str, Dict]:
+    try:
+        data = process_options(data, "contains")
+        return data
+    except Exception as e:
+        raise YAMLDocException(data) from e
+
+
+def get_processor(variable: str, in_doc_fragments: bool = False) -> Callable:
+    processors_map = {
+        "DOCUMENTATION": process_documentation,
+        "RETURN": process_return,
+    }
+    return processors_map.get(
+        variable, process_documentation if in_doc_fragments else lambda x: x
+    )
 
 
 def report_offenders(content: List[str], content_first_line: int) -> None:
@@ -184,10 +202,10 @@ class YAMLDocAction(AndeboxAction):
         return yaml_content
 
     def reformat_yaml_in_python_file(
-        self, file_path: str, offenders: bool, dry_run: bool
+        self, file_path: Path, offenders: bool, dry_run: bool
     ):
         QUOTE_RE_FRAG = r'(?:"|\'){3}'
-        VAR_RE_FRAG = r"(?:DOCUMENTATION|EXAMPLES|RETURN)"
+        VAR_RE_FRAG = r"(?:[A-Z]+)"
         ONELINE_RE = re.compile(
             rf"^\s*{VAR_RE_FRAG}\s*=\s*r?{QUOTE_RE_FRAG}.*{QUOTE_RE_FRAG}$"
         )
@@ -199,6 +217,7 @@ class YAMLDocAction(AndeboxAction):
 
         updated_lines = []
 
+        is_doc_frag = "doc_fragments" in file_path.parts
         in_variable = ""
         first_line = ""
         quoted_content = []
@@ -213,7 +232,9 @@ class YAMLDocAction(AndeboxAction):
 
                 updated_lines.append(first_line)
                 outbound_content = self.process_yaml_block(
-                    quoted_content, get_processor(in_variable), dry_run
+                    quoted_content,
+                    get_processor("DOCUMENTATION" if is_doc_frag else in_variable),
+                    dry_run,
                 )
                 if offenders and in_variable != "EXAMPLES":
                     report_offenders(outbound_content, first_line_no)
