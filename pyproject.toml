@@ -18,10 +18,9 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Testing",
     "Topic :: Utilities"
 ]
@@ -38,10 +37,10 @@ andebox = "andeboxlib.cli:run"
 "Source Code" = "https://github.com/russoz-ansible/andebox"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 ansible-core = [
-    { version = "^2.17.0", python = ">=3.12" },
-    { version = "^2.15.0", python = ">=3.9,<3.12" },
+    { version = "^2.17.4", python = ">=3.12" },
+    { version = "^2.15.0", python = ">=3.11,<3.12" },
 ]
 pyyaml = ">=5.4"
 python-vagrant = "^1.0.0"
