@@ -135,7 +135,7 @@ class YAMLDocAction(AndeboxAction):
             names=("--offenders", "-o"),
             specs=dict(
                 action="store_true",
-                help="Notifies of backtick characters inside the docs",
+                help="Notifies of potential style-related offending constructs",
             ),
         ),
         dict(
