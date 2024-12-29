@@ -35,7 +35,7 @@ OFFENDING_REGEXPS = [
         r"\bversa\b",
         r"\b[Ww]ill\b" r"[a-zI]'(re|t|d|ll|ve)",
         r"(there|let|he)'s",
-        r"\s([Aa]pis?|[Jj]son|[Ii]ps?|[Dd]ns)[\s\.,]",
+        r"\s([Aa]pis?|[Jj]son|[Ii]ps?|[Dd]ns|[Ii]d)[\s\.,]",
     ]
 ]
 
