@@ -127,6 +127,7 @@ class ResultLine:
         return "".join(r)
 
 
+# @TODO works only for collections because of the hardcoded path
 _ignore_path = os.path.join(".", "tests", "sanity")
 try:
     with os.scandir(os.path.join(_ignore_path)) as sanity_dir:

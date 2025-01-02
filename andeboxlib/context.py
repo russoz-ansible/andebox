@@ -28,6 +28,14 @@ class AndeboxUnknownContext(AndeboxException):
 
 
 class AbstractContext(ABC):
+    UNSET = 0
+    ANSIBLE_CORE = 1
+    COLLECTION = 2
+    _context_type = UNSET
+
+    @property
+    def type(self):
+        return self._context_type
 
     def __init__(self, base_dir: Path, args: Namespace) -> None:
         self.base_dir = base_dir
@@ -51,8 +59,32 @@ class AbstractContext(ABC):
 
     @property
     @abstractmethod
-    def sanity_test_subdir(self) -> Path:
+    def tests_subdir(self) -> Path:
         pass
+
+    @property
+    def sanity_test_subdir(self) -> Path:
+        return self.tests_subdir / "sanity"
+
+    @property
+    def integration_test_subdir(self) -> Path:
+        return self.tests_subdir / "integration"
+
+    def install_requirements(self):
+        reqs = self.integration_test_subdir / "requirements.yml"
+        if reqs.exists():
+            subprocess.run(
+                [
+                    self.binary_path("ansible-galaxy"),
+                    "collection",
+                    "install",
+                    "-r",
+                    f"{reqs}",
+                ],
+                check=True,
+            )
+        else:
+            print(f"Cannot find requirements file: {reqs}")
 
     @abstractmethod
     def post_sub_dir(self, top_dir: Path):
@@ -125,6 +157,8 @@ class AbstractContext(ABC):
 
 
 class AnsibleCoreContext(AbstractContext):
+    context_type = AbstractContext.ANSIBLE_CORE
+
     @property
     def ansible_test(self):
         return str(self.top_dir / "bin" / "ansible-test")
@@ -137,11 +171,16 @@ class AnsibleCoreContext(AbstractContext):
         pass
 
     @property
-    def sanity_test_subdir(self):
-        return Path("test") / "sanity"
+    def tests_subdir(self):
+        return Path("test")
+
+    def install_requirements(self):
+        pass
 
 
 class CollectionContext(AbstractContext):
+    context_type = AbstractContext.COLLECTION
+
     def __init__(self, base_dir, args) -> None:
         super().__init__(base_dir, args)
         self.name = self.version = ""
@@ -168,21 +207,9 @@ class CollectionContext(AbstractContext):
             ),
         )
 
-    def install_requirements(self):
-        subprocess.run(
-            [
-                self.binary_path("ansible-galaxy"),
-                "collection",
-                "install",
-                "-r",
-                f"{Path('tests') / 'integration' / 'requirements.yml'}",
-            ],
-            check=True,
-        )
-
     @property
-    def sanity_test_subdir(self):
-        return str(Path("tests") / "sanity")
+    def tests_subdir(self):
+        return Path("tests")
 
     def read_coll_meta(self):
         with open("galaxy.yml") as galaxy_meta:

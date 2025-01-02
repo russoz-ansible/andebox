@@ -45,7 +45,7 @@ class AnsibleTestAction(AndeboxAction):
     def run(self, context):
         try:
             with context.temp_tree() as temp_dir:
-                if context.args.requirements:
+                if context.args.requirements and context.type == context.COLLECTION:
                     context.install_requirements()
                 if context.args.exclude_from_ignore:
                     context.exclude_from_ignore()
