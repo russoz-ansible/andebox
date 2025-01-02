@@ -37,21 +37,21 @@ class RuntimeAction(AndeboxAction):
         dict(
             names=["--plugin-type", "-pt"],
             specs=dict(
-                choices=PLUGIN_TYPES, help="Specify the plugin type to be searched"
+                choices=PLUGIN_TYPES, help="specify the plugin type to be searched"
             ),
         ),
         dict(
             names=["--regex", "--regexp", "-r"],
             specs=dict(
-                action="store_true", help="Treat plugin names as regular expressions"
+                action="store_true", help="treat plugin names as regular expressions"
             ),
         ),
         dict(
             names=["--info-type", "-it"],
             specs=dict(
                 type=partial(info_type, RUNTIME_TYPES),
-                help=f"Restrict type of response elements. Must be in {RUNTIME_TYPES}, "
-                "may be shortened down to one letter.",
+                help=f"restrict type of response elements. Must be one of {RUNTIME_TYPES}, "
+                "and it may be shortened down to one letter.",
             ),
         ),
         dict(names=["plugin_names"], specs=dict(nargs="+")),

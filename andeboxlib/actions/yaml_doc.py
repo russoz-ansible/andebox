@@ -21,6 +21,7 @@ except ImportError:
 from .base import AndeboxAction
 
 
+# pylint: disable=unused-argument
 def fixme(s):
     return "__FIXME__"
 
@@ -76,28 +77,37 @@ class YAMLDocAction(AndeboxAction):
             names=("--offenders", "-o"),
             specs=dict(
                 action="store_true",
-                help="Report potential style-related offending constructs",
+                help="report potential style-related offending constructs",
             ),
         ),
         dict(
             names=("--fix-offenders", "-O"),
             specs=dict(
                 action="store_true",
-                help="Fix potential style-related offending constructs, implies (--offenders)",
+                help="fix potential style-related offending constructs, implies (--offenders)",
             ),
         ),
         dict(
             names=("--dry_run", "-n"),
             specs=dict(
                 action="store_true",
-                help="Do not modify files",
+                help="do not modify files",
             ),
         ),
         dict(
             names=("--width", "-w"),
             specs=dict(
-                action="store_true",
-                help="Width for the YAML output",
+                type=int,
+                default=120,
+                help="width for the YAML output (default: 120)",
+            ),
+        ),
+        dict(
+            names=("--indent", "-i"),
+            specs=dict(
+                type=int,
+                default=2,
+                help="indentation for the YAML output (default: 2)",
             ),
         ),
         dict(
@@ -134,6 +144,7 @@ class YAMLDocAction(AndeboxAction):
             line_num = 2 + self.first_line_no + num
 
             def apply(line):
+                # pylint: disable=cell-var-from-loop
                 return self.apply_offender_rule(line_num, line)
 
             prev_line = fixed_line = line
@@ -151,10 +162,10 @@ class YAMLDocAction(AndeboxAction):
             raise ValueError("This action requires ruamel.yaml to be installed")
 
         yaml = YAML()
+        yaml.indent(**self.indent)
+        yaml.width = self.width
         yaml.preserve_quotes = True
-        yaml.indent(mapping=2, sequence=4, offset=2)
         yaml.explicit_start = False
-        yaml.width = 120
         yaml.preserve_quotes = True
         yaml.top_level_colon_align = False
         yaml.compact_seq_seq = False
@@ -262,6 +273,7 @@ class YAMLDocAction(AndeboxAction):
             return quoted_content
         return yaml_content
 
+    # pylint: disable=attribute-defined-outside-init
     def process_file(self, file_path: Path):
         QUOTE_RE_FRAG = r'(?:"|\'){3}'
         VAR_RE_FRAG = r"(?:[A-Z]+)"
@@ -320,11 +332,18 @@ class YAMLDocAction(AndeboxAction):
             with open(file_path, "w") as file:
                 file.writelines([f"{x}\n" for x in updated_lines])
 
+    @staticmethod
+    def calculate_indent(num: int):
+        return dict(mapping=num, sequence=num + 2, offset=2)
+
+    # pylint: disable=attribute-defined-outside-init
     def run(self, context):
         self.yaml = self.make_yaml_instance()
         self.offenders = context.args.offenders or context.args.fix_offenders
         self.fix_offenders = context.args.fix_offenders
         self.dry_run = context.args.dry_run
+        self.width = context.args.width
+        self.indent = self.calculate_indent(context.args.indent)
 
         for file_path in context.args.files:
             self.process_file(file_path)

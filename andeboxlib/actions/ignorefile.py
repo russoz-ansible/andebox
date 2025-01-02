@@ -150,42 +150,43 @@ class IgnoreLinesAction(AndeboxAction):
             specs=dict(
                 choices=_ignore_versions + ["-"],
                 help=(
-                    "Use the ignore file matching this Ansible version. "
-                    "The special value '-' may be specified to read "
-                    "from stdin instead. If not specified, will use all available files. "
-                    "If no choices are presented, the collection structure was not recognized."
+                    "use the ignore file matching this Ansible version; "
+                    "special value '-' may be specified to read "
+                    "from stdin instead; if not specified, will use all available files; "
+                    "if no choices are presented, the collection structure was not recognized"
                 ),
             ),
         ),
         dict(
             names=["--depth", "-d"],
-            specs=dict(type=int, help="Path depth for grouping files"),
+            specs=dict(type=int, help="path depth for grouping files"),
         ),
         dict(
             names=["--filter-files", "-ff"],
             specs=dict(
-                type=re.compile, help="Regexp matching file names to be included"
+                type=re.compile,
+                help="regular expression matching file names to be included",
             ),
         ),
         dict(
             names=["--filter-checks", "-fc"],
             specs=dict(
                 type=re.compile,
-                help="Regexp matching checks in ignore files to be included",
+                help="regular expression matching checks in ignore files to be included",
             ),
         ),
         dict(
             names=["--suppress-files", "-sf"],
             specs=dict(
                 action="store_true",
-                help="Supress file names from the output, consolidating the results",
+                help="supress file names from the output, consolidating the results",
             ),
         ),
         dict(
             names=["--suppress-checks", "-sc"],
             specs=dict(
                 action="store_true",
-                help="Suppress the checks from the output, consolidating the results",
+                help="suppress the checks from the output, consolidating the results",
             ),
         ),
         dict(
@@ -194,7 +195,7 @@ class IgnoreLinesAction(AndeboxAction):
                 type=int,
                 default=10,
                 help=(
-                    "Number of lines to display in the output: leading lines if "
+                    "number of lines to display in the output: leading lines if "
                     "positive, trailing lines if negative, all lines if zero."
                 ),
             ),

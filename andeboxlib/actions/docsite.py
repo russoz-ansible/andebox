@@ -18,21 +18,21 @@ class DocsiteAction(AndeboxAction):
         dict(
             names=("--keep", "-k"),
             specs=dict(
-                help="Keep temporary collection directory after execution",
+                help="keep temporary collection directory after execution",
                 action="store_true",
             ),
         ),
         dict(
             names=("--open", "-o"),
             specs=dict(
-                help="Open browser pointing to main page after build",
+                help="open browser pointing to main page after build",
                 action="store_true",
             ),
         ),
         dict(
             names=("--dest-dir", "-d"),
             specs=dict(
-                help="Directory which should contain the docsite",
+                help="directory which should contain the docsite",
                 default=".builtdocs",
                 type=Path,
             ),
