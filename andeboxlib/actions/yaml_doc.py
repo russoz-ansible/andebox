@@ -21,12 +21,12 @@ except ImportError:
 from .base import AndeboxAction
 
 
-FIXME_TAG = "__FIXEME__"
+FIXME_TAG = "__FIXME__"
 
 
 # pylint: disable=unused-argument
 def fixme(s):
-    return f"{FIXME_TAG}"
+    return f"{FIXME_TAG}({s})"
 
 
 DESCRIPTION_ACCEPTED_END_CHARS = (".", "!", ":", ";", ",", "?")
@@ -41,6 +41,7 @@ OFFENDING_SPEC = [
     dict(regexp=r"\bversus\b", apply=fixme),
     dict(regexp=r"\bvs\.?\b", apply=fixme),
     dict(regexp=r"\bversa\b", apply=fixme),
+    dict(regexp=r"won't", replace="will not"),
     # dict(regexp=r"\b(?:[Ww]i|')ll\b", apply=fixme),
     dict(regexp=r"[a-zI]'ve", apply=lambda s: s.replace("'ve", " have")),
     dict(regexp=r"can't", replace="cannot"),
@@ -61,7 +62,7 @@ OFFENDING_SPEC = [
     dict(regexp=r"\s(?:[Jj]son|[Dd]ns)[\s\.,]", apply=str.upper),
 ]
 OFFENDING_SPEC = [
-    (re.compile(f"(.*)({x['regexp']})({x.get('plural', '')})(.*)"), x)
+    (re.compile(f"(.*[^(])({x['regexp']})({x.get('plural', '')})([^)]?.*)"), x)
     for x in OFFENDING_SPEC
 ]
 
