@@ -338,12 +338,12 @@ class YAMLDocAction(AndeboxAction):
 
     # pylint: disable=attribute-defined-outside-init
     def run(self, context):
-        self.yaml = self.make_yaml_instance()
         self.offenders = context.args.offenders or context.args.fix_offenders
         self.fix_offenders = context.args.fix_offenders
         self.dry_run = context.args.dry_run
         self.width = context.args.width
         self.indent = self.calculate_indent(context.args.indent)
+        self.yaml = self.make_yaml_instance()
 
         for file_path in context.args.files:
             self.process_file(file_path)
