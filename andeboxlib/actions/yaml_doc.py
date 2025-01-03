@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# (c) 2024, Alexei Znamensky <russoz@gmail.com>
+# (c) 2024-2025, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 import re
 from io import StringIO
@@ -21,9 +21,12 @@ except ImportError:
 from .base import AndeboxAction
 
 
+FIXME_TAG = "__FIXEME__"
+
+
 # pylint: disable=unused-argument
 def fixme(s):
-    return "__FIXME__"
+    return f"{FIXME_TAG}"
 
 
 DESCRIPTION_ACCEPTED_END_CHARS = (".", "!", ":", ";", ",", "?")
@@ -259,6 +262,14 @@ class YAMLDocAction(AndeboxAction):
             return quoted_content
 
         data = processor(data)
+        # trying to determine whether the content is in JSON format of YAML
+        # if isinstance(data, dict):
+        #     for k, v in data.items():
+        #         if isinstance(v, dict):
+        #             print("=" * 15)
+        #             print(f"{k}.sample = {v.get('sample')}")
+        #             print(f"{k}.sample = {type(v.get('sample'))}")
+        #             print(f"{v}")
         yaml_content = self.dump_yaml(data)
         yaml_content = yaml_content.splitlines()
         if isinstance(data, list):
@@ -272,6 +283,43 @@ class YAMLDocAction(AndeboxAction):
         if self.dry_run:
             return quoted_content
         return yaml_content
+
+    def postprocess_content(self, in_variable: str, content: List[str]) -> List[str]:
+        if self.offenders and in_variable != "EXAMPLES":
+            fixed_content = self.process_offenders(content)
+            if self.fix_offenders:
+                content = fixed_content
+        if in_variable != "EXAMPLES":
+            fixed_content = self.postprocess_line_length(content)
+            if self.fix_offenders:
+                content = fixed_content
+        return content
+
+    def postprocess_line_length(self, content: List[str]) -> List[str]:
+        hard_limit = 160
+
+        LINE_RE = re.compile(r"^(\s*[-\s]\s)\S.*")
+        results = []
+        for line in content:
+            if len(line) <= hard_limit:
+                results.append(line)
+                continue
+
+            if match := LINE_RE.match(line):
+                lead_spaces = len(match.group(1)) * " "
+                line_split = line.split(" ")
+                first_part = f'{" ".join(line_split[:-1])}'
+                last_part = f"{lead_spaces}{line_split[-1]}"
+
+                if len(first_part) > hard_limit:
+                    first_part = f"{first_part} {FIXME_TAG}"
+                if len(last_part) > hard_limit:
+                    last_part = f"{last_part} {FIXME_TAG}"
+                results.append(first_part)
+                results.append(last_part)
+            else:
+                results.append(f"{line} {FIXME_TAG}")
+        return results
 
     # pylint: disable=attribute-defined-outside-init
     def process_file(self, file_path: Path):
@@ -306,11 +354,9 @@ class YAMLDocAction(AndeboxAction):
                     quoted_content,
                     self.get_processor("DOCUMENTATION" if is_doc_frag else in_variable),
                 )
-                if self.offenders and in_variable != "EXAMPLES":
-                    fixed_content = self.process_offenders(outbound_content)
-                    if self.fix_offenders:
-                        outbound_content = fixed_content
-                updated_lines.extend(outbound_content)
+                updated_lines.extend(
+                    self.postprocess_content(in_variable, outbound_content)
+                )
                 updated_lines.append('"""')
 
                 in_variable = ""
