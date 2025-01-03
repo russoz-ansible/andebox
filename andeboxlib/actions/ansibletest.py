@@ -14,21 +14,21 @@ class AnsibleTestAction(AndeboxAction):
         dict(
             names=("--keep", "-k"),
             specs=dict(
-                action="store_true", help="Keep temporary directory after execution"
+                action="store_true", help="keep temporary directory after execution"
             ),
         ),
         dict(
             names=("--exclude-from-ignore", "-efi", "-ei"),
             specs=dict(
                 action="store_true",
-                help="Matching lines in ignore files will be filtered out",
+                help="matching lines in ignore files will be filtered out",
             ),
         ),
         dict(
             names=("--requirements", "-R"),
             specs=dict(
                 action="store_true",
-                help="Install integration_tests_dependencies from tests/requirements.yml prior",
+                help="install integration_tests_dependencies from tests/requirements.yml prior",
             ),
         ),
         dict(names=("ansible_test_params",), specs=dict(nargs="+")),
@@ -45,7 +45,7 @@ class AnsibleTestAction(AndeboxAction):
     def run(self, context):
         try:
             with context.temp_tree() as temp_dir:
-                if context.args.requirements:
+                if context.args.requirements and context.type == context.COLLECTION:
                     context.install_requirements()
                 if context.args.exclude_from_ignore:
                     context.exclude_from_ignore()

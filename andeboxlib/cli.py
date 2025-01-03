@@ -17,7 +17,7 @@ from .actions.yaml_doc import YAMLDocAction
 from .actions.runtime import RuntimeAction
 from .actions.toxtest import ToxTestAction
 from .actions.vagrant import VagrantAction
-from .context import Context
+from .context import create_context
 from .exceptions import AndeboxException
 from .util import set_dir
 
@@ -65,7 +65,7 @@ class AndeBox:
 
     def run(self):
         args = self.parser.parse_args()
-        context = Context.create(args)
+        context = create_context(args)
         with set_dir(context.base_dir):
             action = self.actions[args.action]
             action.run(context)

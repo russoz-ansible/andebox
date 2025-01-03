@@ -8,7 +8,10 @@ from pathlib import Path
 
 import yaml
 
+from ..context import CollectionContext
+from ..exceptions import AndeboxException
 from .base import AndeboxAction
+
 
 PLUGIN_TYPES = (
     "connection",
@@ -22,7 +25,7 @@ PLUGIN_TYPES = (
 RUNTIME_TYPES = ("redirect", "tombstone", "deprecation")
 
 
-def info_type(types, v):
+def info_type_param(types, v):
     try:
         r = [t for t in types if t.startswith(v.lower())]
         return r[0][0].upper()
@@ -37,21 +40,21 @@ class RuntimeAction(AndeboxAction):
         dict(
             names=["--plugin-type", "-pt"],
             specs=dict(
-                choices=PLUGIN_TYPES, help="Specify the plugin type to be searched"
+                choices=PLUGIN_TYPES, help="specify the plugin type to be searched"
             ),
         ),
         dict(
             names=["--regex", "--regexp", "-r"],
             specs=dict(
-                action="store_true", help="Treat plugin names as regular expressions"
+                action="store_true", help="treat plugin names as regular expressions"
             ),
         ),
         dict(
             names=["--info-type", "-it"],
             specs=dict(
-                type=partial(info_type, RUNTIME_TYPES),
-                help=f"Restrict type of response elements. Must be in {RUNTIME_TYPES}, "
-                "may be shortened down to one letter.",
+                type=partial(info_type_param, RUNTIME_TYPES),
+                help=f"restrict type of response elements. Must be one of {RUNTIME_TYPES}, "
+                "and it may be shortened down to one letter.",
             ),
         ),
         dict(names=["plugin_names"], specs=dict(nargs="+")),
@@ -85,10 +88,14 @@ class RuntimeAction(AndeboxAction):
             ]
             for name in matching:
                 self.print_runtime(
-                    "{plugin_type} {name}", plugin_routing[plugin_type][name]
+                    f"{plugin_type} {name}", plugin_routing[plugin_type][name]
                 )
 
-    def run(self, context):
+    def run(self, context: CollectionContext):
+        if context.type != context.COLLECTION:
+            raise AndeboxException(
+                "Action 'runtime' must be executed in a collection context!"
+            )
         with open(Path("meta") / "runtime.yml") as runtime_yml:
             runtime = yaml.safe_load(runtime_yml)
 

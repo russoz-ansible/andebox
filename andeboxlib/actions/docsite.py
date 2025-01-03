@@ -6,6 +6,7 @@ import subprocess
 import webbrowser
 from pathlib import Path
 
+from ..context import CollectionContext
 from ..exceptions import AndeboxException
 from ..util import set_dir
 from .base import AndeboxAction
@@ -18,28 +19,32 @@ class DocsiteAction(AndeboxAction):
         dict(
             names=("--keep", "-k"),
             specs=dict(
-                help="Keep temporary collection directory after execution",
+                help="keep temporary collection directory after execution",
                 action="store_true",
             ),
         ),
         dict(
             names=("--open", "-o"),
             specs=dict(
-                help="Open browser pointing to main page after build",
+                help="open browser pointing to main page after build",
                 action="store_true",
             ),
         ),
         dict(
             names=("--dest-dir", "-d"),
             specs=dict(
-                help="Directory which should contain the docsite",
+                help="directory which should contain the docsite",
                 default=".builtdocs",
                 type=Path,
             ),
         ),
     ]
 
-    def run(self, context):
+    def run(self, context: CollectionContext):
+        if context.type != context.COLLECTION:
+            raise AndeboxException(
+                "Action 'docsite' must be executed in a collection context!"
+            )
         try:
             with context.temp_tree() as collection_dir:
                 os.makedirs(context.args.dest_dir, mode=0o755, exist_ok=True)

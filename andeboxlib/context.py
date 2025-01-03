@@ -8,8 +8,13 @@ import sys
 import tempfile
 from abc import ABC
 from abc import abstractmethod
+from argparse import Namespace
 from contextlib import contextmanager
 from pathlib import Path
+from typing import Any
+from typing import Generator
+from typing import Type
+from typing import Union
 
 import yaml
 
@@ -23,8 +28,16 @@ class AndeboxUnknownContext(AndeboxException):
 
 
 class AbstractContext(ABC):
+    UNSET = 0
+    ANSIBLE_CORE = 1
+    COLLECTION = 2
+    _context_type = UNSET
 
-    def __init__(self, base_dir, args) -> None:
+    @property
+    def type(self):
+        return self._context_type
+
+    def __init__(self, base_dir: Path, args: Namespace) -> None:
         self.base_dir = base_dir
         self.args = args
         self.venv = args.venv
@@ -46,14 +59,38 @@ class AbstractContext(ABC):
 
     @property
     @abstractmethod
-    def sanity_test_subdir(self) -> Path:
+    def tests_subdir(self) -> Path:
         pass
+
+    @property
+    def sanity_test_subdir(self) -> Path:
+        return self.tests_subdir / "sanity"
+
+    @property
+    def integration_test_subdir(self) -> Path:
+        return self.tests_subdir / "integration"
+
+    def install_requirements(self):
+        reqs = self.integration_test_subdir / "requirements.yml"
+        if reqs.exists():
+            subprocess.run(
+                [
+                    self.binary_path("ansible-galaxy"),
+                    "collection",
+                    "install",
+                    "-r",
+                    f"{reqs}",
+                ],
+                check=True,
+            )
+        else:
+            print(f"Cannot find requirements file: {reqs}")
 
     @abstractmethod
-    def post_sub_dir(self, top_dir):
+    def post_sub_dir(self, top_dir: Path):
         pass
 
-    def copy_tree(self, full_dir):
+    def copy_tree(self):
         # copy files to tmp ansible coll dir
         with os.scandir() as it:
             for entry in it:
@@ -62,22 +99,22 @@ class AbstractContext(ABC):
                 if entry.is_dir():
                     shutil.copytree(
                         entry.name,
-                        os.path.join(full_dir, entry.name),
+                        os.path.join(self.full_dir, entry.name),
                         symlinks=True,
                         ignore_dangling_symlinks=True,
                     )
                 else:
                     shutil.copy(
                         entry.name,
-                        os.path.join(full_dir, entry.name),
+                        os.path.join(self.full_dir, entry.name),
                         follow_symlinks=False,
                     )
 
     @contextmanager
-    def temp_tree(self):
+    def temp_tree(self) -> Generator[Path, Any, Any]:
         self.full_dir.mkdir(parents=True, exist_ok=True)
         print(f"directory  = {self.full_dir}", file=sys.stderr)
-        self.copy_tree(self.full_dir)
+        self.copy_tree()
 
         self.post_sub_dir(self.top_dir)
 
@@ -120,6 +157,8 @@ class AbstractContext(ABC):
 
 
 class AnsibleCoreContext(AbstractContext):
+    context_type = AbstractContext.ANSIBLE_CORE
+
     @property
     def ansible_test(self):
         return str(self.top_dir / "bin" / "ansible-test")
@@ -132,13 +171,19 @@ class AnsibleCoreContext(AbstractContext):
         pass
 
     @property
-    def sanity_test_subdir(self):
-        return Path("test") / "sanity"
+    def tests_subdir(self):
+        return Path("test")
+
+    def install_requirements(self):
+        pass
 
 
 class CollectionContext(AbstractContext):
+    context_type = AbstractContext.COLLECTION
+
     def __init__(self, base_dir, args) -> None:
         super().__init__(base_dir, args)
+        self.name = self.version = ""
         self.namespace, self.collection = self.determine_collection(
             self.args.collection
         )
@@ -162,21 +207,9 @@ class CollectionContext(AbstractContext):
             ),
         )
 
-    def install_requirements(self):
-        subprocess.run(
-            [
-                self.binary_path("ansible-galaxy"),
-                "collection",
-                "install",
-                "-r",
-                f"{Path('tests') / 'integration' / 'requirements.yml'}",
-            ],
-            check=True,
-        )
-
     @property
-    def sanity_test_subdir(self):
-        return str(Path("tests") / "sanity")
+    def tests_subdir(self):
+        return Path("tests")
 
     def read_coll_meta(self):
         with open("galaxy.yml") as galaxy_meta:
@@ -195,7 +228,12 @@ class CollectionContext(AbstractContext):
         return self.read_coll_meta()[:2]
 
 
-def _base_dir_type(dir_):
+ConcreteContexts = Union[AnsibleCoreContext, CollectionContext]
+
+
+def _base_dir_type(
+    dir_: Path,
+) -> Union[Type[AnsibleCoreContext], Type[CollectionContext]]:
     if (dir_ / "bin" / "ansible-playbook").exists():
         return AnsibleCoreContext
     if (dir_ / "meta" / "runtime.yml").exists():
@@ -210,7 +248,7 @@ def _determine_base_dir_rec(
         return dir_, _base_dir_type(dir_)
     except ValueError:
         if dir_ == dir_.anchor:
-            raise AndeboxUnknownContext()
+            raise AndeboxUnknownContext()  # pylint: disable=raise-missing-from
         return _determine_base_dir_rec(dir_.parent)
 
 
@@ -224,8 +262,6 @@ def _determine_base_dir():
         ) from e
 
 
-class Context:
-    @staticmethod
-    def create(args) -> AbstractContext:
-        base_dir, basedir_type = _determine_base_dir()
-        return (basedir_type)(base_dir, args)
+def create_context(args: Namespace) -> ConcreteContexts:
+    base_dir, basedir_type = _determine_base_dir()
+    return (basedir_type)(base_dir, args)
