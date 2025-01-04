@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # (c) 2024-2025, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+import json
 import re
 from io import StringIO
 from pathlib import Path
@@ -166,7 +167,7 @@ class YAMLDocAction(AndeboxAction):
             raise ValueError("This action requires ruamel.yaml to be installed")
 
         yaml = YAML()
-        yaml.indent(**self.indent)
+        yaml.indent(**self.yaml_indents)
         yaml.width = self.width
         yaml.preserve_quotes = True
         yaml.explicit_start = False
@@ -203,6 +204,16 @@ class YAMLDocAction(AndeboxAction):
         except Exception as e:
             raise YAMLDocException(desc) from e
 
+    def process_sample(self, sample: Any, type_: str) -> Any:
+        output_sample = self.dump_yaml(sample)
+        is_json = (type_ == "list" and output_sample.strip().startswith("[")) or (
+            type_ == "dict" and output_sample.strip().startswith("{")
+        )
+        if not is_json:
+            return sample
+        json_sample = json.dumps(sample, indent=self.indent)
+        return f"|\n{json_sample}"
+
     def process_options(
         self, opts: Dict[str, Any], suboptions_kw: str
     ) -> Dict[str, Any]:
@@ -215,6 +226,10 @@ class YAMLDocAction(AndeboxAction):
                 if suboptions_kw in option:
                     option[suboptions_kw] = self.process_options(
                         option[suboptions_kw], suboptions_kw
+                    )
+                if "sample" in option and option["type"] in ("list", "dict"):
+                    option["sample"] = self.process_sample(
+                        option["sample"], option["type"]
                     )
             return opts
         except Exception as e:
@@ -264,13 +279,24 @@ class YAMLDocAction(AndeboxAction):
 
         data = processor(data)
         # trying to determine whether the content is in JSON format of YAML
+
         # if isinstance(data, dict):
         #     for k, v in data.items():
-        #         if isinstance(v, dict):
+        #         if (
+        #             isinstance(v, dict)
+        #             and "sample" in v
+        #             and v["type"] in ["list", "dict"]
+        #         ):
         #             print("=" * 15)
         #             print(f"{k}.sample = {v.get('sample')}")
         #             print(f"{k}.sample = {type(v.get('sample'))}")
         #             print(f"{v}")
+        #             ooo = self.dump_yaml(v.get("sample"))
+        #             print(f"{ooo=}")
+        #             import json
+
+        #             print(f"{json.dumps(v.get('sample'), indent=2)}")
+
         yaml_content = self.dump_yaml(data)
         yaml_content = yaml_content.splitlines()
         if isinstance(data, list):
@@ -389,7 +415,8 @@ class YAMLDocAction(AndeboxAction):
         self.fix_offenders = context.args.fix_offenders
         self.dry_run = context.args.dry_run
         self.width = context.args.width
-        self.indent = self.calculate_indent(context.args.indent)
+        self.indent = context.args.indent
+        self.yaml_indents = self.calculate_indent(context.args.indent)
         self.yaml = self.make_yaml_instance()
 
         for file_path in context.args.files:
