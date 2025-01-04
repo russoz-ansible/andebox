@@ -24,7 +24,6 @@ from .base import AndeboxAction
 FIXME_TAG = "__FIXME__"
 
 
-# pylint: disable=unused-argument
 def fixme(s):
     return f"{FIXME_TAG}({s})"
 
