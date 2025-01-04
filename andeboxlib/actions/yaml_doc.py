@@ -59,7 +59,7 @@ OFFENDING_SPEC = [
         plural=r"s?[\s\.,]",
         apply=str.upper,
     ),
-    dict(regexp=r"\s(?:[Jj]son|[Dd]ns)[\s\.,]", apply=str.upper),
+    dict(regexp=r"\s(?:[Jj]son|[Dd]ns|[Hh]tml|[Vv]m)[\s\.,]", apply=str.upper),
 ]
 OFFENDING_SPEC = [
     (re.compile(f"(.*[^(])({x['regexp']})({x.get('plural', '')})([^)]?.*)"), x)
