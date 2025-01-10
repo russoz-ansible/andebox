@@ -8,7 +8,7 @@ readme = "README.md"
 homepage = "https://github.com/russoz-ansible/andebox"
 repository = "https://github.com/russoz-ansible/andebox"
 classifiers = [
-    "Development Status :: 2 - Pre-Alpha",
+    "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Framework :: Ansible",
     "Intended Audience :: Developers",
@@ -45,7 +45,6 @@ ansible-core = [
 pyyaml = ">=5.4"
 python-vagrant = "^1.0.0"
 fabric = "^3.1.0"
-decorator = "^5.1.1"
 looseversion = "^1.2.0"
 tox = "^4.5.2"
 virtualenv-pyenv = "*"

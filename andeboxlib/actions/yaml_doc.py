@@ -44,6 +44,7 @@ OFFENDING_SPEC = [
     # dict(regexp=r"\b(?:[Ww]i|')ll\b", apply=fixme),
     dict(regexp=r"[a-zI]'ve", apply=lambda s: s.replace("'ve", " have")),
     dict(regexp=r"can't", replace="cannot"),
+    dict(regexp=r"Can't", replace="Cannot"),
     dict(regexp=r"[a-zI]n't", apply=lambda s: s.replace("n't", " not")),
     dict(regexp=r"[a-zI]'re", apply=lambda s: s.replace("'re", " are")),
     dict(regexp=r"[a-zI]'d", apply=lambda s: s.replace("'d", " would")),
