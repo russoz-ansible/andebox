@@ -9,27 +9,40 @@ import argparse
 import signal
 import sys
 from pathlib import Path
+import importlib
+import pkgutil
 
-from .actions.ansibletest import AnsibleTestAction
-from .actions.docsite import DocsiteAction
-from .actions.ignorefile import IgnoreLinesAction
-from .actions.yaml_doc import YAMLDocAction
-from .actions.runtime import RuntimeAction
-from .actions.toxtest import ToxTestAction
-from .actions.vagrant import VagrantAction
+import andeboxlib.actions
+from .actions.base import AndeboxAction
 from .context import create_context
 from .exceptions import AndeboxException
 from .util import set_dir
 
-_actions = [
-    AnsibleTestAction,
-    IgnoreLinesAction,
-    YAMLDocAction,
-    RuntimeAction,
-    ToxTestAction,
-    VagrantAction,
-    DocsiteAction,
-]
+
+def iter_namespace(ns_pkg):
+    # Specifying the second argument (prefix) to iter_modules makes the
+    # returned name an absolute name instead of a relative one. This allows
+    # import_module to work without having to do additional modification to
+    # the name.
+    return pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + ".")
+
+
+def load_actions():
+    results = []
+
+    for finder, name, ispkg in iter_namespace(andeboxlib.actions):
+        for attr in dir(module := importlib.import_module(name)):
+            try:
+                action = getattr(module, attr)
+                if issubclass(action, AndeboxAction) and action != AndeboxAction:
+                    results.append(action)
+            except TypeError:
+                pass
+
+    return results
+
+
+_actions = load_actions()
 
 
 def _make_parser() -> argparse.ArgumentParser:
