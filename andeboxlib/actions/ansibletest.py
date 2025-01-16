@@ -3,6 +3,7 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 import subprocess
 
+from ..context import ContextType
 from ..exceptions import AndeboxException
 from .base import AndeboxAction
 
@@ -45,7 +46,7 @@ class AnsibleTestAction(AndeboxAction):
     def run(self, context):
         try:
             with context.temp_tree() as temp_dir:
-                if context.args.requirements and context.type == context.COLLECTION:
+                if context.args.requirements and context.type == ContextType.COLLECTION:
                     context.install_requirements()
                 if context.args.exclude_from_ignore:
                     context.exclude_from_ignore()

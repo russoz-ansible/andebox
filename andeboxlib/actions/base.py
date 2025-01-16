@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # (c) 2021, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from ..context import ConcreteContexts
+from ..context import ConcreteContext
 
 
 class AndeboxAction:
@@ -16,7 +16,7 @@ class AndeboxAction:
             action_parser.add_argument(*arg["names"], **arg["specs"])
         return action_parser
 
-    def run(self, context: ConcreteContexts) -> None:
+    def run(self, context: ConcreteContext) -> None:
         raise NotImplementedError()
 
     def __str__(self):

@@ -19,6 +19,10 @@ from .exceptions import AndeboxException
 from .util import set_dir
 
 
+#
+# Adapted from:
+# https://packaging.python.org/en/latest/guides/creating-and-discovering-plugins/
+#
 def iter_namespace(ns_pkg):
     # Specifying the second argument (prefix) to iter_modules makes the
     # returned name an absolute name instead of a relative one. This allows
@@ -42,7 +46,7 @@ def load_actions():
     return results
 
 
-_actions = load_actions()
+actions = load_actions()
 
 
 def _make_parser() -> argparse.ArgumentParser:
@@ -65,7 +69,7 @@ def _make_parser() -> argparse.ArgumentParser:
     )
     subparser = parser.add_subparsers(dest="action", required=True)
 
-    for action in _actions:
+    for action in actions:
         action.make_parser(subparser)
 
     return parser
@@ -73,7 +77,7 @@ def _make_parser() -> argparse.ArgumentParser:
 
 class AndeBox:
     def __init__(self) -> None:
-        self.actions = {ac.name: ac() for ac in _actions}
+        self.actions = {ac.name: ac() for ac in actions}
         self.parser = _make_parser()
 
     def run(self):

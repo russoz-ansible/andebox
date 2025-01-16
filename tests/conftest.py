@@ -4,10 +4,12 @@
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
 import pytest
+from git import Repo
 
 
 @pytest.fixture(scope="session")
@@ -24,7 +26,7 @@ def git_repo():
 
             # Perform shallow clone
             print(f"Cloning repo {repo_url} => {dest}")
-            subprocess.run(["git", "clone", "--depth", "1", repo_url, dest], check=True)
+            Repo.clone_from(repo_url, dest, depth=1)
 
             # Store the path for later cleanup
             clones[repo_url] = dest
@@ -38,7 +40,9 @@ def git_repo():
     shutil.rmtree(temp_dir)
 
 
-@pytest.fixture(scope="session")
+# See https://pip.pypa.io/en/latest/user_guide/#using-pip-from-your-program
+#
+@pytest.fixture(scope="session", autouse=True)
 def install_andebox():
     proj_dir = os.getcwd()
 
@@ -46,14 +50,14 @@ def install_andebox():
 
     print("Uninstalling andebox")
     subprocess.run(
-        ["pip", "uninstall", "-y", "andebox"],
+        [sys.executable, "-m", "pip", "uninstall", "-y", "andebox"],
         check=True,
         encoding="utf-8",
         capture_output=True,
     )
     print("Installing andebox")
     subprocess.run(
-        ["pip", "install", "-e", proj_dir],
+        [sys.executable, "-m", "pip", "install", "-e", proj_dir],
         check=True,
         encoding="utf-8",
         capture_output=True,
@@ -63,7 +67,7 @@ def install_andebox():
 
     print("Uninstalling andebox (cleanup)")
     subprocess.run(
-        ["pip", "uninstall", "-y", "andebox"],
+        [sys.executable, "-m", "pip", "uninstall", "-y", "andebox"],
         check=False,
         encoding="utf-8",
         capture_output=True,
