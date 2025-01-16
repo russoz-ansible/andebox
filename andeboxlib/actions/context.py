@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # (c) 2021, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+from ..context import ConcreteContext
 from ..context import ContextType
 from .base import AndeboxAction
 
@@ -14,7 +15,7 @@ class ContextAction(AndeboxAction):
     help = "returns information from running context"
     args = []
 
-    def run(self, context):
+    def run(self, context: ConcreteContext):
         printline("Base dir", context.base_dir)
         if context.venv:
             printline("Venv", context.venv)
@@ -25,5 +26,5 @@ class ContextAction(AndeboxAction):
         printline("Integration tests", context.integration_test_subdir)
 
         if context.type == ContextType.COLLECTION:
-            ns, name, version = context.read_coll_meta()
+            ns, name, version = context.read_coll_meta()  # type: ignore
             printline("Collection", f"{ns}.{name} {version}")
