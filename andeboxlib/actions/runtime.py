@@ -9,6 +9,7 @@ from pathlib import Path
 import yaml
 
 from ..context import CollectionContext
+from ..context import ContextType
 from ..exceptions import AndeboxException
 from .base import AndeboxAction
 
@@ -92,7 +93,7 @@ class RuntimeAction(AndeboxAction):
                 )
 
     def run(self, context: CollectionContext):
-        if context.type != context.COLLECTION:
+        if context.type != ContextType.COLLECTION:
             raise AndeboxException(
                 "Action 'runtime' must be executed in a collection context!"
             )

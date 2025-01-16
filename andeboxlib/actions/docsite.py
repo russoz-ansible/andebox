@@ -7,6 +7,7 @@ import webbrowser
 from pathlib import Path
 
 from ..context import CollectionContext
+from ..context import ContextType
 from ..exceptions import AndeboxException
 from ..util import set_dir
 from .base import AndeboxAction
@@ -41,7 +42,7 @@ class DocsiteAction(AndeboxAction):
     ]
 
     def run(self, context: CollectionContext):
-        if context.type != context.COLLECTION:
+        if context.type != ContextType.COLLECTION:
             raise AndeboxException(
                 "Action 'docsite' must be executed in a collection context!"
             )
