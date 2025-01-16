@@ -10,9 +10,11 @@ from abc import ABC
 from abc import abstractmethod
 from argparse import Namespace
 from contextlib import contextmanager
+from enum import Enum
 from pathlib import Path
 from typing import Any
 from typing import Generator
+from typing import Tuple
 from typing import Type
 from typing import Union
 
@@ -27,21 +29,23 @@ class AndeboxUnknownContext(AndeboxException):
     pass
 
 
-class AbstractContext(ABC):
-    UNSET = 0
+class ContextType(Enum):
     ANSIBLE_CORE = 1
     COLLECTION = 2
-    _context_type = UNSET
 
-    @property
-    def type(self):
-        return self._context_type
+
+class AbstractContext(ABC):
+    _context_type = None
 
     def __init__(self, base_dir: Path, args: Namespace) -> None:
         self.base_dir = base_dir
         self.args = args
         self.venv = args.venv
         self.top_dir = Path(tempfile.mkdtemp(prefix="andebox."))
+
+    @property
+    def type(self):
+        return self._context_type
 
     @property
     @abstractmethod
@@ -157,7 +161,7 @@ class AbstractContext(ABC):
 
 
 class AnsibleCoreContext(AbstractContext):
-    context_type = AbstractContext.ANSIBLE_CORE
+    _context_type = ContextType.ANSIBLE_CORE
 
     @property
     def ansible_test(self):
@@ -179,7 +183,7 @@ class AnsibleCoreContext(AbstractContext):
 
 
 class CollectionContext(AbstractContext):
-    context_type = AbstractContext.COLLECTION
+    _context_type = ContextType.COLLECTION
 
     def __init__(self, base_dir, args) -> None:
         super().__init__(base_dir, args)
@@ -228,12 +232,13 @@ class CollectionContext(AbstractContext):
         return self.read_coll_meta()[:2]
 
 
-ConcreteContexts = Union[AnsibleCoreContext, CollectionContext]
+ConcreteContextType = Union[Type[AnsibleCoreContext], Type[CollectionContext]]
+ConcreteContext = Union[AnsibleCoreContext, CollectionContext]
 
 
 def _base_dir_type(
     dir_: Path,
-) -> Union[Type[AnsibleCoreContext], Type[CollectionContext]]:
+) -> ConcreteContextType:
     if (dir_ / "bin" / "ansible-playbook").exists():
         return AnsibleCoreContext
     if (dir_ / "meta" / "runtime.yml").exists():
@@ -243,7 +248,7 @@ def _base_dir_type(
 
 def _determine_base_dir_rec(
     dir_: Path,
-):
+) -> Tuple[Path, ConcreteContextType]:
     try:
         return dir_, _base_dir_type(dir_)
     except ValueError:
@@ -262,6 +267,6 @@ def _determine_base_dir():
         ) from e
 
 
-def create_context(args: Namespace) -> ConcreteContexts:
+def create_context(args: Namespace) -> ConcreteContext:
     base_dir, basedir_type = _determine_base_dir()
-    return (basedir_type)(base_dir, args)
+    return basedir_type(base_dir, args)
