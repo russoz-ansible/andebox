@@ -71,7 +71,7 @@ TEST_CASES_IDS = [item["id"] for item in TEST_CASES]
 
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
-def test_ansibletest(install_andebox, git_repo, testcase):
+def test_ansibletest(git_repo, testcase):
     repo = testcase["input"]["repo"]
     repo_dir = git_repo(repo)
 
