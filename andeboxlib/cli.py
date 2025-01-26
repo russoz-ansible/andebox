@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# PYTHON_ARGCOMPLETE_OK
 # (c) 2021-2022, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -17,6 +18,8 @@ from .actions.base import AndeboxAction
 from .context import create_context
 from .exceptions import AndeboxException
 from .util import set_dir
+
+import argcomplete
 
 
 #
@@ -67,7 +70,9 @@ def _make_parser() -> argparse.ArgumentParser:
         help="path to the virtual environment where andebox and ansible are installed",
         type=Path,
     )
-    subparser = parser.add_subparsers(dest="action", required=True)
+    subparser = parser.add_subparsers(
+        dest="action", required=True, metavar=" ".join([a.name for a in actions])
+    )
 
     for action in actions:
         action.make_parser(subparser)
@@ -76,22 +81,25 @@ def _make_parser() -> argparse.ArgumentParser:
 
 
 class AndeBox:
-    def __init__(self) -> None:
+    def __init__(self, args: argparse.Namespace) -> None:
         self.actions = {ac.name: ac() for ac in actions}
-        self.parser = _make_parser()
+        self.args = args
 
     def run(self):
-        args = self.parser.parse_args()
-        context = create_context(args)
+        context = create_context(self.args)
         with set_dir(context.base_dir):
-            action = self.actions[args.action]
+            action = self.actions[self.args.action]
             action.run(context)
 
 
 def run():
+    parser = _make_parser()
+    argcomplete.autocomplete(parser)
+    args = parser.parse_args()
+
     try:
         signal.signal(signal.SIGPIPE, signal.SIG_DFL)
-        box = AndeBox()
+        box = AndeBox(args)
         box.run()
         return 0
     except KeyboardInterrupt:
