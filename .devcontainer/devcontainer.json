@@ -1,0 +1,20 @@
+{
+  "name": "My Project Dev Container",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "features": {
+      "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+  },
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash",
+    "python.pythonPath": "/usr/local/bin/python"
+  },
+  "extensions": [
+    "ms-python.python",
+    "esbenp.prettier-vscode",
+    "ms-python.vscode-pylance"
+  ],
+  "remoteUser": "vscode"
+}
