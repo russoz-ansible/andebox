@@ -84,6 +84,7 @@ class AbstractContext(ABC):
                     "install",
                     "-r",
                     f"{reqs}",
+                    "-vvv",
                 ],
                 check=True,
             )
