@@ -62,34 +62,23 @@ class AbstractContext(ABC):
         return self.top_dir / self.sub_dir
 
     @property
-    @abstractmethod
     def tests_subdir(self) -> Path:
-        pass
+        return Path("tests")
 
     @property
     def sanity_test_subdir(self) -> Path:
         return self.tests_subdir / "sanity"
 
     @property
+    def unit_test_subdir(self) -> Path:
+        return self.tests_subdir / "unit"
+
+    @property
     def integration_test_subdir(self) -> Path:
         return self.tests_subdir / "integration"
 
-    def install_requirements(self):
-        reqs = self.integration_test_subdir / "requirements.yml"
-        if reqs.exists():
-            subprocess.run(
-                [
-                    self.binary_path("ansible-galaxy"),
-                    "collection",
-                    "install",
-                    "-r",
-                    f"{reqs}",
-                    "-vvv",
-                ],
-                check=True,
-            )
-        else:
-            print(f"Cannot find requirements file: {reqs}")
+    def install_requirements(self, reqs: Path, path: Path | None):
+        pass
 
     @abstractmethod
     def post_sub_dir(self, top_dir: Path):
@@ -179,8 +168,9 @@ class AnsibleCoreContext(AbstractContext):
     def tests_subdir(self):
         return Path("test")
 
-    def install_requirements(self):
-        pass
+    @property
+    def unit_test_subdir(self) -> Path:
+        return self.tests_subdir / "units"
 
 
 class CollectionContext(AbstractContext):
@@ -212,10 +202,6 @@ class CollectionContext(AbstractContext):
             ),
         )
 
-    @property
-    def tests_subdir(self):
-        return Path("tests")
-
     def read_coll_meta(self):
         with open("galaxy.yml") as galaxy_meta:
             meta = yaml.safe_load(galaxy_meta)
@@ -231,6 +217,32 @@ class CollectionContext(AbstractContext):
             coll_split = coll_arg.split(".")
             return ".".join(coll_split[:-1]), coll_split[-1]
         return self.read_coll_meta()[:2]
+
+    def install_requirements(self, reqs: Path, path: Path | None):
+        # reqs = self.integration_test_subdir / "requirements.yml"
+        if not reqs.exists():
+            print(f"Cannot find requirements file: {reqs}")
+            return
+
+        print(f"Installing requirements ({reqs})", end="")
+        if path:
+            print(f" at path: {path}")
+        else:
+            print("")
+        path_arg = ["-p", f"{path}"] if path else []
+
+        subprocess.run(
+            [
+                self.binary_path("ansible-galaxy"),
+                "collection",
+                "install",
+                "-r",
+                f"{reqs}",
+                "-vvv",
+            ]
+            + path_arg,
+            check=True,
+        )
 
 
 ConcreteContextType = Union[Type[AnsibleCoreContext], Type[CollectionContext]]

@@ -29,7 +29,14 @@ class AnsibleTestAction(AndeboxAction):
             names=("--requirements", "-R"),
             specs=dict(
                 action="store_true",
-                help="install integration_tests_dependencies from tests/requirements.yml prior",
+                help="install test requirements.yml",
+            ),
+        ),
+        dict(
+            names=("test",),
+            specs=dict(
+                choices=["sanity", "units", "integration"],
+                help="test type",
             ),
         ),
         dict(names=("ansible_test_params",), specs=dict(nargs="+")),
@@ -47,11 +54,19 @@ class AnsibleTestAction(AndeboxAction):
         try:
             with context.temp_tree() as temp_dir:
                 if context.args.requirements and context.type == ContextType.COLLECTION:
-                    context.install_requirements()
+                    req_path = dict(
+                        units=context.unit_test_subdir / "requirements.yml",
+                        integration=context.integration_test_subdir
+                        / "requirements.yml",
+                    )
+                    context.install_requirements(
+                        reqs=req_path[context.args.test], path=context.top_dir
+                    )
                 if context.args.exclude_from_ignore:
                     context.exclude_from_ignore()
                 subprocess.run(
-                    [context.ansible_test] + context.args.ansible_test_params,
+                    [context.ansible_test, context.args.test]
+                    + context.args.ansible_test_params,
                     cwd=temp_dir,
                     check=True,
                 )
