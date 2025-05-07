@@ -34,6 +34,7 @@ TEST_CASES = [
         input=dict(
             repo=GIT_REPO_CG,
             argv=[
+                "-R",
                 "--",
                 "units",
                 "--docker",
