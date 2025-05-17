@@ -64,6 +64,9 @@ class AnsibleTestAction(AndeboxAction):
                     )
                 if context.args.exclude_from_ignore:
                     context.exclude_from_ignore()
+                print(
+                    f"Running: {[context.ansible_test, context.args.test] + context.args.ansible_test_params}"
+                )
                 subprocess.run(
                     [context.ansible_test, context.args.test]
                     + context.args.ansible_test_params,

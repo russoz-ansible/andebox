@@ -231,18 +231,13 @@ class CollectionContext(AbstractContext):
             print("")
         path_arg = ["-p", f"{path}"] if path else []
 
-        subprocess.run(
-            [
-                self.binary_path("ansible-galaxy"),
-                "collection",
-                "install",
-                "-r",
-                f"{reqs}",
-                "-vvv",
-            ]
-            + path_arg,
-            check=True,
+        cmd = (
+            [self.binary_path("ansible-galaxy"), "collection", "install"]
+            + path_arg
+            + ["-r", f"{reqs}", "-vvv", "--force"]
         )
+        print(f"Running: {cmd}")
+        subprocess.run(cmd, check=True)
 
 
 ConcreteContextType = Union[Type[AnsibleCoreContext], Type[CollectionContext]]
