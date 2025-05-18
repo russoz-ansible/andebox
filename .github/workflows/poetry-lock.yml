@@ -1,0 +1,37 @@
+name: Update Poetry Lock
+
+permissions:
+  contents: write  # Needed to push changes to the repo
+
+on:
+  workflow_call:
+
+jobs:
+  update-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install all dependencies (including dev)
+        run: poetry install --with dev
+
+      - name: Update poetry.lock
+        run: poetry lock
+
+      - name: Commit and push poetry.lock if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet poetry.lock; then
+            git add poetry.lock
+            git commit -m "Update poetry.lock"
+            git push
+          fi
