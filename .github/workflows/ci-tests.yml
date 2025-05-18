@@ -7,16 +7,15 @@ permissions:
 on:
   pull_request:
     branches: [main]
-  workflow_call:
-
-permissions:
-  contents: read
+  workflow_call: {}
 
 jobs:
   call-tests:
-    uses: ./.github/workflows/ci-tests.yml
+    uses: ./.github/workflows/poetry-lock.yml
     secrets: inherit
-  build:
+
+  test:
+    needs: call-tests
     strategy:
       matrix:
         python-version: ["3.11", "3.12", "3.13"]
@@ -28,9 +27,15 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install tox
-      - name: Test package
-        run: tox -e py
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install all dependencies (including dev)
+        run: poetry install --with dev
+
+      - name: Lint with flake8
+        run: poetry run flake8 -v . --count --show-source --statistics
+
+      - name: Run tests
+        run: poetry run pytest -v
