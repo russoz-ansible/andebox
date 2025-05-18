@@ -34,10 +34,12 @@ jobs:
         run: pip install poetry
 
       - name: Install dependencies
-        run: poetry install
+        run: poetry install --with dev
 
       - name: Build package
-        run: poetry build
+        run: |
+          poetry run bumpversion --verbose minor
+          poetry build
 
       - name: Publish to PyPI
         env:
