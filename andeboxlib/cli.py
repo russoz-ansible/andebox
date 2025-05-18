@@ -4,7 +4,7 @@
 # (c) 2021-2022, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-__version__ = "0.76"
+__version__ = "0.77"
 
 import argparse
 import signal
