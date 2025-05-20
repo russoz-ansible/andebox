@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # (c) 2024, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-import os
 import re
 import subprocess
 import sys
@@ -81,9 +80,9 @@ def test_ansibletest(git_repo, testcase):
         pytest.skip("Unsupported python version")
 
     try:
-        os.chdir(next(repo_dir))
         proc = subprocess.run(
             ["andebox", "test"] + testcase["input"]["argv"],
+            cwd=next(repo_dir),
             check=False,
             encoding="utf-8",
             capture_output=True,
