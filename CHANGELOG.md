@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.93.5 (2025-05-21)
+
+### Bug Fixes
+
+- Typo in pyproject for semantiv-release variables
+  ([`43a28d9`](https://github.com/russoz-ansible/andebox/commit/43a28d9636c013b9854aac8df82dac198c53b4a3))
+
+
 ## v0.93.4 (2025-05-21)
 
 ### Bug Fixes
