@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.93.3 (2025-05-21)
+
+### Bug Fixes
+
+- Semantic-release config for updating version vars
+  ([`09f420a`](https://github.com/russoz-ansible/andebox/commit/09f420a284c4ad432a5df2b108816d80ebd11ad3))
+
+
 ## v0.93.2 (2025-05-21)
 
 ### Bug Fixes
