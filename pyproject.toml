@@ -73,10 +73,12 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.semantic_release]
 version_variable = [
-    "pyproject.toml:tool.poetry.version",
-    ".cz.toml:tool.commitizen.version",
     "andeboxlib/cli.py:__version__",
     "docs/conf.py:release"
+]
+version_toml = [
+    "pyproject.toml:tool.poetry.version",
+    ".cz.toml:tool.commitizen.version"
 ]
 branch = "main"
 changelog_file = "CHANGELOG.md"
