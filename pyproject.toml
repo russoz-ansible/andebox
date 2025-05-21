@@ -87,3 +87,5 @@ upload_to_release = true
 commit_parser = "conventional"
 major_on_zero = true
 tag_format = "v{version}"
+parse_version_from_tag = true
+version_pattern = "v(?P<version>\\d+\\.\\d+(\\.\\d+)?)"
