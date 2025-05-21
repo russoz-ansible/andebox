@@ -6,10 +6,4 @@ WORKDIR /workspace
 
 # Install poetry
 RUN pip install -U pip \
- && pip install poetry pre-commit
-
-# Install the project dependencies
-RUN poetry install --no-interaction --no-ansi --with dev
-
-# Install pre-commit hooks
-RUN pre-commit install --install-hooks
+ && pip install poetry pre-commit tox
