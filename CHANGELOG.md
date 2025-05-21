@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.86.0 (2025-05-21)
+
+### Features
+
+- **semantic-release**: Add pypi as provider for publishing
+  ([`3a27a72`](https://github.com/russoz-ansible/andebox/commit/3a27a72d02e1b0e35bac2e9dba0c5612f340e10d))
+
+
 ## v0.85.0 (2025-05-21)
 
 ### Features
