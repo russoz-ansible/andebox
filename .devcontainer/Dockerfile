@@ -4,8 +4,12 @@ FROM mcr.microsoft.com/devcontainers/python:3
 # Set the working directory in the container
 WORKDIR /workspace
 
-# Install Poetry
-RUN pip install \
-    tox \
-    pylint \
-    flake8
+# Install poetry
+RUN pip install -U pip \
+ && pip install poetry pre-commit
+
+# Install the project dependencies
+RUN poetry install --no-interaction --no-ansi --with dev
+
+# Install pre-commit hooks
+RUN pre-commit install --install-hooks
