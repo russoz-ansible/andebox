@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.85.0 (2025-05-21)
+
+### Features
+
+- **semantic-release**: Trigger minor release, and publish
+  ([`b3d15fe`](https://github.com/russoz-ansible/andebox/commit/b3d15fef165ba27d3a6082adce28be78ca8ac439))
+
+
 ## v0.84.0 (2025-05-21)
 
 ### Features
