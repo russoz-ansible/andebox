@@ -73,7 +73,10 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.semantic_release]
-version_variable = ["andeboxlib/cli.py:__version__"]
+version_variable = [
+    "andeboxlib/cli.py:__version__",
+    "docs/conf.py:release"
+]
 version_toml = ["pyproject.toml:tool.poetry.version"]
 branch = "main"
 changelog_file = "CHANGELOG.md"
