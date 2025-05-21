@@ -76,7 +76,10 @@ version_variable = [
     "andeboxlib/cli.py:__version__",
     "docs/conf.py:release"
 ]
-version_toml = ["pyproject.toml:tool.poetry.version"]
+version_toml = [
+    "pyproject.toml:tool.poetry.version",
+    ".cz.toml:tool.commitizen.version"
+]
 branch = "main"
 changelog_file = "CHANGELOG.md"
 build_command = "poetry build"
