@@ -1,9 +1,6 @@
 name: Semantic Release
 
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+permissions: {}  # remove top-level permissions
 
 on:
   workflow_dispatch:  # Manual trigger only for now
@@ -17,8 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     concurrency: release
     permissions:
-      id-token: write
       contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
 
     steps:
     - uses: actions/checkout@v4
@@ -44,9 +43,10 @@ jobs:
     - name: Create Release
       env:
         POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
         GH_TOKEN: ${{ github.token }}
       run: |
-        poetry install
+        poetry install --verbose
         poetry run semantic-release version
-        poetry run semantic-release publish
+        poetry run semantic-release --verbose publish
         poetry publish --no-interaction
