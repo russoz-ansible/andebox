@@ -94,3 +94,7 @@ version_pattern = "v(?P<version>\\d+\\.\\d+\\.\\d+)"
 
 [tool.semantic_release.publish]
 upload_to_vcs_release = true
+
+[tool.semantic_release.remote]
+type = "github"
+name = "russoz-ansible/andebox"

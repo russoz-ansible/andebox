@@ -2,6 +2,8 @@ name: Semantic Release
 
 permissions:
   contents: write
+  issues: write
+  pull-requests: write
 
 on:
   workflow_dispatch:  # Manual trigger only for now
