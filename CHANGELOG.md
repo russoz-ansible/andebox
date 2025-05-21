@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.93.1 (2025-05-21)
+
+### Bug Fixes
+
+- Version numbers in docs/conf.py and cli.py
+  ([`758714f`](https://github.com/russoz-ansible/andebox/commit/758714f59fa1ab9b3c9ff034bfb15416b266f69d))
+
+
 ## v0.93.0 (2025-05-21)
 
 ### Features
