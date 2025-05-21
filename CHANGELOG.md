@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.92.0 (2025-05-21)
+
+### Features
+
+- **semantic-release**: Adjust workflow, rename tox action
+  ([`3025bdc`](https://github.com/russoz-ansible/andebox/commit/3025bdc43ed993b6b0dba12a5bca77eea4d3e35e))
+
+
 ## v0.91.0 (2025-05-21)
 
 ### Chores
