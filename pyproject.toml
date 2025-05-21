@@ -60,11 +60,27 @@ pylint = ">=2.17.4,<4.0.0"
 flake8 = ">=6,<8"
 gitpython = ">=3.1.44"
 pre-commit = "^4.2.0"
+python-semantic-release = "^9.21.1"
+commitizen = "^4.8.0"
 
 [tool.poetry.group.docs.dependencies]
 sphinx = "^8.2.3"
 furo = "^2024.8.6"
+myst-parser = "^4.0.1"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.semantic_release]
+version_variable = ["andeboxlib/cli.py:__version__"]
+version_toml = ["pyproject.toml:tool.poetry.version"]
+branch = "main"
+changelog_file = "CHANGELOG.md"
+build_command = "poetry build"
+dist_path = "dist/"
+upload_to_pypi = true
+upload_to_release = true
+commit_parser = "conventional"
+major_on_zero = true
+tag_format = "v{version}"
