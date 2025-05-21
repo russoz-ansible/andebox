@@ -40,5 +40,6 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         poetry install
-        poetry run semantic-release --verbose version
-        poetry run semantic-release --verbose publish
+        poetry run semantic-release version
+        poetry run semantic-release publish
+        poetry publish --build

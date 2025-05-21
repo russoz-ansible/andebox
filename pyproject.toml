@@ -92,9 +92,3 @@ version_pattern = "v(?P<version>\\d+\\.\\d+\\.\\d+)"
 
 [tool.semantic_release.publish]
 upload_to_vcs_release = true
-upload_to_repository = true
-
-[tool.semantic_release.publish.pypi]
-build = true
-dist_dir = "dist"
-providers = ["poetry"]
