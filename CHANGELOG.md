@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.90.0 (2025-05-21)
+
+### Features
+
+- **semantic-release**: Enable automatic semantic release on main
+  ([`170e97b`](https://github.com/russoz-ansible/andebox/commit/170e97bcbb51d89c89b54f1fca45d8bfc4274b47))
+
+
 ## v0.89.0 (2025-05-21)
 
 ### Features
