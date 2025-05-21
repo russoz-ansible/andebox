@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.93.2 (2025-05-21)
+
+### Bug Fixes
+
+- Set pypi token env var again
+  ([`07f5ed3`](https://github.com/russoz-ansible/andebox/commit/07f5ed3bf3106f61de7924ef0ff158021cb55525))
+
+
 ## v0.93.1 (2025-05-21)
 
 ### Bug Fixes
