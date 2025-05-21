@@ -41,6 +41,8 @@ jobs:
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
     - name: Create Release
+      env:
+        POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
       run: |
         poetry install --verbose
         poetry lock
