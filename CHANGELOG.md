@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## v0.92.1 (2025-05-21)
+
+### Bug Fixes
+
+- **semantic-release**: Adjust remote in pyproject
+  ([`301c98a`](https://github.com/russoz-ansible/andebox/commit/301c98aba0c7afc5ac59a66dc3862c9995df8026))
+
+- **semantic-release**: Adjust wf and project defs
+  ([`34e53ef`](https://github.com/russoz-ansible/andebox/commit/34e53ef6d0e4a14c2cc013241623a051fd604e30))
+
+
 ## v0.92.0 (2025-05-21)
 
 ### Features
