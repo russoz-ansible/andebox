@@ -5,6 +5,10 @@ permissions:
 
 on:
   workflow_dispatch:  # Manual trigger only for now
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"
+    branches: [main]
 
 jobs:
   release:
