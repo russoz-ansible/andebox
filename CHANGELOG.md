@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.89.0 (2025-05-21)
+
+### Features
+
+- **semantic-release**: Using poetry for publishing
+  ([`4b8d945`](https://github.com/russoz-ansible/andebox/commit/4b8d94537e59bc559a9ac89b6ee11ca48af9b830))
+
+
 ## v0.88.0 (2025-05-21)
 
 ### Features
