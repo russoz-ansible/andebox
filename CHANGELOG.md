@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## v0.91.0 (2025-05-21)
+
+### Chores
+
+- Update poetry.lock
+  ([`97c3c77`](https://github.com/russoz-ansible/andebox/commit/97c3c77749d9dce92198c8d333851979ee699f2b))
+
+### Features
+
+- **semantic-release**: Remove all references to bump2version
+  ([`4e5cacb`](https://github.com/russoz-ansible/andebox/commit/4e5cacb2a85c9c156a9833d0455f402d5dbc0b99))
+
+
 ## v0.90.0 (2025-05-21)
 
 ### Features
