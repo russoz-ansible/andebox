@@ -1,6 +1,23 @@
 # CHANGELOG
 
 
+## v0.93.0 (2025-05-21)
+
+### Features
+
+- **poetry-lock**: Refactor the lock command into test and release workflows
+  ([`dabb449`](https://github.com/russoz-ansible/andebox/commit/dabb449d701163a1d5b8d25e3bd8840b9dd36029))
+
+- **semantic-release**: Add poetry lock to the release workflow
+  ([`d6e5618`](https://github.com/russoz-ansible/andebox/commit/d6e5618dfdfa3192f92f1d9ec92c4092b299cee5))
+
+- **semantic-release**: Call poetry lock workflow
+  ([`b110e0c`](https://github.com/russoz-ansible/andebox/commit/b110e0cc03321b203892dcc4deb0e6134b113765))
+
+- **semantic-release**: Rename workflow file
+  ([`4b52190`](https://github.com/russoz-ansible/andebox/commit/4b52190464068441e79a0e2f42479af57c8dc675))
+
+
 ## v0.92.4 (2025-05-21)
 
 ### Bug Fixes
