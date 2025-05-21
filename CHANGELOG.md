@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.92.4 (2025-05-21)
+
+### Bug Fixes
+
+- **semantic-release**: Trying again
+  ([`a77bdb9`](https://github.com/russoz-ansible/andebox/commit/a77bdb9e7b0d4882361834672f89ddd6adfbb0d1))
+
+
 ## v0.92.3 (2025-05-21)
 
 ### Bug Fixes
