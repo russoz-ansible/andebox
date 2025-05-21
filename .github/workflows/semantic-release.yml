@@ -44,7 +44,7 @@ jobs:
     - name: Create Release
       env:
         POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ github.token }}
       run: |
         poetry install
         poetry run semantic-release version
