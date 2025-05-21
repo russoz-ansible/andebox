@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "andebox"
-version = "0.14.0"
+version = "0.82.0"
 description = "Ansible Developers Box"
 authors = ["Alexei Znamensky <russoz@gmail.com>"]
 license = "MIT"
