@@ -10,6 +10,10 @@ on:
     branches: [main]
 
 jobs:
+  call-tests:
+    uses: ./.github/workflows/poetry-lock.yml
+    secrets: inherit
+
   release:
     runs-on: ubuntu-latest
     concurrency: release
@@ -40,21 +44,10 @@ jobs:
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Install Project
-      run: |
-        poetry install
-        python -m pip install --upgrade python-semantic-release
-
-    - name: Update Poetry Lock
-      uses: ./.github/workflows/poetry-lock.yml
-
     - name: Create Release
       run: |
-        GH_TOKEN=${{ github.token }} poetry run semantic-release version
-
-    - name: Publish Release
-      env:
-        POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
-      run: |
-        GH_TOKEN=${{ github.token }} poetry run semantic-release publish
+        poetry install --verbose
+        python -m pip install --upgrade python-semantic-release
+        GH_TOKEN=${{ github.token }} poetry run semantic-release --verbose version
+        GH_TOKEN=${{ github.token }} poetry run semantic-release --verbose publish
         poetry publish --no-interaction
