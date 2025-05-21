@@ -43,10 +43,9 @@ jobs:
     - name: Create Release
       env:
         POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
-        GITHUB_TOKEN: ${{ github.token }}
-        GH_TOKEN: ${{ github.token }}
       run: |
         poetry install --verbose
-        poetry run semantic-release version
-        poetry run semantic-release --verbose publish
+        python -m pip install --upgrade python-semantic-release
+        GH_TOKEN=${{ github.token }} poetry run semantic-release --verbose version
+        GH_TOKEN=${{ github.token }} poetry run semantic-release --verbose publish
         poetry publish --no-interaction
