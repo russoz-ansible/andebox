@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.92.2 (2025-05-21)
+
+### Bug Fixes
+
+- **semantic-release**: Change token variable
+  ([`329bec4`](https://github.com/russoz-ansible/andebox/commit/329bec451b930f57e4f15456e2acd41e5554eeb7))
+
+
 ## v0.92.1 (2025-05-21)
 
 ### Bug Fixes
