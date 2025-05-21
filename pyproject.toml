@@ -97,4 +97,5 @@ upload_to_vcs_release = true
 
 [tool.semantic_release.remote]
 type = "github"
-name = "russoz-ansible/andebox"
+token = "GITHUB_TOKEN"
+repository = "russoz-ansible/andebox"
