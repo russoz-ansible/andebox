@@ -29,7 +29,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install Poetry
-        run: pip install poetry
+        run: |
+          pip install poetry
+          poetry lock
 
       - name: Install all dependencies (including dev)
         run: poetry install --with dev

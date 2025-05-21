@@ -10,10 +10,6 @@ on:
     branches: [main]
 
 jobs:
-  call-tests:
-    uses: ./.github/workflows/poetry-lock.yml
-    secrets: inherit
-
   release:
     runs-on: ubuntu-latest
     concurrency: release
@@ -47,6 +43,12 @@ jobs:
     - name: Create Release
       run: |
         poetry install --verbose
+        poetry lock
+        if ! git diff --quiet poetry.lock; then
+          git add poetry.lock
+          git commit -m "Update poetry.lock"
+          git push
+        fi
         python -m pip install --upgrade python-semantic-release
         GH_TOKEN=${{ github.token }} poetry run semantic-release --verbose version
         GH_TOKEN=${{ github.token }} poetry run semantic-release --verbose publish
