@@ -1,4 +1,5 @@
 Changelog
 =========
 
-See the repository's `CHANGELOG.md` or release notes for details.
+.. include:: ../CHANGELOG.md
+   :parser: myst_parser
