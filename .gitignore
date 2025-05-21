@@ -1,9 +1,28 @@
+# Local configuration
 .env
-.idea
+
+# Python build artifacts
 dist/*
 build/*
 *.egg-info
+
+# Venvs
 .tox/*
 Pipfile*
-**/*.pyc
+
+# Python cache
+__pycache__/
+*.pyc
 .pytest_cache
+
+# IDE settings
+.vscode
+.idea
+
+# Sphinx build output
+docs/_build/
+docs/.doctrees/
+docs/.buildinfo
+
+# Read the Docs local artifacts
+.rtd-environment.yml
