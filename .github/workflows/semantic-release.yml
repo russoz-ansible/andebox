@@ -42,4 +42,4 @@ jobs:
         poetry install
         poetry run semantic-release version
         poetry run semantic-release publish
-        poetry publish --build
+        poetry publish --no-interaction
