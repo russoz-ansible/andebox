@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.93.4 (2025-05-21)
+
+### Bug Fixes
+
+- Rollback semantic-release config for updating version vars
+  ([`db6dd80`](https://github.com/russoz-ansible/andebox/commit/db6dd8008955852a3bc4cab68aaa09d0ae548a8c))
+
+
 ## v0.93.3 (2025-05-21)
 
 ### Bug Fixes
