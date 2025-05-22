@@ -16,5 +16,6 @@
     "esbenp.prettier-vscode",
     "ms-python.vscode-pylance"
   ],
-  "remoteUser": "vscode"
+  "remoteUser": "vscode",
+  "postCreateCommand": "poetry install --no-interaction --with dev,docs && pre-commit install --install-hooks"
 }

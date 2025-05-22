@@ -48,7 +48,7 @@ jobs:
         poetry lock
         if ! git diff --quiet poetry.lock; then
           git add poetry.lock
-          git commit -m "Update poetry.lock"
+          git commit -m "chore: update poetry.lock"
           git push
         fi
         python -m pip install --upgrade python-semantic-release
