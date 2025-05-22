@@ -54,4 +54,8 @@ jobs:
         python -m pip install --upgrade python-semantic-release
         GH_TOKEN=${{ github.token }} poetry run semantic-release --verbose version
         GH_TOKEN=${{ github.token }} poetry run semantic-release --verbose publish
-        poetry publish --no-interaction
+        if [ -d dist ] && [ "$(ls -A dist)" ]; then
+          poetry publish --no-interaction
+        else
+          echo "No build artifacts to publish."
+        fi
