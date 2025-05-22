@@ -1,6 +1,25 @@
 # CHANGELOG
 
 
+## v0.94.0 (2025-05-22)
+
+### Chores
+
+- Publish only when there is a new semantic release
+  ([#61](https://github.com/russoz-ansible/andebox/pull/61),
+  [`b21947f`](https://github.com/russoz-ansible/andebox/commit/b21947ff785af64ab32fa506feb8a2ef2764a474))
+
+### Features
+
+- **readthedocs**: Adjust the config file ([#62](https://github.com/russoz-ansible/andebox/pull/62),
+  [`a137a26`](https://github.com/russoz-ansible/andebox/commit/a137a26ae7d85b09cd5c6fec5ef9f3820b051db4))
+
+### Testing
+
+- Add test for tox docs ([#60](https://github.com/russoz-ansible/andebox/pull/60),
+  [`19f54b1`](https://github.com/russoz-ansible/andebox/commit/19f54b1de2fc0ceebaad4a9111913b0f8bf0d688))
+
+
 ## v0.93.5 (2025-05-21)
 
 ### Bug Fixes
