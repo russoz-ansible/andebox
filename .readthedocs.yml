@@ -1,26 +1,17 @@
 version: 2
 
+# Use poetry to install dependencies
 build:
   os: ubuntu-22.04
   tools:
     python: "3.11"
-
-python:
-  install:
-    - method: pip
-      path: .
-    - method: pip
-      pip_install: true
-      requirements: false
-      extra_requirements:
-        - docs
+  jobs:
+    install:
+      - pip install poetry
+      - poetry install --with docs
+    build:
+      html:
+        - poetry run sphinx-build -T -b html -d _build/doctrees -D language=en docs $READTHEDOCS_OUTPUT/html
 
 sphinx:
   configuration: docs/conf.py
-
-# Use poetry to install dependencies
-build:
-  jobs:
-    pre_build:
-      - pip install poetry
-      - poetry install --with docs
