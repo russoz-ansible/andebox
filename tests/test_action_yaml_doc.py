@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 
 
-def load_module_vars(pyfile):
+def load_module_vars(pyfile) -> dict[str, str | None]:
     spec = importlib.util.spec_from_file_location("test_module", str(pyfile))
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
@@ -200,6 +200,7 @@ def python_file_with_yaml_blocks_in_collection(git_repo):
     module_dir = repo_dir / "plugins" / "modules"
     module_dir.mkdir(parents=True, exist_ok=True)
     pyfile = module_dir / "test_module.py"
+    print(f"Creating {pyfile}")
 
     def _create_file(documentation, examples=None, returns=None):
         blocks = []
