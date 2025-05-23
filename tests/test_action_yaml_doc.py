@@ -124,6 +124,63 @@ TEST_CASES = [
             RETURN="foo return value",
         ),
     ),
+    dict(
+        id="return-with-json-sample",
+        flags={
+            "xfail": "JSON sample formatting and document markers not working properly yet"
+        },
+        input=dict(
+            DOCUMENTATION=None,
+            EXAMPLES=None,
+            RETURN=textwrap.dedent(
+                """
+                my_list:
+                    description: A list of items
+                    returned: always
+                    type: list
+                    sample: [{"id": 1, "name": "item1"}, {"id": 2, "name": "item2"}]
+                my_dict:
+                    description: A dictionary of data
+                    returned: always
+                    type: dict
+                    sample: {"key1": "value1", "key2": {"nested": "value2"}}
+                """
+            ),
+        ),
+        output=dict(
+            RETURN=textwrap.dedent(
+                """\
+                ---
+                my_list:
+                    description: A list of items.
+                    returned: always
+                    type: list
+                    sample: |
+                        [
+                            {
+                                "id": 1,
+                                "name": "item1"
+                            },
+                            {
+                                "id": 2,
+                                "name": "item2"
+                            }
+                        ]
+                my_dict:
+                    description: A dictionary of data.
+                    returned: always
+                    type: dict
+                    sample: |
+                        {
+                            "key1": "value1",
+                            "key2": {
+                                "nested": "value2"
+                            }
+                        }
+                """
+            ),
+        ),
+    ),
 ]
 TEST_CASES_IDS = [item["id"] for item in TEST_CASES]
 
@@ -161,8 +218,20 @@ def python_file_with_yaml_blocks_in_collection(git_repo):
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
 def test_yaml_doc_action_blocks_in_collection(
-    python_file_with_yaml_blocks_in_collection, testcase
+    request, python_file_with_yaml_blocks_in_collection, testcase
 ):
+    # Handle test flags (xfail, skip, etc.)
+    if "flags" in testcase:
+        flags = testcase["flags"]
+        if "xfail" in flags:
+            request.node.add_marker(
+                pytest.mark.xfail(
+                    reason=flags["xfail"],
+                    strict=False,  # Don't fail if the test unexpectedly passes
+                    run=True,  # Always run the test
+                )
+            )
+
     input_ = testcase["input"]
     output = testcase["output"]
 
