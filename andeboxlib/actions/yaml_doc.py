@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # (c) 2024-2025, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+import hashlib
 import json
 import re
 from io import StringIO
@@ -23,6 +24,7 @@ from .base import AndeboxAction
 
 
 FIXME_TAG = "__FIXME__"
+JSON_SAMPLE_PREFIX = "JSONSAMPLE"
 
 
 def fixme(s):
@@ -102,6 +104,7 @@ class AnsibleDocProcessor:
         self.yaml_indents = self._calculate_indent(indent)
         self.yaml = self.make_yaml_instance()
         self.first_line_no = 0
+        self.json_samples = {}
 
     @staticmethod
     def _calculate_indent(num: int) -> Dict[str, int]:
@@ -152,6 +155,17 @@ class AnsibleDocProcessor:
         except Exception as e:
             raise YAMLDocException(desc) from e
 
+    def _store_json_sample(self, sample: Any) -> str:
+        """Store a JSON sample and return its unique ID."""
+        # Create JSON string for hashing (without indentation to be more space efficient)
+        json_str = json.dumps(sample)
+        # Create a unique hash for the JSON content
+        sample_hash = hashlib.md5(json_str.encode()).hexdigest()[:8]
+        sample_id = f"{JSON_SAMPLE_PREFIX}-{sample_hash}"
+        # Store the prettified JSON
+        self.json_samples[sample_id] = json.dumps(sample, indent=self.indent)
+        return sample_id
+
     def process_sample(self, sample: Any, type_: str) -> Any:
         """Process sample values."""
         output_sample = self.dump_yaml(sample)
@@ -160,8 +174,8 @@ class AnsibleDocProcessor:
         )
         if not is_json:
             return sample
-        json_sample = json.dumps(sample, indent=self.indent)
-        return f"|\n{json_sample}"
+        # Store the JSON and return a placeholder ID
+        return self._store_json_sample(sample)
 
     def process_options(
         self, opts: Dict[str, Any], suboptions_kw: str
@@ -229,6 +243,9 @@ class AnsibleDocProcessor:
         if not data:
             return quoted_content
 
+        # Clear stored JSON samples before processing new content
+        self.json_samples.clear()
+
         data = processor(data)
         yaml_content = self.dump_yaml(data).splitlines()
 
@@ -243,6 +260,10 @@ class AnsibleDocProcessor:
 
     def postprocess_content(self, in_variable: str, content: List[str]) -> List[str]:
         """Post-process content."""
+        # First restore any JSON samples with proper indentation
+        content = self.postprocess_json_samples(content)
+
+        # Then apply other post-processing steps
         if self.offenders and in_variable != "EXAMPLES":
             fixed_content = self.process_offenders(content)
             if self.fix_offenders:
@@ -284,6 +305,38 @@ class AnsibleDocProcessor:
             if fixed_line != line:
                 print(f"  {line_num:4}: {fixed_line}")
             result.append(fixed_line)
+
+        return result
+
+    def postprocess_json_samples(self, content: List[str]) -> List[str]:
+        """Post-process JSON samples by restoring them with proper indentation.
+
+        After processing, each sample is removed from the json_samples map.
+        """
+        result = []
+        sample_pattern = re.compile(
+            rf"^(\s+sample:)\s+({JSON_SAMPLE_PREFIX}-[0-9a-f]{{8}})$"
+        )
+
+        for line in content:
+            match = sample_pattern.match(line)
+            if (not match) or match.group(2) not in self.json_samples:
+                result.append(line)
+                continue
+
+            indentend_sample_key = match.group(1)
+            sample_id = match.group(2)
+
+            json_lines = self.json_samples[sample_id].splitlines()
+            base_indent = " " * (
+                len(indentend_sample_key) - len("sample:") + self.indent
+            )
+            # Add first line with | marker
+            result.append(f"{indentend_sample_key} |")
+            # Add JSON lines with proper indentation
+            result.extend(f"{base_indent}{line}" for line in json_lines)
+
+            del self.json_samples[sample_id]
 
         return result
 
@@ -368,6 +421,11 @@ class AnsibleDocProcessor:
         if not self.dry_run:
             with open(file_path, "w") as file:
                 file.writelines([f"{x}\n" for x in updated_lines])
+
+        # Verify that all JSON samples were properly processed
+        assert (
+            len(self.json_samples) == 0
+        ), f"Found unprocessed JSON samples: {list(self.json_samples.keys())}"
 
 
 class YAMLDocAction(AndeboxAction):
