@@ -42,7 +42,6 @@ OFFENDING_SPEC = [
     dict(regexp=r"\bvs\.?\b", apply=fixme),
     dict(regexp=r"\bversa\b", apply=fixme),
     dict(regexp=r"won't", replace="will not"),
-    # dict(regexp=r"\b(?:[Ww]i|')ll\b", apply=fixme),
     dict(regexp=r"[a-zI]'ve", apply=lambda s: s.replace("'ve", " have")),
     dict(regexp=r"can't", replace="cannot"),
     dict(regexp=r"Can't", replace="Cannot"),
@@ -62,6 +61,7 @@ OFFENDING_SPEC = [
     ),
     dict(regexp=r"\s(?:[Jj]son|[Dd]ns|[Hh]tml|[Vv]m)[\s\.,]", apply=str.upper),
 ]
+
 OFFENDING_SPEC = [
     (re.compile(f"(.*[^(])({x['regexp']})({x.get('plural', '')})([^)]?.*)"), x)
     for x in OFFENDING_SPEC
@@ -74,7 +74,305 @@ class YAMLDocException(Exception):
         self.args = args
 
 
+class AnsibleDocProcessor:
+    """Process YAML documentation blocks in Ansible module and plugin files.
+
+    This class handles the specialized formatting and validation of YAML blocks
+    commonly found in Ansible module and plugin files, such as:
+    - DOCUMENTATION blocks containing module/plugin details
+    - EXAMPLES blocks showing usage examples
+    - RETURN blocks defining returned values
+    - Doc fragments providing reusable documentation
+    """
+
+    def __init__(
+        self,
+        indent: int = 2,
+        width: int = 120,
+        offenders: bool = False,
+        fix_offenders: bool = False,
+        dry_run: bool = False,
+    ):
+        """Initialize the processor."""
+        self.indent = indent
+        self.width = width
+        self.offenders = offenders
+        self.fix_offenders = fix_offenders
+        self.dry_run = dry_run
+        self.yaml_indents = self._calculate_indent(indent)
+        self.yaml = self.make_yaml_instance()
+        self.first_line_no = 0
+
+    @staticmethod
+    def _calculate_indent(num: int) -> Dict[str, int]:
+        """Calculate indentation settings."""
+        return dict(mapping=num, sequence=num + 2, offset=2)
+
+    def make_yaml_instance(self) -> YAML:
+        """Create a configured YAML instance."""
+        yaml = YAML()
+        yaml.indent(**self.yaml_indents)
+        yaml.width = self.width
+        yaml.preserve_quotes = True
+        yaml.explicit_start = False
+        yaml.preserve_quotes = True
+        yaml.top_level_colon_align = False
+        yaml.compact_seq_seq = False
+        return yaml
+
+    def read_yaml(self, content: str) -> Optional[Union[Dict[str, Any], list]]:
+        """Read YAML content."""
+        return self.yaml.load(content)
+
+    def dump_yaml(self, data: Union[Dict[str, Any], list]) -> str:
+        """Dump YAML content."""
+        output = StringIO()
+        self.yaml.dump(data, output)
+        return output.getvalue()
+
+    def fix_desc_str(self, line: str) -> str:
+        """Fix description string formatting."""
+        line = line.strip()
+        line = re.sub(r"\s\s+", " ", line)
+        if not line[0].isupper():
+            line = line[0].upper() + line[1:]
+        if line.endswith(".)"):
+            return f"{line[:-2]})."
+        if line.endswith(DESCRIPTION_ACCEPTED_END_CHARS):
+            return line
+        return f"{line}."
+
+    def process_description(self, desc: Union[List[str], str]) -> Union[List[str], str]:
+        """Process description strings."""
+        try:
+            if isinstance(desc, str):
+                return self.fix_desc_str(desc)
+            else:
+                return [self.fix_desc_str(x) for x in desc]
+        except Exception as e:
+            raise YAMLDocException(desc) from e
+
+    def process_sample(self, sample: Any, type_: str) -> Any:
+        """Process sample values."""
+        output_sample = self.dump_yaml(sample)
+        is_json = (type_ == "list" and output_sample.strip().startswith("[")) or (
+            type_ == "dict" and output_sample.strip().startswith("{")
+        )
+        if not is_json:
+            return sample
+        json_sample = json.dumps(sample, indent=self.indent)
+        return f"|\n{json_sample}"
+
+    def process_options(
+        self, opts: Dict[str, Any], suboptions_kw: str
+    ) -> Dict[str, Any]:
+        """Process options block."""
+        try:
+            for option in opts.values():
+                if "description" in option:
+                    option["description"] = self.process_description(
+                        option["description"]
+                    )
+                if suboptions_kw in option:
+                    option[suboptions_kw] = self.process_options(
+                        option[suboptions_kw], suboptions_kw
+                    )
+                if "sample" in option and option["type"] in ("list", "dict"):
+                    option["sample"] = self.process_sample(
+                        option["sample"], option["type"]
+                    )
+            return opts
+        except Exception as e:
+            raise YAMLDocException(opts, suboptions_kw) from e
+
+    def process_documentation(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Process DOCUMENTATION block."""
+        try:
+            if data.get("short_description", " ").endswith("."):
+                data["short_description"] = data["short_description"].rstrip(".")
+            if desc := data.get("description"):
+                data["description"] = self.process_description(desc)
+            if notes := data.get("notes"):
+                data["notes"] = self.process_description(notes)
+            if seealso := data.get("seealso"):
+                for sa in seealso:
+                    if sa_desc := sa.get("description"):
+                        sa["description"] = self.process_description(sa_desc)
+            if options := data.get("options"):
+                data["options"] = self.process_options(options, "suboptions")
+            return data
+        except Exception as e:
+            raise YAMLDocException(data) from e
+
+    def process_return(self, data: Dict[str, Dict]) -> Dict[str, Dict]:
+        """Process RETURN block."""
+        try:
+            data = self.process_options(data, "contains")
+            return data
+        except Exception as e:
+            raise YAMLDocException(data) from e
+
+    def get_processor(self, variable: str, in_doc_fragments: bool = False) -> Callable:
+        """Get the appropriate processor for the block type."""
+        processors_map = {
+            "DOCUMENTATION": self.process_documentation,
+            "RETURN": self.process_return,
+        }
+        return processors_map.get(
+            variable, self.process_documentation if in_doc_fragments else lambda x: x
+        )
+
+    def process_yaml(self, quoted_content: List[str], processor: Callable) -> List[str]:
+        """Process YAML content."""
+        data = self.read_yaml("\n".join(quoted_content))
+        # If no data (e.g. an empty or comment-only block), then keep original content
+        if not data:
+            return quoted_content
+
+        data = processor(data)
+        yaml_content = self.dump_yaml(data).splitlines()
+
+        if isinstance(data, list):
+            yaml_content = [
+                (line[2:] if line.startswith("  ") else line) for line in yaml_content
+            ]
+        while yaml_content and yaml_content[0] == "":
+            yaml_content.pop(0)
+
+        return quoted_content if self.dry_run else yaml_content
+
+    def postprocess_content(self, in_variable: str, content: List[str]) -> List[str]:
+        """Post-process content."""
+        if self.offenders and in_variable != "EXAMPLES":
+            fixed_content = self.process_offenders(content)
+            if self.fix_offenders:
+                content = fixed_content
+        if in_variable != "EXAMPLES":
+            fixed_content = self.postprocess_line_length(content)
+            if self.fix_offenders:
+                content = fixed_content
+        return content
+
+    def apply_offender_rule(self, line_num: int, line: str) -> str:
+        """Apply offender rules to a line."""
+        for regexp, spec in OFFENDING_SPEC:
+            if match := regexp.match(line):
+                if self.offenders and not self.fix_offenders:
+                    print(f"  {line_num:4}: {line}")
+                prefix, term, plural, suffix = match.groups()
+
+                if func := spec.get("apply"):
+                    return f"{prefix}{func(term)}{plural}{suffix}"
+                elif repl := spec.get("replace"):
+                    return f"{prefix}{repl}{plural}{suffix}"
+
+        return line
+
+    def process_offenders(self, content: List[str]) -> List[str]:
+        """Process offending content."""
+        result = []
+        for num, line in enumerate(content):
+            line_num = 2 + self.first_line_no + num
+
+            def apply(line):
+                return self.apply_offender_rule(line_num, line)
+
+            prev_line = fixed_line = line
+            while (fixed_line := apply(fixed_line)) != prev_line:
+                prev_line = fixed_line
+
+            if fixed_line != line:
+                print(f"  {line_num:4}: {fixed_line}")
+            result.append(fixed_line)
+
+        return result
+
+    def postprocess_line_length(self, content: List[str]) -> List[str]:
+        """Post-process line lengths."""
+        hard_limit = 160
+        LINE_RE = re.compile(r"^(\s*[-\s]\s)\S.*")
+        results = []
+
+        for line in content:
+            if len(line) <= hard_limit:
+                results.append(line)
+                continue
+
+            if match := LINE_RE.match(line):
+                lead_spaces = len(match.group(1)) * " "
+                line_split = line.split(" ")
+                first_part = f'{" ".join(line_split[:-1])}'
+                last_part = f"{lead_spaces}{line_split[-1]}"
+
+                if len(first_part) > hard_limit:
+                    first_part = f"{first_part} {FIXME_TAG}"
+                if len(last_part) > hard_limit:
+                    last_part = f"{last_part} {FIXME_TAG}"
+                results.append(first_part)
+                results.append(last_part)
+            else:
+                results.append(f"{line} {FIXME_TAG}")
+
+        return results
+
+    def process_file(self, file_path: Path) -> None:
+        """Process a single file."""
+        QUOTE_RE_FRAG = r'(?:"|\'){3}'
+        VAR_RE_FRAG = r"(?:[A-Z]+)"
+        ONELINE_RE = re.compile(
+            rf"^\s*{VAR_RE_FRAG}\s*=\s*r?{QUOTE_RE_FRAG}.*{QUOTE_RE_FRAG}$"
+        )
+        FIRST_LINE_RE = re.compile(rf"^(\s*{VAR_RE_FRAG})\s*=\s*r?{QUOTE_RE_FRAG}(.*)$")
+
+        print(f"Opening file {file_path}")
+        with open(file_path, "r") as file:
+            lines = file.readlines()
+
+        updated_lines = []
+        is_doc_frag = "doc_fragments" in file_path.parts
+        in_variable = ""
+        first_line = ""
+        quoted_content = []
+        self.first_line_no = 0
+
+        for line_no, line in enumerate(lines):
+            line = line.rstrip()
+            if in_variable:
+                if not re.match(rf"^\s*{QUOTE_RE_FRAG}", line):
+                    quoted_content.append(line)
+                    continue
+
+                updated_lines.append(first_line)
+                processor = self.get_processor(
+                    "DOCUMENTATION" if is_doc_frag else in_variable
+                )
+                outbound_content = self.process_yaml(quoted_content, processor)
+                updated_lines.extend(
+                    self.postprocess_content(in_variable, outbound_content)
+                )
+                updated_lines.append('"""')
+
+                in_variable = ""
+                quoted_content = []
+                self.first_line_no = 0
+            else:
+                if ONELINE_RE.search(line):
+                    updated_lines.append(re.sub(QUOTE_RE_FRAG, '"""', line))
+                elif match := FIRST_LINE_RE.search(line):
+                    in_variable, yaml_first_line = match.groups()
+                    first_line = f'{in_variable} = r"""{yaml_first_line}'
+                    self.first_line_no = line_no
+                else:
+                    updated_lines.append(line)
+
+        if not self.dry_run:
+            with open(file_path, "w") as file:
+                file.writelines([f"{x}\n" for x in updated_lines])
+
+
 class YAMLDocAction(AndeboxAction):
+    """Action to analyze and/or reformat YAML documentation in plugins."""
+
     name = "yaml-doc"
     help = "analyze and/or reformat YAML documentation in plugins"
     args = [
@@ -125,299 +423,15 @@ class YAMLDocAction(AndeboxAction):
         ),
     ]
 
-    def apply_offender_rule(self, line_num: int, line: str) -> str:
-        for regexp, spec in OFFENDING_SPEC:
-            if match := regexp.match(line):
-                if self.offenders and not self.fix_offenders:
-                    print(f"  {line_num:4}: {line}")
-                prefix, term, plural, suffix = match.groups()
-
-                if func := spec.get("apply"):
-                    mod_line = f"{prefix}{func(term)}{plural}{suffix}"
-                    return mod_line
-                elif repl := spec.get("replace"):
-                    mod_line = f"{prefix}{repl}{plural}{suffix}"
-                    return mod_line
-
-        # Nothing found, return line as-is
-        return line
-
-    def process_offenders(self, content: List[str]) -> List[str]:
-        result = []
-        for num, line in enumerate(content):
-
-            line_num = 2 + self.first_line_no + num
-
-            def apply(line):
-                # pylint: disable=cell-var-from-loop
-                return self.apply_offender_rule(line_num, line)
-
-            prev_line = fixed_line = line
-            while (fixed_line := apply(fixed_line)) != prev_line:
-                prev_line = fixed_line
-
-            if fixed_line != line:
-                print(f"  {line_num:4}: {fixed_line}")
-            result.append(fixed_line)
-
-        return result
-
-    def make_yaml_instance(self) -> YAML:
-        if not HAS_RUAMEL:
-            raise ValueError("This action requires ruamel.yaml to be installed")
-
-        yaml = YAML()
-        yaml.indent(**self.yaml_indents)
-        yaml.width = self.width
-        yaml.preserve_quotes = True
-        yaml.explicit_start = False
-        yaml.preserve_quotes = True
-        yaml.top_level_colon_align = False
-        yaml.compact_seq_seq = False
-        return yaml
-
-    def read_yaml(self, content: str) -> Optional[Union[Dict[str, Any], list]]:
-        return self.yaml.load(content)
-
-    def dump_yaml(self, data: Union[Dict[str, Any], list]) -> str:
-        output = StringIO()
-        self.yaml.dump(data, output)
-        return output.getvalue()
-
-    def fix_desc_str(self, line: str) -> str:
-        line = line.strip()  # remove extraneous whitespace chars from heads and tails
-        line = re.sub(r"\s\s+", " ", line)
-        if not line[0].isupper():
-            line = line[0].upper() + line[1:]
-        if line.endswith(".)"):
-            return f"{line[:-2]})."
-        if line.endswith(DESCRIPTION_ACCEPTED_END_CHARS):
-            return line
-        return f"{line}."
-
-    def process_description(self, desc: Union[List[str], str]) -> Union[List[str], str]:
-        try:
-            if isinstance(desc, str):
-                return self.fix_desc_str(desc)
-            else:  # assume list
-                return [self.fix_desc_str(x) for x in desc]
-        except Exception as e:
-            raise YAMLDocException(desc) from e
-
-    def process_sample(self, sample: Any, type_: str) -> Any:
-        output_sample = self.dump_yaml(sample)
-        is_json = (type_ == "list" and output_sample.strip().startswith("[")) or (
-            type_ == "dict" and output_sample.strip().startswith("{")
-        )
-        if not is_json:
-            return sample
-        json_sample = json.dumps(sample, indent=self.indent)
-        return f"|\n{json_sample}"
-
-    def process_options(
-        self, opts: Dict[str, Any], suboptions_kw: str
-    ) -> Dict[str, Any]:
-        try:
-            for option in opts.values():
-                if "description" in option:
-                    option["description"] = self.process_description(
-                        option["description"]
-                    )
-                if suboptions_kw in option:
-                    option[suboptions_kw] = self.process_options(
-                        option[suboptions_kw], suboptions_kw
-                    )
-                if "sample" in option and option["type"] in ("list", "dict"):
-                    option["sample"] = self.process_sample(
-                        option["sample"], option["type"]
-                    )
-            return opts
-        except Exception as e:
-            raise YAMLDocException(opts, suboptions_kw) from e
-
-    def process_documentation(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        try:
-            if data.get("short_description", " ").endswith("."):
-                data["short_description"] = data["short_description"].rstrip(".")
-            if desc := data.get("description"):
-                data["description"] = self.process_description(desc)
-            if notes := data.get("notes"):
-                data["notes"] = self.process_description(notes)
-            if seealso := data.get("seealso"):
-                for sa in seealso:
-                    if sa_desc := sa.get("description"):
-                        sa["description"] = self.process_description(sa_desc)
-            if options := data.get("options"):
-                data["options"] = self.process_options(options, "suboptions")
-
-            return data
-        except Exception as e:
-            raise YAMLDocException(data) from e
-
-    def process_return(self, data: Dict[str, Dict]) -> Dict[str, Dict]:
-        try:
-            data = self.process_options(data, "contains")
-            return data
-        except Exception as e:
-            raise YAMLDocException(data) from e
-
-    def get_processor(self, variable: str, in_doc_fragments: bool = False) -> Callable:
-        processors_map = {
-            "DOCUMENTATION": self.process_documentation,
-            "RETURN": self.process_return,
-        }
-        return processors_map.get(
-            variable, self.process_documentation if in_doc_fragments else lambda x: x
-        )
-
-    def process_yaml(self, quoted_content: List[str], processor: Callable) -> List[str]:
-
-        data = self.read_yaml("\n".join(quoted_content))
-        if not data:
-            # If no data (e.g. an empty or comment-only block), then keep original content
-            return quoted_content
-
-        data = processor(data)
-        # trying to determine whether the content is in JSON format of YAML
-
-        # if isinstance(data, dict):
-        #     for k, v in data.items():
-        #         if (
-        #             isinstance(v, dict)
-        #             and "sample" in v
-        #             and v["type"] in ["list", "dict"]
-        #         ):
-        #             print("=" * 15)
-        #             print(f"{k}.sample = {v.get('sample')}")
-        #             print(f"{k}.sample = {type(v.get('sample'))}")
-        #             print(f"{v}")
-        #             ooo = self.dump_yaml(v.get("sample"))
-        #             print(f"{ooo=}")
-        #             import json
-
-        #             print(f"{json.dumps(v.get('sample'), indent=2)}")
-
-        yaml_content = self.dump_yaml(data)
-        yaml_content = yaml_content.splitlines()
-        if isinstance(data, list):
-            yaml_content = [
-                (line[2:] if line.startswith("  ") else line) for line in yaml_content
-            ]
-        while yaml_content[0] == "":
-            yaml_content = yaml_content[1:]
-
-        # Do the YAML parsing in dry run, but return the original content
-        if self.dry_run:
-            return quoted_content
-        return yaml_content
-
-    def postprocess_content(self, in_variable: str, content: List[str]) -> List[str]:
-        if self.offenders and in_variable != "EXAMPLES":
-            fixed_content = self.process_offenders(content)
-            if self.fix_offenders:
-                content = fixed_content
-        if in_variable != "EXAMPLES":
-            fixed_content = self.postprocess_line_length(content)
-            if self.fix_offenders:
-                content = fixed_content
-        return content
-
-    def postprocess_line_length(self, content: List[str]) -> List[str]:
-        hard_limit = 160
-
-        LINE_RE = re.compile(r"^(\s*[-\s]\s)\S.*")
-        results = []
-        for line in content:
-            if len(line) <= hard_limit:
-                results.append(line)
-                continue
-
-            if match := LINE_RE.match(line):
-                lead_spaces = len(match.group(1)) * " "
-                line_split = line.split(" ")
-                first_part = f'{" ".join(line_split[:-1])}'
-                last_part = f"{lead_spaces}{line_split[-1]}"
-
-                if len(first_part) > hard_limit:
-                    first_part = f"{first_part} {FIXME_TAG}"
-                if len(last_part) > hard_limit:
-                    last_part = f"{last_part} {FIXME_TAG}"
-                results.append(first_part)
-                results.append(last_part)
-            else:
-                results.append(f"{line} {FIXME_TAG}")
-        return results
-
-    # pylint: disable=attribute-defined-outside-init
-    def process_file(self, file_path: Path):
-        QUOTE_RE_FRAG = r'(?:"|\'){3}'
-        VAR_RE_FRAG = r"(?:[A-Z]+)"
-        ONELINE_RE = re.compile(
-            rf"^\s*{VAR_RE_FRAG}\s*=\s*r?{QUOTE_RE_FRAG}.*{QUOTE_RE_FRAG}$"
-        )
-        FIRST_LINE_RE = re.compile(rf"^(\s*{VAR_RE_FRAG})\s*=\s*r?{QUOTE_RE_FRAG}(.*)$")
-
-        print(f"Opening file {file_path}")
-        with open(file_path, "r") as file:
-            lines = file.readlines()
-
-        updated_lines = []
-
-        is_doc_frag = "doc_fragments" in file_path.parts
-        in_variable = ""
-        first_line = ""
-        quoted_content = []
-        self.first_line_no = 0
-
-        for line_no, line in enumerate(lines):
-            line = line.rstrip()
-            if in_variable:
-                if not re.match(rf"^\s*{QUOTE_RE_FRAG}", line):
-                    quoted_content.append(line)
-                    continue
-
-                updated_lines.append(first_line)
-                outbound_content = self.process_yaml(
-                    quoted_content,
-                    self.get_processor("DOCUMENTATION" if is_doc_frag else in_variable),
-                )
-                updated_lines.extend(
-                    self.postprocess_content(in_variable, outbound_content)
-                )
-                updated_lines.append('"""')
-
-                in_variable = ""
-                quoted_content = []
-                self.first_line_no = 0
-
-            else:
-                if ONELINE_RE.search(line):
-                    updated_lines.append(re.sub(QUOTE_RE_FRAG, '"""', line))
-                elif match := FIRST_LINE_RE.search(line):
-                    in_variable, yaml_first_line = match.groups()
-                    first_line = f'{in_variable} = r"""{yaml_first_line}'
-                    self.first_line_no = line_no
-                else:
-                    updated_lines.append(line)
-
-        if not self.dry_run:
-            # Write the updated lines back to the file
-            with open(file_path, "w") as file:
-                file.writelines([f"{x}\n" for x in updated_lines])
-
-    @staticmethod
-    def calculate_indent(num: int):
-        return dict(mapping=num, sequence=num + 2, offset=2)
-
-    # pylint: disable=attribute-defined-outside-init
     def run(self, context):
-        self.offenders = context.args.offenders or context.args.fix_offenders
-        self.fix_offenders = context.args.fix_offenders
-        self.dry_run = context.args.dry_run
-        self.width = context.args.width
-        self.indent = context.args.indent
-        self.yaml_indents = self.calculate_indent(context.args.indent)
-        self.yaml = self.make_yaml_instance()
+        """Process YAML documentation in files."""
+        processor = AnsibleDocProcessor(
+            indent=context.args.indent,
+            width=context.args.width,
+            offenders=context.args.offenders or context.args.fix_offenders,
+            fix_offenders=context.args.fix_offenders,
+            dry_run=context.args.dry_run,
+        )
 
         for file_path in context.args.files:
-            self.process_file(file_path)
+            processor.process_file(file_path)
