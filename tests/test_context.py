@@ -15,24 +15,16 @@ GIT_REPO_AC = "https://github.com/ansible/ansible.git"
 def test_ansible_cg(git_repo):
     repo_dir = git_repo(GIT_REPO_CG)
 
-    try:
-        os.chdir(next(repo_dir))
-        parser = _make_parser()
-        context = create_context(parser.parse_args(args=["context"]))
-        assert context.type == ContextType.COLLECTION
-
-    finally:
-        next(repo_dir, None)
+    os.chdir(repo_dir)
+    parser = _make_parser()
+    context = create_context(parser.parse_args(args=["context"]))
+    assert context.type == ContextType.COLLECTION
 
 
 def test_ansible_core(git_repo):
     repo_dir = git_repo(GIT_REPO_AC)
 
-    try:
-        os.chdir(next(repo_dir))
-        parser = _make_parser()
-        context = create_context(parser.parse_args(args=["context"]))
-        assert context.type == ContextType.ANSIBLE_CORE
-
-    finally:
-        next(repo_dir, None)
+    os.chdir(repo_dir)
+    parser = _make_parser()
+    context = create_context(parser.parse_args(args=["context"]))
+    assert context.type == ContextType.ANSIBLE_CORE
