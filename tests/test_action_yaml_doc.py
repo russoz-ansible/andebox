@@ -3,7 +3,6 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 import difflib
 import importlib.util
-from pathlib import Path
 
 import pytest
 from andeboxlib.actions.yaml_doc import YAMLDocAction
@@ -329,17 +328,14 @@ TEST_CASES_IDS = [item.id for item in TEST_CASES]
 
 
 @pytest.fixture
-def python_file_with_yaml_blocks_in_collection(git_repo):
+def python_file_with_yaml_blocks_in_collection(tmp_path_factory):
     """
-    Creates a valid Ansible collection structure in a real collection repo clone,
+    Creates a valid Ansible collection structure in a temporary directory,
     writes a module with the given YAML blocks, and returns the file path.
-    Uses a small community collection for speed.
+    The directory is automatically cleaned up after the test session.
     """
-    # Use a smaller collection, e.g. ansible-collections/community.crypto
-    repo_dir = Path(
-        next(git_repo("https://github.com/ansible-collections/community.crypto.git"))
-    )
-    # Place the module in plugins/modules/
+    # Simulate the collection structure under a temporary path
+    repo_dir = tmp_path_factory.mktemp("community_crypto")
     module_dir = repo_dir / "plugins" / "modules"
     module_dir.mkdir(parents=True, exist_ok=True)
     pyfile = module_dir / "test_module.py"
