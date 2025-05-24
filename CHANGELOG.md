@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.94.1 (2025-05-24)
+
+### Bug Fixes
+
+- **yaml_doc**: Remove start marker from first line
+  ([`0b7c694`](https://github.com/russoz-ansible/andebox/commit/0b7c694c06151b71a06d6ffe8697c5770bca41b0))
+
+
 ## v0.94.0 (2025-05-22)
 
 ### Chores
