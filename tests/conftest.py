@@ -32,6 +32,7 @@ def git_repo():
             clones[repo_url] = dest
 
         while repo_url in clones:
+            print(f"Yielding {repo_url} => {clones[repo_url]}")
             yield clones[repo_url]
 
     # Teardown: Remove all temporary directories at the end of the session
