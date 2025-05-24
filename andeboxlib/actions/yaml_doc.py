@@ -44,6 +44,7 @@ OFFENDING_SPEC = [
     dict(regexp=r"\bvs\.?\b", apply=fixme),
     dict(regexp=r"\bversa\b", apply=fixme),
     dict(regexp=r"won't", replace="will not"),
+    dict(regexp=r"\b(?:[Ww]i|')ll\b", apply=fixme),
     dict(regexp=r"[a-zI]'ve", apply=lambda s: s.replace("'ve", " have")),
     dict(regexp=r"can't", replace="cannot"),
     dict(regexp=r"Can't", replace="Cannot"),
@@ -413,6 +414,8 @@ class AnsibleDocProcessor:
                     updated_lines.append(re.sub(QUOTE_RE_FRAG, '"""', line))
                 elif match := FIRST_LINE_RE.search(line):
                     in_variable, yaml_first_line = match.groups()
+                    if yaml_first_line.endswith("---"):
+                        yaml_first_line = yaml_first_line[:-3]
                     first_line = f'{in_variable} = r"""{yaml_first_line}'
                     self.first_line_no = line_no
                 else:
