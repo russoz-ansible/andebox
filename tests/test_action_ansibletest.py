@@ -79,33 +79,29 @@ def test_ansibletest(git_repo, testcase):
     if skip_py and f"{sys.version_info.major}.{sys.version_info.minor}" in skip_py:
         pytest.skip("Unsupported python version")
 
-    try:
-        proc = subprocess.run(
-            ["andebox", "test"] + testcase["input"]["argv"],
-            cwd=next(repo_dir),
-            check=False,
-            encoding="utf-8",
-            capture_output=True,
-        )
-        msg = (
-            f"rc={proc.returncode}, stdout=\n"
-            f"{proc.stdout}\n\nstderr=\n"
-            f"{proc.stderr}"
-        )
-        rc = testcase["output"].get("rc", 0)
-        assert proc.returncode == rc, f"Unexpected return code! {msg}"
-        patt_out = testcase["output"].get("in_stdout")
-        if patt_out:
-            print(f"{patt_out=}")
-            match = re.search(patt_out, proc.stdout, re.M)
-            print(f"{match=}")
-            assert bool(match), f"Pattern ({patt_out}) not found in stdout! {msg}"
-        patt_err = testcase["output"].get("in_stderr")
-        if patt_err:
-            print(f"{patt_err=}")
-            match = re.search(patt_err, proc.stderr, re.M)
-            print(f"{match=}")
-            assert bool(match), f"Pattern ({patt_err}) not found in stderr! {msg}"
-
-    finally:
-        next(repo_dir, None)
+    proc = subprocess.run(
+        ["andebox", "test"] + testcase["input"]["argv"],
+        cwd=repo_dir,
+        check=False,
+        encoding="utf-8",
+        capture_output=True,
+    )
+    msg = (
+        f"rc={proc.returncode}, stdout=\n"
+        f"{proc.stdout}\n\nstderr=\n"
+        f"{proc.stderr}"
+    )
+    rc = testcase["output"].get("rc", 0)
+    assert proc.returncode == rc, f"Unexpected return code! {msg}"
+    patt_out = testcase["output"].get("in_stdout")
+    if patt_out:
+        print(f"{patt_out=}")
+        match = re.search(patt_out, proc.stdout, re.M)
+        print(f"{match=}")
+        assert bool(match), f"Pattern ({patt_out}) not found in stdout! {msg}"
+    patt_err = testcase["output"].get("in_stderr")
+    if patt_err:
+        print(f"{patt_err=}")
+        match = re.search(patt_err, proc.stderr, re.M)
+        print(f"{match=}")
+        assert bool(match), f"Pattern ({patt_err}) not found in stderr! {msg}"
