@@ -87,7 +87,7 @@ TEST_CASES = load_test_cases(
     EXAMPLES: >-
       Example usage
     RETURN: >-
-      foo return value
+      Foo return value.
 
 - id: return-with-json-sample
   input:
@@ -133,8 +133,6 @@ TEST_CASES = load_test_cases(
           }
 
 - id: json-sample-cg-apache2_mod_proxy
-  flags:
-    xfail: JSON sample formatting and document markers not working properly yet
   input:
     DOCUMENTATION: null
     EXAMPLES: null
@@ -350,11 +348,11 @@ def python_file_with_yaml_blocks_in_collection(git_repo):
     def _create_file(documentation, examples=None, returns=None):
         blocks = []
         if documentation:
-            blocks.append(f'DOCUMENTATION = r"""{documentation.strip()}\n"""')
+            blocks.append(f'DOCUMENTATION = r"""\n{documentation.strip()}\n"""')
         if examples:
-            blocks.append(f'EXAMPLES = r"""{examples.strip()}\n"""')
+            blocks.append(f'EXAMPLES = r"""\n{examples.strip()}\n"""')
         if returns:
-            blocks.append(f'RETURN = r"""{returns.strip()}\n"""')
+            blocks.append(f'RETURN = r"""\n{returns.strip()}\n"""')
         file_content = "\n\n".join(blocks) + "\n"
         pyfile.write_text(file_content)
         return pyfile
