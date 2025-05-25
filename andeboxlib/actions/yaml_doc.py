@@ -17,9 +17,11 @@ try:
     from ruamel.yaml import YAML
 
     HAS_RUAMEL = True
-except ImportError:
+except ImportError as e:
     HAS_RUAMEL = False
+    IMPORT_ERROR = e
 
+from ..exceptions import AndeboxException
 from .base import AndeboxAction
 
 
@@ -116,7 +118,10 @@ class AnsibleDocProcessor:
     def make_yaml_instance(self) -> YAML:
         """Create a configured YAML instance."""
         if not HAS_RUAMEL:
-            raise ValueError("This action requires ruamel.yaml to be installed")
+            raise AndeboxException(
+                "Missing dependency for action 'yaml-doc': "
+            ) from IMPORT_ERROR
+
         yaml = YAML()
         yaml.indent(**self.yaml_indents)
         yaml.width = self.width
