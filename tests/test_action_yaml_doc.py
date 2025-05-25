@@ -108,7 +108,7 @@ TEST_CASES = load_test_cases(
         description: A list of items.
         returned: always
         type: list
-        sample: |
+        sample:
           [
             {
               "id": 1,
@@ -123,7 +123,7 @@ TEST_CASES = load_test_cases(
         description: A dictionary of data.
         returned: always
         type: dict
-        sample: |
+        sample:
           {
             "key1": "value1",
             "key2": {
@@ -133,8 +133,6 @@ TEST_CASES = load_test_cases(
 
 - id: json-sample-cg-apache2_mod_proxy
   input:
-    DOCUMENTATION: null
-    EXAMPLES: null
     RETURN: |
       ---
       member:
@@ -231,7 +229,7 @@ TEST_CASES = load_test_cases(
         description: Specific balancer member information dictionary, returned when the module is invoked with O(member_host) parameter.
         type: dict
         returned: success
-        sample: |
+        sample:
           {
             "attributes": {
               "Busy": "0",
@@ -264,7 +262,7 @@ TEST_CASES = load_test_cases(
           O(state) args.
         returned: success
         type: list
-        sample: |
+        sample:
           [
             {
               "attributes": {

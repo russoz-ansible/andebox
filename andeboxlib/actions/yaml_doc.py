@@ -332,8 +332,8 @@ class AnsibleDocProcessor:
             base_indent = " " * (
                 len(indentend_sample_key) - len("sample:") + self.indent
             )
-            # Add first line with | marker
-            result.append(f"{indentend_sample_key} |")
+            # Add first line
+            result.append(f"{indentend_sample_key}")
             # Add JSON lines with proper indentation
             result.extend(f"{base_indent}{line}" for line in json_lines)
 
