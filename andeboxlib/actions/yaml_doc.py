@@ -80,16 +80,6 @@ class YAMLDocException(Exception):
 
 
 class AnsibleDocProcessor:
-    """Process YAML documentation blocks in Ansible module and plugin files.
-
-    This class handles the specialized formatting and validation of YAML blocks
-    commonly found in Ansible module and plugin files, such as:
-    - DOCUMENTATION blocks containing module/plugin details
-    - EXAMPLES blocks showing usage examples
-    - RETURN blocks defining returned values
-    - Doc fragments providing reusable documentation
-    """
-
     def __init__(
         self,
         indent: int = 2,
@@ -98,7 +88,6 @@ class AnsibleDocProcessor:
         fix_offenders: bool = False,
         dry_run: bool = False,
     ):
-        """Initialize the processor."""
         self.indent = indent
         self.width = width
         self.offenders = offenders
@@ -112,11 +101,9 @@ class AnsibleDocProcessor:
 
     @staticmethod
     def _calculate_indent(num: int) -> Dict[str, int]:
-        """Calculate indentation settings."""
         return dict(mapping=num, sequence=num + 2, offset=2)
 
     def make_yaml_instance(self) -> YAML:
-        """Create a configured YAML instance."""
         if not HAS_RUAMEL:
             raise AndeboxException(
                 "Missing dependency for action 'yaml-doc': "
@@ -133,17 +120,14 @@ class AnsibleDocProcessor:
         return yaml
 
     def read_yaml(self, content: str) -> Optional[Union[Dict[str, Any], list]]:
-        """Read YAML content."""
         return self.yaml.load(content)
 
     def dump_yaml(self, data: Union[Dict[str, Any], list]) -> str:
-        """Dump YAML content."""
         output = StringIO()
         self.yaml.dump(data, output)
         return output.getvalue()
 
     def fix_desc_str(self, line: str) -> str:
-        """Fix description string formatting."""
         line = line.strip()
         line = re.sub(r"\s\s+", " ", line)
         if not line[0].isupper():
@@ -155,7 +139,6 @@ class AnsibleDocProcessor:
         return f"{line}."
 
     def process_description(self, desc: Union[List[str], str]) -> Union[List[str], str]:
-        """Process description strings."""
         try:
             if isinstance(desc, str):
                 return self.fix_desc_str(desc)
@@ -165,7 +148,6 @@ class AnsibleDocProcessor:
             raise YAMLDocException(desc) from e
 
     def _store_json_sample(self, sample: Any) -> str:
-        """Store a JSON sample and return its unique ID."""
         json_str = json.dumps(sample, indent=self.indent)
         sample_hash = hashlib.md5(
             (json_str + str(self.json_sample_id_count)).encode()
@@ -176,7 +158,6 @@ class AnsibleDocProcessor:
         return sample_id
 
     def process_sample(self, sample: Any, type_: str) -> Any:
-        """Process sample values."""
         output_sample = self.dump_yaml(sample)
         is_json = (type_ == "list" and output_sample.strip().startswith("[")) or (
             type_ == "dict" and output_sample.strip().startswith("{")
@@ -189,7 +170,6 @@ class AnsibleDocProcessor:
     def process_options(
         self, opts: Dict[str, Any], suboptions_kw: str
     ) -> Dict[str, Any]:
-        """Process options block."""
         try:
             for option in opts.values():
                 if "description" in option:
@@ -209,7 +189,6 @@ class AnsibleDocProcessor:
             raise YAMLDocException(opts, suboptions_kw) from e
 
     def process_documentation(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Process DOCUMENTATION block."""
         try:
             if data.get("short_description", " ").endswith("."):
                 data["short_description"] = data["short_description"].rstrip(".")
@@ -228,7 +207,6 @@ class AnsibleDocProcessor:
             raise YAMLDocException(data) from e
 
     def process_return(self, data: Dict[str, Dict]) -> Dict[str, Dict]:
-        """Process RETURN block."""
         try:
             data = self.process_options(data, "contains")
             return data
@@ -236,7 +214,6 @@ class AnsibleDocProcessor:
             raise YAMLDocException(data) from e
 
     def get_processor(self, variable: str, in_doc_fragments: bool = False) -> Callable:
-        """Get the appropriate processor for the block type."""
         processors_map = {
             "DOCUMENTATION": self.process_documentation,
             "RETURN": self.process_return,
@@ -246,14 +223,9 @@ class AnsibleDocProcessor:
         )
 
     def process_yaml(self, quoted_content: List[str], processor: Callable) -> List[str]:
-        """Process YAML content."""
         data = self.read_yaml("\n".join(quoted_content))
-        # If no data (e.g. an empty or comment-only block), then keep original content
         if not data:
             return quoted_content
-
-        # Clear stored JSON samples before processing new content
-        self.json_samples.clear()
 
         data = processor(data)
         yaml_content = self.dump_yaml(data).splitlines()
@@ -268,11 +240,8 @@ class AnsibleDocProcessor:
         return quoted_content if self.dry_run else yaml_content
 
     def postprocess_content(self, in_variable: str, content: List[str]) -> List[str]:
-        """Post-process content."""
-        # First restore any JSON samples with proper indentation
         content = self.postprocess_json_samples(content)
 
-        # Then apply other post-processing steps
         if self.offenders and in_variable != "EXAMPLES":
             fixed_content = self.process_offenders(content)
             if self.fix_offenders:
@@ -284,7 +253,6 @@ class AnsibleDocProcessor:
         return content
 
     def apply_offender_rule(self, line_num: int, line: str) -> str:
-        """Apply offender rules to a line."""
         for regexp, spec in OFFENDING_SPEC:
             if match := regexp.match(line):
                 if self.offenders and not self.fix_offenders:
@@ -299,7 +267,6 @@ class AnsibleDocProcessor:
         return line
 
     def process_offenders(self, content: List[str]) -> List[str]:
-        """Process offending content."""
         result = []
         for num, line in enumerate(content):
             line_num = 2 + self.first_line_no + num
@@ -318,10 +285,6 @@ class AnsibleDocProcessor:
         return result
 
     def postprocess_json_samples(self, content: List[str]) -> List[str]:
-        """Post-process JSON samples by restoring them with proper indentation.
-
-        After processing, each sample is removed from the json_samples map.
-        """
         result = []
         sample_pattern = re.compile(
             rf"^(\s+sample:)\s+({JSON_SAMPLE_PREFIX}-[0-9a-f]{{8}})$"
@@ -340,9 +303,7 @@ class AnsibleDocProcessor:
             base_indent = " " * (
                 len(indentend_sample_key) - len("sample:") + self.indent
             )
-            # Add first line
             result.append(f"{indentend_sample_key}")
-            # Add JSON lines with proper indentation
             result.extend(f"{base_indent}{line}" for line in json_lines)
 
             del self.json_samples[sample_id]
@@ -433,15 +394,12 @@ class AnsibleDocProcessor:
             with open(file_path, "w") as file:
                 file.writelines([f"{x}\n" for x in updated_lines])
 
-        # Verify that all JSON samples were properly processed
         assert (
             len(self.json_samples) == 0
         ), f"Found unprocessed JSON samples: {list(self.json_samples.keys())}"
 
 
 class YAMLDocAction(AndeboxAction):
-    """Action to analyze and/or reformat YAML documentation in plugins."""
-
     name = "yaml-doc"
     help = "analyze and/or reformat YAML documentation in plugins"
     args = [
@@ -493,7 +451,6 @@ class YAMLDocAction(AndeboxAction):
     ]
 
     def run(self, context):
-        """Process YAML documentation in files."""
         processor = AnsibleDocProcessor(
             indent=context.args.indent,
             width=context.args.width,
