@@ -3,7 +3,14 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from pathlib import Path
 
-from fabric.connection import Connection
+try:
+    from fabric.connection import Connection
+    import vagrant
+
+    HAS_DEPS = True
+except ImportError as e:
+    HAS_DEPS = False
+    IMPORT_ERROR = e
 
 from ..exceptions import AndeboxException
 from .base import AndeboxAction
@@ -45,7 +52,10 @@ class VagrantAction(AndeboxAction):
         action_parser.usage = "%(prog)s [-hsd] [-n name] [-V VENV] -- <andebox-cmd> [andebox-cmd-opts [-- test-params]]"
 
     def run(self, context):
-        import vagrant  # pylint: disable=import-outside-toplevel
+        if not HAS_DEPS:
+            raise AndeboxException(
+                "Missing dependency for action 'vagrant': "
+            ) from IMPORT_ERROR
 
         if not Path("Vagrantfile").exists():
             raise VagrantError("Missing Vagrantfile in the current directory")
