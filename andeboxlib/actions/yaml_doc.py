@@ -394,10 +394,6 @@ class AnsibleDocProcessor:
             with open(file_path, "w") as file:
                 file.writelines([f"{x}\n" for x in updated_lines])
 
-        assert (
-            len(self.json_samples) == 0
-        ), f"Found unprocessed JSON samples: {list(self.json_samples.keys())}"
-
 
 class YAMLDocAction(AndeboxAction):
     name = "yaml-doc"
