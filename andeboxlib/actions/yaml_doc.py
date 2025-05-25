@@ -115,6 +115,8 @@ class AnsibleDocProcessor:
 
     def make_yaml_instance(self) -> YAML:
         """Create a configured YAML instance."""
+        if not HAS_RUAMEL:
+            raise ValueError("This action requires ruamel.yaml to be installed")
         yaml = YAML()
         yaml.indent(**self.yaml_indents)
         yaml.width = self.width
