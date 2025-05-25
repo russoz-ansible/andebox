@@ -1,6 +1,27 @@
 # CHANGELOG
 
 
+## v0.94.2 (2025-05-25)
+
+### Bug Fixes
+
+- **yaml_doc**: Generate json `sample` as `dict`/`list`
+  ([`5077b86`](https://github.com/russoz-ansible/andebox/commit/5077b866b01e8bf73509469629921f9fc98a4e01))
+
+- **yaml_doc**: Use counter to generate unique sample id
+  ([`b6001a4`](https://github.com/russoz-ansible/andebox/commit/b6001a4ec40b1e8bd6a2d1f5ed920138fcc52507))
+
+Even when the contents are the same
+
+### Testing
+
+- Simplify fixture git_repo
+  ([`45becfc`](https://github.com/russoz-ansible/andebox/commit/45becfc666c835f8ff74bbb058860d8489516594))
+
+- **yaml_doc**: Mock collection directory
+  ([`f95460c`](https://github.com/russoz-ansible/andebox/commit/f95460c2e3e8538f87a819118ed3644f2b63af59))
+
+
 ## v0.94.1 (2025-05-24)
 
 ### Bug Fixes
