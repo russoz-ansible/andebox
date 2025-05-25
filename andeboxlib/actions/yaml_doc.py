@@ -159,15 +159,12 @@ class AnsibleDocProcessor:
 
     def _store_json_sample(self, sample: Any) -> str:
         """Store a JSON sample and return its unique ID."""
-        # Create JSON string for hashing (without indentation to be more space efficient)
-        json_str = json.dumps(sample)
-        # Create a unique hash for the JSON content
+        json_str = json.dumps(sample, indent=self.indent)
         sample_hash = hashlib.md5(
             (json_str + str(self.json_sample_id_count)).encode()
         ).hexdigest()[:8]
         sample_id = f"{JSON_SAMPLE_PREFIX}-{sample_hash}"
-        # Store the prettified JSON
-        self.json_samples[sample_id] = json.dumps(sample, indent=self.indent)
+        self.json_samples[sample_id] = json_str
         self.json_sample_id_count += 1
         return sample_id
 
