@@ -106,6 +106,7 @@ class AnsibleDocProcessor:
         self.yaml = self.make_yaml_instance()
         self.first_line_no = 0
         self.json_samples = {}
+        self.json_sample_id_count = 0
 
     @staticmethod
     def _calculate_indent(num: int) -> Dict[str, int]:
@@ -161,10 +162,13 @@ class AnsibleDocProcessor:
         # Create JSON string for hashing (without indentation to be more space efficient)
         json_str = json.dumps(sample)
         # Create a unique hash for the JSON content
-        sample_hash = hashlib.md5(json_str.encode()).hexdigest()[:8]
+        sample_hash = hashlib.md5(
+            (json_str + str(self.json_sample_id_count)).encode()
+        ).hexdigest()[:8]
         sample_id = f"{JSON_SAMPLE_PREFIX}-{sample_hash}"
         # Store the prettified JSON
         self.json_samples[sample_id] = json.dumps(sample, indent=self.indent)
+        self.json_sample_id_count += 1
         return sample_id
 
     def process_sample(self, sample: Any, type_: str) -> Any:
