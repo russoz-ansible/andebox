@@ -1,6 +1,35 @@
 # CHANGELOG
 
 
+## v0.95.0 (2025-05-26)
+
+### Bug Fixes
+
+- **yaml_doc**: Re-add the exception raised if ruamel.yaml not present
+  ([`efa9f23`](https://github.com/russoz-ansible/andebox/commit/efa9f239045331d41d511cd8a49c3785ced0bf46))
+
+### Code Style
+
+- **yaml_doc**: Remove redundant comments
+  ([`47f897b`](https://github.com/russoz-ansible/andebox/commit/47f897bb7b96937f431b2734fc67d9d53244ee56))
+
+### Features
+
+- Improve dependecy handling in actions
+  ([`32c6ab3`](https://github.com/russoz-ansible/andebox/commit/32c6ab3855e148a542fa32180dbfe98c01c56bb0))
+
+In both `vagrant` and `yaml-doc` actions, dependency handling now does a better job in terms of good
+  practices in code and informing hte user of the issue
+
+### Refactoring
+
+- **yaml_doc**: Remove redundant assert for json_samples
+  ([`1078d17`](https://github.com/russoz-ansible/andebox/commit/1078d1755a97c64f9fff4534f95a4925471153cf))
+
+- **yaml_doc**: Simplify _store_json_sample()
+  ([`08e7319`](https://github.com/russoz-ansible/andebox/commit/08e73196491870af6c4f5eb2fc31fc333cc2a250))
+
+
 ## v0.94.2 (2025-05-25)
 
 ### Bug Fixes
