@@ -7,9 +7,8 @@ try:
     from fabric.connection import Connection
     import vagrant
 
-    HAS_DEPS = True
+    IMPORT_ERROR = None
 except ImportError as e:
-    HAS_DEPS = False
     IMPORT_ERROR = e
 
 from ..exceptions import AndeboxException
@@ -52,7 +51,7 @@ class VagrantAction(AndeboxAction):
         action_parser.usage = "%(prog)s [-hsd] [-n name] [-V VENV] -- <andebox-cmd> [andebox-cmd-opts [-- test-params]]"
 
     def run(self, context):
-        if not HAS_DEPS:
+        if IMPORT_ERROR:
             raise AndeboxException(
                 "Missing dependency for action 'vagrant': "
             ) from IMPORT_ERROR

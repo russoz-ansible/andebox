@@ -16,9 +16,8 @@ from typing import Union
 try:
     from ruamel.yaml import YAML
 
-    HAS_RUAMEL = True
+    IMPORT_ERROR = None
 except ImportError as e:
-    HAS_RUAMEL = False
     IMPORT_ERROR = e
 
 from ..exceptions import AndeboxException
@@ -104,7 +103,7 @@ class AnsibleDocProcessor:
         return dict(mapping=num, sequence=num + 2, offset=2)
 
     def make_yaml_instance(self) -> YAML:
-        if not HAS_RUAMEL:
+        if IMPORT_ERROR:
             raise AndeboxException(
                 "Missing dependency for action 'yaml-doc': "
             ) from IMPORT_ERROR
