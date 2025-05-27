@@ -11,23 +11,6 @@ import yaml
 
 
 @dataclass
-class MockContext:
-    """Mock context for testing actions."""
-
-    class Args:
-        def __init__(self, **kwargs):
-            self.indent = kwargs.get("indent", 2)
-            self.width = kwargs.get("width", 120)
-            self.offenders = kwargs.get("offenders", False)
-            self.fix_offenders = kwargs.get("fix_offenders", False)
-            self.dry_run = kwargs.get("dry_run", False)
-            self.files = kwargs.get("files", [])
-
-    def __init__(self, **kwargs):
-        self.args = self.Args(**kwargs)
-
-
-@dataclass
 class GenericTestCase:
     """Test case data structure for generic test cases."""
 
