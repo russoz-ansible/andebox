@@ -63,12 +63,12 @@ TEST_CASES_IDS = [item.id for item in TEST_CASES]
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
 def test_ansibletest(git_repo, testcase):
+    skip_py = testcase.flags.get("skip_py", [])
+    if f"{sys.version_info.major}.{sys.version_info.minor}" in skip_py:
+        pytest.skip("Unsupported python version")
+
     repo = testcase.input["repo"]
     repo_dir = git_repo(repo)
-
-    skip_py = testcase.flags.get("skip_py")
-    if skip_py and f"{sys.version_info.major}.{sys.version_info.minor}" in skip_py:
-        pytest.skip("Unsupported python version")
 
     proc = subprocess.run(
         ["andebox", "test"] + testcase.input["argv"],
