@@ -1,6 +1,64 @@
 # CHANGELOG
 
 
+## v0.95.1 (2025-05-27)
+
+### Bug Fixes
+
+- **context**: Handle invalid repos correctly
+  ([`d201cd8`](https://github.com/russoz-ansible/andebox/commit/d201cd8da5382423e6587b4db30911705e15f9d2))
+
+### Chores
+
+- Add AI prompt
+  ([`e178698`](https://github.com/russoz-ansible/andebox/commit/e17869894c6dede13196ab27be526b62b74739e7))
+
+- **ai-prompt**: Refine python persona
+  ([`d6b2802`](https://github.com/russoz-ansible/andebox/commit/d6b2802ae43b6cd18f9d616ac60a302f459e9001))
+
+- **ai-prompt**: Refine python persona
+  ([`e0f2002`](https://github.com/russoz-ansible/andebox/commit/e0f2002a353553dcd51a29b353220a7278670755))
+
+- **devcontainer**: Configure ssh agent inside container
+  ([`7441507`](https://github.com/russoz-ansible/andebox/commit/74415070a998e781c217f6fa8a9dba0c4c267977))
+
+### Documentation
+
+- Minor improvement in README
+  ([`e3f0b26`](https://github.com/russoz-ansible/andebox/commit/e3f0b262eb0defa933a911da2d4b334328b733d6))
+
+- **test/utils**: Reduce verbose comment
+  ([`8f24dc3`](https://github.com/russoz-ansible/andebox/commit/8f24dc330e08400fab9a808209de6ab9b7d2ba48))
+
+### Refactoring
+
+- Simplify dependency handling code
+  ([`f4bb584`](https://github.com/russoz-ansible/andebox/commit/f4bb584dcedcdc7fbf2148d9693286bf1c1d2584))
+
+- **test_action_ansibletest**: Improve the handling of `skip_py`
+  ([`beaf804`](https://github.com/russoz-ansible/andebox/commit/beaf8047930ad7ba1adc0d5db70eb778dd75c429))
+
+### Testing
+
+- Create fixture run_andebox
+  ([`b0323e9`](https://github.com/russoz-ansible/andebox/commit/b0323e94915c2a42085fb1aeaf5f097efc4bd643))
+
+- Remove unused MockContext dataclass
+  ([`7065f99`](https://github.com/russoz-ansible/andebox/commit/7065f99ac82b53a61153d75f5218fd1b735a20f0))
+
+- **ansibletest**: Define testcases in yaml
+  ([`58f1b4c`](https://github.com/russoz-ansible/andebox/commit/58f1b4ccf576f27e7f76eb8e48f37da9cf92c365))
+
+- **ansibletest**: Test within python, no subprocess
+  ([`a16ff56`](https://github.com/russoz-ansible/andebox/commit/a16ff56fc1af7b8a837b43cbd92ddcf4f30fe025))
+
+- **context**: Test within python, no subprocess
+  ([`6bafbb0`](https://github.com/russoz-ansible/andebox/commit/6bafbb0162f7909cb1eb16d332a178aca4779e84))
+
+- **yaml-doc**: Use fixture run_andebox
+  ([`f5fb1f8`](https://github.com/russoz-ansible/andebox/commit/f5fb1f8973edd9c1ff249f286972bbb32b4b093a))
+
+
 ## v0.95.0 (2025-05-26)
 
 ### Bug Fixes
