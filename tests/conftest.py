@@ -5,8 +5,16 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from typing import List
+from typing import Union
 
 import pytest
+from andeboxlib.cli import _make_parser
+from andeboxlib.cli import AndeBox
+from andeboxlib.context import AnsibleCoreContext
+from andeboxlib.context import CollectionContext
+from andeboxlib.context import ContextType
+from andeboxlib.util import set_dir
 from git import Repo
 
 
@@ -65,3 +73,30 @@ def install_andebox():
         encoding="utf-8",
         capture_output=True,
     )
+
+
+@pytest.fixture
+def run_andebox(mocker):
+
+    def _run_andebox(
+        basedir: Union[str, Path],
+        args: List[str],
+        context_type: ContextType | None = None,
+    ) -> AndeBox:
+        parser = _make_parser()
+        parsed_args = parser.parse_args(args)
+
+        with set_dir(Path(basedir)):
+            if context_type is not None:
+                mock_base_dir_type = mocker.patch("andeboxlib.context._base_dir_type")
+                mock_base_dir_type.return_value = (
+                    AnsibleCoreContext
+                    if context_type == ContextType.ANSIBLE_CORE
+                    else CollectionContext
+                )
+
+            box = AndeBox(parsed_args)
+            box.run()
+            return box
+
+    return _run_andebox
