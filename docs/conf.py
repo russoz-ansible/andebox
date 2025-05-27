@@ -21,3 +21,7 @@ templates_path = ["_templates"]
 exclude_patterns = []
 
 html_theme = "furo"
+html_theme_options = {
+    "navigation_with_keys": True,
+    "sidebar_hide_name": False,
+}
