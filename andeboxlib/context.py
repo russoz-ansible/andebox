@@ -260,7 +260,7 @@ def _determine_base_dir_rec(
     try:
         return dir_, _base_dir_type(dir_)
     except ValueError:
-        if dir_ == dir_.anchor:
+        if dir_ == Path(dir_.anchor):
             raise AndeboxUnknownContext()  # pylint: disable=raise-missing-from
         return _determine_base_dir_rec(dir_.parent)
 
