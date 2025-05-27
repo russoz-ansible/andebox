@@ -1,13 +1,9 @@
 andebox
 =======
 
-Ansible Developer's (tool)Box, **andebox**, is a script to assist Ansible developers
-by encapsulating some boilerplate tasks. One of the core features is the ability to run
-`ansible-test` on a local copy of a collection repository without having to worry about
-setting environment variables nor having the _expected_ directory structure _above_ the
-collection directory.
-
-It also allows some basic stats gathering from the `tests/sanity/ignore-X.Y.txt` files.
+**andebox** is a script to assist Ansible developers by encapsulating some
+boilerplate tasks, especially the ability of running tests from the root
+directory of the collection project without any additional setup.
 
 Installation
 ------------
