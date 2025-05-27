@@ -1,6 +1,22 @@
 # CHANGELOG
 
 
+## v0.96.0 (2025-05-27)
+
+### Features
+
+- Install requirements by default
+  ([`90d3fcf`](https://github.com/russoz-ansible/andebox/commit/90d3fcf80fb5583fc203e28b4c4d15058d72ea5d))
+
+When running unit or integration tests, install the Ansible dependencies defined in the
+  corresponding `requirements.yml` file. The semantics of the `-R` parameter has been inverted, and
+  its long form has been renamed to `--skip-requirements`. As the suggests, when passed, that option
+  skips the installation of those requirements.
+
+The `vagrant` action is affected - requirements should be installed when running andebox inside the
+  VM, so the `-R` has been removed from that execution.
+
+
 ## v0.95.1 (2025-05-27)
 
 ### Bug Fixes
