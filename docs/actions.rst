@@ -1,6 +1,19 @@
 Actions
 =======
 
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+
+   actions/context
+   actions/docsite
+   actions/ignorefile
+   actions/runtime
+   actions/ansibletest
+   actions/toxtest
+   actions/vagrant
+   actions/yaml_doc
+
 andebox provides several actions:
 
 test

@@ -38,17 +38,12 @@ will like the `tox-test` subcommand as well.
 Gathering stats from the ignore files can be quite annoying, especially if they are long. One can run:
 
 ```
-$ andebox ignores -v2.10 -d4 -fc '.*:parameter-list-no-elements'
-    24  plugins/modules/ovirt validate-modules:parameter-list-no-elements
-     8  plugins/modules/centurylink validate-modules:parameter-list-no-elements
-     6  plugins/modules/redfish validate-modules:parameter-list-no-elements
-     5  plugins/modules/oneandone validate-modules:parameter-list-no-elements
-     4  plugins/modules/rackspace validate-modules:parameter-list-no-elements
-     4  plugins/modules/oneview validate-modules:parameter-list-no-elements
-     3  plugins/modules/opennebula validate-modules:parameter-list-no-elements
-     3  plugins/modules/univention validate-modules:parameter-list-no-elements
-     3  plugins/modules/consul validate-modules:parameter-list-no-elements
-     3  plugins/modules/sensu validate-modules:parameter-list-no-elements
+$ andebox ignores -s2.17 -fc validate-modules:parameter-state-invalid-choice
+     1  plugins/modules/consul_session.py validate-modules:parameter-state-invalid-choice
+     1  plugins/modules/osx_defaults.py validate-modules:parameter-state-invalid-choice
+     1  plugins/modules/parted.py validate-modules:parameter-state-invalid-choice
+     1  plugins/modules/rhevm.py validate-modules:parameter-state-invalid-choice
+
 ```
 
 ### Runtime config
@@ -89,3 +84,7 @@ Installation
 Install it as usual:
 
     pip install andebox
+
+If you use `pipx` (strongly recommended), you may use:
+
+    pipx install andebox

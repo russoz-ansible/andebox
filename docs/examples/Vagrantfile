@@ -1,0 +1,141 @@
+Vagrant.configure("2") do |config|
+
+  config.vm.define "fedora41" do |fedora41|
+    fedora41.vm.hostname = 'fedora41'
+    fedora41.vm.box = "cshore/fedora41-sway"
+    fedora41.vm.synced_folder ".", "/vagrant", rsync__exclude: ['.tox/', '.git/', '.vagrant']
+    fedora41.vm.provider "virtualbox" do |vb|
+      vb.customize ["modifyvm", :id, "--audio", "none"]
+      vb.customize ["modifyvm", :id, "--memory", "4096"]
+    end
+    fedora41.vm.provision "shell", inline: <<-SHELL
+      dnf install -y python3-pip python3-virtualenv
+      virtualenv --python 3 /venv
+      /venv/bin/pip install -U pip setuptools
+      /venv/bin/pip install andebox ansible-core
+      chown -R vagrant:vagrant /venv
+    SHELL
+  end
+
+  config.vm.define "freebsd14" do |freebsd13|
+    freebsd13.vm.hostname = 'freebsd14'
+    freebsd13.vm.box = "bento/freebsd-14.1"
+    freebsd13.vm.synced_folder ".", "/vagrant", rsync__exclude: ['.tox/', '.git/', '.vagrant']
+    freebsd13.vm.provider "virtualbox" do |vb|
+      vb.customize ["modifyvm", :id, "--audio", "none"]
+    end
+    freebsd13.vm.provision "shell", inline: <<-SHELL
+      pkg install -y rust py311-setuptools py311-setuptools-rust
+      pkg install -y python311 py311-wheel py311-pip py311-virtualenv py311-sqlite3
+      virtualenv --python 3 /venv
+      /venv/bin/pip install -U pip setuptools
+      CFLAGS="$CFLAGS -Wno-error=incompatible-pointer-types" /venv/bin/pip install andebox ansible-core
+      chown -R vagrant:vagrant /venv
+    SHELL
+  end
+
+  config.vm.define "ubuntu-noble" do |noble|   # Ubuntu 24.04
+    noble.vm.hostname = 'ubuntu-noble'
+    noble.vm.box = "jcpetro97/ubuntu2404"
+    noble.vm.synced_folder ".", "/vagrant", rsync__exclude: ['.tox/', '.git/', '.vagrant']
+    noble.vm.provider "virtualbox" do |vb|
+      vb.customize ["modifyvm", :id, "--audio", "none"]
+      vb.customize ["modifyvm", :id, "--memory", "4096"]
+    end
+    noble.vm.provision "shell", inline: <<-SHELL
+      apt-get -y update
+      apt-get -y install python3-pip virtualenv python3-venv
+      virtualenv --python 3 /venv
+      /venv/bin/pip install -U pip setuptools
+      /venv/bin/pip install andebox ansible-core
+      chown -R vagrant:vagrant /venv
+    SHELL
+  end
+
+  config.vm.define "ubuntu-kinetic" do |kinetic|   # Ubuntu 22.10
+    kinetic.vm.hostname = 'kinetic'
+    kinetic.vm.box = "generic/ubuntu2210"
+    kinetic.vm.synced_folder ".", "/vagrant", rsync__exclude: ['.tox/', '.git/', '.vagrant']
+    kinetic.vm.provider "virtualbox" do |vb|
+      vb.customize ["modifyvm", :id, "--audio", "none"]
+      vb.customize ["modifyvm", :id, "--memory", "4096"]
+    end
+    kinetic.vm.provision "shell", inline: <<-SHELL
+      apt-get -y update
+      apt-get -y install python3-pip virtualenv
+      virtualenv --python 3 /venv
+      /venv/bin/pip install -U pip setuptools
+      /venv/bin/pip install andebox ansible-core
+      chown -R vagrant:vagrant /venv
+    SHELL
+  end
+
+  config.vm.define "debian12" do |debian12|
+    debian12.vm.hostname = 'debian12'
+    debian12.vm.box = "generic/debian12"
+    debian12.vm.synced_folder ".", "/vagrant", rsync__exclude: ['.tox/', '.git/', '.vagrant']
+    debian12.vm.provider "virtualbox" do |vb|
+      vb.customize ["modifyvm", :id, "--audio", "none"]
+      vb.customize ["modifyvm", :id, "--memory", "4096"]
+    end
+    debian12.vm.provision "shell", inline: <<-SHELL
+      apt-get -y update
+      apt-get -y install python3-pip virtualenv python3-venv
+      virtualenv --python 3 /venv
+      /venv/bin/pip install -U pip setuptools
+      /venv/bin/pip install andebox ansible-core
+      chown -R vagrant:vagrant /venv
+    SHELL
+  end
+
+  config.vm.define "alpine" do |alpine|
+    alpine.vm.hostname = 'alpine'
+    alpine.vm.box = "generic/alpine319"
+    alpine.vm.synced_folder ".", "/vagrant", rsync__exclude: ['.tox/', '.git/', '.vagrant']
+    alpine.vm.provider "virtualbox" do |vb|
+      vb.customize ["modifyvm", :id, "--audio", "none"]
+    end
+    alpine.vm.provision "shell", inline: <<-SHELL
+      apk add python3 py3-pip py3-virtualenv
+      virtualenv --python 3 /venv
+      /venv/bin/pip install -U pip setuptools
+      /venv/bin/pip install andebox 'ansible-core'
+      chown -R vagrant:vagrant /venv
+    SHELL
+  end
+
+  config.vm.define "opensuse15" do |opensuse15|
+    opensuse15.vm.hostname = 'opensuse15'
+    opensuse15.vm.box = "bento/opensuse-leap-15.2"
+    opensuse15.vm.synced_folder ".", "/vagrant", rsync__exclude: ['.tox/', '.git/', '.vagrant']
+    opensuse15.vm.provider "virtualbox" do |vb|
+      vb.customize ["modifyvm", :id, "--audio", "none"]
+    end
+    opensuse15.vm.provision "shell", inline: <<-SHELL
+      zypper install -y python3-virtualenv
+      virtualenv --python python3 /venv
+      /venv/bin/pip install -U pip setuptools
+      /venv/bin/pip install andebox ansible-core
+      chown -R vagrant:vagrant /venv
+    SHELL
+  end
+
+  config.vm.define "centos9s" do |centos9s|
+    centos9s.vm.hostname = 'centos9s'
+    centos9s.vm.box = "centos/stream9"
+    centos9s.vm.synced_folder ".", "/vagrant", rsync__exclude: ['.tox/', '.git/', '.vagrant']
+    centos9s.vm.provider "virtualbox" do |vb|
+      vb.customize ["modifyvm", :id, "--audio", "none"]
+      vb.customize ["modifyvm", :id, "--memory", "4096"]
+    end
+    centos9s.vm.provision "shell", inline: <<-SHELL
+      dnf install -y python3-pip
+      pip install virtualenv
+      /usr/local/bin/virtualenv --python 3 /venv
+      /venv/bin/pip install -U pip setuptools
+      /venv/bin/pip install andebox ansible-core
+      chown -R vagrant:vagrant /venv
+    SHELL
+  end
+
+end
