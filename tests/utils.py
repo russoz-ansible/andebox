@@ -40,34 +40,7 @@ class GenericTestCase:
 def load_test_cases(
     yaml_path: Optional[Union[str, Path]] = None, yaml_content: Optional[str] = None
 ) -> List[GenericTestCase]:
-    """
-    Load test cases from either a YAML file or a YAML string content into GenericTestCase objects.
-
-    Args:
-        yaml_path: Path to YAML file containing test cases
-        yaml_content: String containing YAML formatted test cases
-
-    Returns:
-        List of GenericTestCase objects
-
-    Raises:
-        ValueError: If neither or both yaml_path and yaml_content are provided
-
-    Example YAML structure:
-        - id: doc-only
-          input:
-            DOCUMENTATION: |
-              ---
-              short_description: test plugin
-            EXAMPLES: null
-            RETURN: null
-          output:
-            DOCUMENTATION: |
-              ---
-              short_description: test plugin
-          flags:
-            xfail: "reason for failure"
-    """
+    """Load test cases from either a YAML file or a YAML string content into GenericTestCase objects."""
     if (yaml_path is None and yaml_content is None) or (
         yaml_path is not None and yaml_content is not None
     ):
