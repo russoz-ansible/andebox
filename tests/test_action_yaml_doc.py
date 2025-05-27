@@ -5,10 +5,9 @@ import difflib
 import importlib.util
 
 import pytest
-from andeboxlib.actions.yaml_doc import YAMLDocAction
+from andeboxlib.context import ContextType
 
 from .utils import load_test_cases
-from .utils import MockContext
 
 
 def load_module_vars(pyfile) -> dict[str, str | None]:
@@ -327,12 +326,6 @@ TEST_CASES_IDS = [item.id for item in TEST_CASES]
 
 @pytest.fixture
 def python_file_with_yaml_blocks_in_collection(tmp_path_factory):
-    """
-    Creates a valid Ansible collection structure in a temporary directory,
-    writes a module with the given YAML blocks, and returns the file path.
-    The directory is automatically cleaned up after the test session.
-    """
-    # Simulate the collection structure under a temporary path
     repo_dir = tmp_path_factory.mktemp("community_crypto")
     module_dir = repo_dir / "plugins" / "modules"
     module_dir.mkdir(parents=True, exist_ok=True)
@@ -356,9 +349,8 @@ def python_file_with_yaml_blocks_in_collection(tmp_path_factory):
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
 def test_yaml_doc_action_blocks_in_collection(
-    request, python_file_with_yaml_blocks_in_collection, testcase
+    request, run_andebox, python_file_with_yaml_blocks_in_collection, testcase
 ):
-    # Handle xfail flags if present
     if "xfail" in testcase.flags:
         request.node.add_marker(
             pytest.mark.xfail(
@@ -375,19 +367,11 @@ def test_yaml_doc_action_blocks_in_collection(
         input_.get("DOCUMENTATION"), input_.get("EXAMPLES"), input_.get("RETURN")
     )
 
-    # Create action and context
-    action = YAMLDocAction()
-    context = MockContext(
-        indent=2,
-        width=120,
-        offenders=False,
-        fix_offenders=False,
-        dry_run=False,
-        files=[pyfile],
+    run_andebox(
+        str(pyfile.parent.parent.parent),
+        ["-c", "some.collection", "yaml-doc", "plugins/modules/test_module.py"],
+        ContextType.COLLECTION,
     )
-
-    # Run the action
-    action.run(context)
 
     actual = load_module_vars(pyfile)
 
