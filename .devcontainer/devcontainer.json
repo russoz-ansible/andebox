@@ -7,6 +7,12 @@
   "features": {
       "ghcr.io/devcontainers/features/docker-in-docker:2": {},
   },
+  "mounts": [
+    "source=${localEnv:SSH_AUTH_SOCK},target=/ssh-agent,type=bind"
+  ],
+  "remoteEnv": {
+    "SSH_AUTH_SOCK": "/ssh-agent"
+  },
   "settings": {
     "terminal.integrated.shell.linux": "/bin/bash",
     "python.pythonPath": "/usr/local/bin/python"
@@ -17,5 +23,5 @@
     "ms-python.vscode-pylance"
   ],
   "remoteUser": "vscode",
-  "postCreateCommand": "poetry install --no-interaction --with dev,docs && pre-commit install --install-hooks"
+  "postCreateCommand": "poetry install --no-interaction --with dev,docs && pre-commit install --install-hooks && mkdir -p ~/.ssh && chmod 700 ~/.ssh"
 }
