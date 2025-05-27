@@ -27,7 +27,6 @@ TEST_CASES = load_test_cases(
   input:
     repo: https://github.com/ansible-collections/community.general.git
     argv:
-      - "-R"
       - "--"
       - "units"
       - "--docker"
@@ -35,6 +34,19 @@ TEST_CASES = load_test_cases(
       - "tests/unit/plugins/module_utils/test_cmd_runner.py"
   output:
     rc: 0
+
+# - id: cg-unit-no-req
+#   input:
+#     repo: https://github.com/ansible-collections/community.general.git
+#     argv:
+#       - "-R"
+#       - "--"
+#       - "units"
+#       - "--docker"
+#       - "default"
+#       - "tests/unit/plugins/module_utils/test_cmd_runner.py"
+#   output:
+#     rc: 0
 
 - id: ac-sanity-ei
   input:

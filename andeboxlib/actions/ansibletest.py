@@ -26,10 +26,10 @@ class AnsibleTestAction(AndeboxAction):
             ),
         ),
         dict(
-            names=("--requirements", "-R"),
+            names=("--skip-requirements", "-R"),
             specs=dict(
                 action="store_true",
-                help="install test requirements.yml",
+                help="skip installation of test requirements.yml",
             ),
         ),
         dict(
@@ -53,15 +53,19 @@ class AnsibleTestAction(AndeboxAction):
     def run(self, context):
         try:
             with context.temp_tree() as temp_dir:
-                if context.args.requirements and context.type == ContextType.COLLECTION:
-                    req_path = dict(
-                        units=context.unit_test_subdir / "requirements.yml",
-                        integration=context.integration_test_subdir
-                        / "requirements.yml",
-                    )
-                    context.install_requirements(
-                        reqs=req_path[context.args.test], path=context.top_dir
-                    )
+                if (
+                    context.type == ContextType.COLLECTION
+                    and not context.args.skip_requirements
+                ):
+                    if context.args.test in ["units", "integration"]:
+                        req_path = dict(
+                            units=context.unit_test_subdir / "requirements.yml",
+                            integration=context.integration_test_subdir
+                            / "requirements.yml",
+                        )
+                        context.install_requirements(
+                            reqs=req_path[context.args.test], path=context.top_dir
+                        )
                 if context.args.exclude_from_ignore:
                     context.exclude_from_ignore()
                 print(
