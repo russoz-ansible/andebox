@@ -22,6 +22,7 @@ class GenericTestCase:
     input: Dict[str, Any]
     output: Dict[str, Any]
     flags: Dict[str, str] = field(default_factory=dict)
+    exception: Dict[str, Any] = field(default_factory=dict)
 
 
 def load_test_cases(
@@ -47,6 +48,7 @@ def load_test_cases(
             input=case["input"],
             output=case["output"],
             flags=case.get("flags", {}),
+            exception=case.get("exception", {}),
         )
         for case in data
     ]
@@ -110,7 +112,7 @@ class AndeboxTestHelper:
             *args: Additional arguments to pass to run_andebox
             context_type: Optional context type for the andebox command
         """
-        expected_exception = self.testcase.output.get("exception")
+        expected_exception = self.testcase.exception
         if expected_exception:
             expected_class = expected_exception.get("class")
             with pytest.raises(Exception) as exc_info:

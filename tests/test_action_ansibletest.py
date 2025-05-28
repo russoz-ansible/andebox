@@ -55,9 +55,9 @@ TEST_CASES = load_test_cases(
       - "--skip-test"
       - "release-names"
       - "lib/ansible/modules/dnf5.py"
+  exception:
+    class: AndeboxException
   output:
-    exception:
-      class: AndeboxException
     in_stdout: >
       ERROR: lib/ansible/modules/dnf5.py:0:0: parameter-invalid: Argument 'expire-cache' in argument_spec is not a valid python identifier
   flags:
