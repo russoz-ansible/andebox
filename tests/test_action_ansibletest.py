@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 # (c) 2024, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-import re
-import sys
-
 import pytest
 
+from .utils import AndeboxTestHelper
 from .utils import load_test_cases
-
 
 TEST_CASES = load_test_cases(
     yaml_content="""
@@ -15,13 +12,13 @@ TEST_CASES = load_test_cases(
   input:
     repo: https://github.com/ansible-collections/community.general.git
     argv:
-      - "--"
-      - "sanity"
-      - "--docker"
-      - "default"
-      - "plugins/module_utils/deps.py"
-  output:
-    rc: 0
+      - -R
+      - --
+      - sanity
+      - --docker
+      - default
+      - plugins/module_utils/deps.py
+  output: {}
 
 - id: cg-unit
   input:
@@ -32,8 +29,7 @@ TEST_CASES = load_test_cases(
       - "--docker"
       - "default"
       - "tests/unit/plugins/module_utils/test_cmd_runner.py"
-  output:
-    rc: 0
+  output: {}
 
 # - id: cg-unit-no-req
 #   input:
@@ -45,8 +41,7 @@ TEST_CASES = load_test_cases(
 #       - "--docker"
 #       - "default"
 #       - "tests/unit/plugins/module_utils/test_cmd_runner.py"
-#   output:
-#     rc: 0
+#   output: {}
 
 - id: ac-sanity-ei
   input:
@@ -74,58 +69,16 @@ TEST_CASES_IDS = [item.id for item in TEST_CASES]
 
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
-def test_ansibletest(git_repo, testcase, run_andebox, capfd, request):
-    if "xfail" in testcase.flags:
-        request.node.add_marker(
-            pytest.mark.xfail(
-                reason=testcase.flags["xfail"],
-                strict=False,
-                run=True,
-            )
-        )
+def test_ansibletest_with_testcase(git_repo, testcase, run_andebox, capfd, request):
+    AndeboxTestHelper.check_flags(testcase, request)
 
-    skip_py = testcase.flags.get("skip_py", [])
-    if f"{sys.version_info.major}.{sys.version_info.minor}" in skip_py:
-        pytest.skip("Unsupported python version")
+    def setup_test(tc):
+        repo = tc.input["repo"]
+        repo_dir = git_repo(repo)
+        return repo_dir
 
-    repo = testcase.input["repo"]
-    repo_dir = git_repo(repo)
-
-    print(f"\nRunning andebox test for {testcase.id}...")
-    captured = capfd.readouterr()  # Clear any output from setup
-
-    expected_exception = testcase.output.get("exception")
-    if expected_exception:
-        expected_class = expected_exception.get("class")
-        with pytest.raises(Exception) as exc_info:
-            run_andebox(repo_dir, ["test"] + testcase.input["argv"])
-
-        actual_class = exc_info.value.__class__.__name__
-        assert (
-            actual_class == expected_class
-        ), f"Expected exception class {expected_class}, but got {actual_class}"
-
-        expected_value = expected_exception.get("value")
-        if expected_value:
-            assert expected_value in str(
-                exc_info.value
-            ), f"Expected exception message to contain '{expected_value}', but got: {exc_info.value}"
-
-    else:
-        run_andebox(repo_dir, ["test"] + testcase.input["argv"])
-
-    captured = capfd.readouterr()
-
-    msg = f"stdout=\n" f"{captured.out}\n\nstderr=\n" f"{captured.err}"
-    patt_out = testcase.output.get("in_stdout")
-    if patt_out:
-        print(f"{patt_out=}")
-        match = re.search(patt_out, captured.out, re.M)
-        print(f"{match=}")
-        assert bool(match), f"Pattern ({patt_out}) not found in stdout! {msg}"
-    patt_err = testcase.output.get("in_stderr")
-    if patt_err:
-        print(f"{patt_err=}")
-        match = re.search(patt_err, captured.err, re.M)
-        print(f"{match=}")
-        assert bool(match), f"Pattern ({patt_err}) not found in stderr! {msg}"
+    test = AndeboxTestHelper(testcase, capfd)
+    repo_dir = test.setup(setup_test)
+    captured = test.execute(run_andebox, repo_dir, ["test"] + testcase.input["argv"])
+    test.verify_patterns(captured)
+    test.verify_return_code()
