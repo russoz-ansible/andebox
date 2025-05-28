@@ -7,6 +7,7 @@ import importlib.util
 import pytest
 from andeboxlib.context import ContextType
 
+from .utils import AndeboxTestHelper
 from .utils import load_test_cases
 
 
@@ -349,38 +350,55 @@ def python_file_with_yaml_blocks_in_collection(tmp_path_factory):
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
 def test_yaml_doc_action_blocks_in_collection(
-    request, run_andebox, python_file_with_yaml_blocks_in_collection, testcase
+    request, run_andebox, python_file_with_yaml_blocks_in_collection, testcase, capfd
 ):
-    if "xfail" in testcase.flags:
-        request.node.add_marker(
-            pytest.mark.xfail(
-                reason=testcase.flags["xfail"],
-                strict=False,
-                run=True,
-            )
+    """Test the yaml-doc action using the AndeboxTestHelper class."""
+
+    # Check any flags like xfail or skip_py
+    AndeboxTestHelper.check_flags(testcase, request)
+
+    # Define the setup function specific to this test
+    def setup_test(tc):
+        input_data = tc.input
+        pyfile = python_file_with_yaml_blocks_in_collection(
+            input_data.get("DOCUMENTATION"),
+            input_data.get("EXAMPLES"),
+            input_data.get("RETURN"),
         )
+        return {"pyfile": pyfile, "collection_dir": str(pyfile.parent.parent.parent)}
 
-    input_ = testcase.input
-    output = testcase.output
+    # Create the AndeboxTestHelper instance
+    test = AndeboxTestHelper(testcase, capfd)
 
-    pyfile = python_file_with_yaml_blocks_in_collection(
-        input_.get("DOCUMENTATION"), input_.get("EXAMPLES"), input_.get("RETURN")
+    # Run the setup phase
+    setup_data = test.setup(setup_test)
+    pyfile = setup_data["pyfile"]
+    collection_dir = setup_data["collection_dir"]
+
+    # Execute andebox command
+    test.execute(
+        run_andebox,
+        collection_dir,
+        ["-c", "some.collection", "yaml-doc", f"plugins/modules/{pyfile.name}"],
+        context_type=ContextType.COLLECTION,
     )
 
-    run_andebox(
-        str(pyfile.parent.parent.parent),
-        ["-c", "some.collection", "yaml-doc", "plugins/modules/test_module.py"],
-        ContextType.COLLECTION,
-    )
+    # Custom verification function for YAML doc action
+    def verify_yaml_doc(tc, pyfile):
+        actual = load_module_vars(pyfile)
+        output = tc.output
 
-    actual = load_module_vars(pyfile)
+        for var in ["DOCUMENTATION", "EXAMPLES", "RETURN"]:
+            expected = output.get(var)
+            if expected is not None:
+                print(f"ACTUAL\n{actual[var]}")
+                print(f"EXPECTED\n{expected}")
+                assert var in actual, f"{var} not found in file"
+                assert expected in actual[var], "\n".join(
+                    difflib.unified_diff(
+                        actual[var].splitlines(), expected.splitlines()
+                    )
+                )
 
-    for var in ["DOCUMENTATION", "EXAMPLES", "RETURN"]:
-        expected = output.get(var)
-        if expected is not None:
-            print(f"ACTUAL\n{actual[var]}")
-            print(f"EXPECTED\n{expected}")
-            assert var in actual, f"{var} not found in file"
-            assert expected in actual[var], "\n".join(
-                difflib.unified_diff(actual[var].splitlines(), expected.splitlines())
-            )
+    # Run custom verification
+    test.verify_custom(verify_yaml_doc, pyfile)
