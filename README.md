@@ -1,6 +1,17 @@
 andebox
 =======
 
+<p align="center">
+
+[![PyPI - Version](https://img.shields.io/pypi/v/andebox.svg)](https://pypi.org/project/andebox/)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/andebox)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/andebox)
+[![Github](https://img.shields.io/badge/github-andebox-blue)](https://github.com/russoz-ansible/andebox)
+[![docs](https://readthedocs.org/projects/andebox/badge/?style=flat)](https://andebox.readthedocs.io/en/latest/)
+[![codecov](https://codecov.io/gh/russoz-ansible/andebox/graph/badge.svg?token=D3TPI2PGU9)](https://codecov.io/gh/russoz-ansible/andebox)
+
+</p>
+
 **andebox** is a script to assist Ansible developers by encapsulating some
 boilerplate tasks, especially the ability of running tests from the root
 directory of the collection project without any additional setup.
