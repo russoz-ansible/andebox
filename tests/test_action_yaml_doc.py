@@ -11,17 +11,6 @@ from .utils import AndeboxTestHelper
 from .utils import load_test_cases
 
 
-def load_module_vars(pyfile) -> dict[str, str | None]:
-    spec = importlib.util.spec_from_file_location("test_module", str(pyfile))
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return {
-        "DOCUMENTATION": getattr(mod, "DOCUMENTATION", None),
-        "EXAMPLES": getattr(mod, "EXAMPLES", None),
-        "RETURN": getattr(mod, "RETURN", None),
-    }
-
-
 TEST_CASES = load_test_cases(
     yaml_content="""
 - id: doc-only
@@ -346,6 +335,17 @@ def mock_plugin(tmp_path_factory):
         return {"pyfile": pyfile.name, "basedir": str(repo_dir)}
 
     return _create_file
+
+
+def load_module_vars(pyfile) -> dict[str, str | None]:
+    spec = importlib.util.spec_from_file_location("test_module", str(pyfile))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return {
+        "DOCUMENTATION": getattr(mod, "DOCUMENTATION", None),
+        "EXAMPLES": getattr(mod, "EXAMPLES", None),
+        "RETURN": getattr(mod, "RETURN", None),
+    }
 
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
