@@ -23,7 +23,7 @@ TEST_CASES = load_test_cases(
       options:
         foo:
           description: foo option
-  output:
+  expected:
     DOCUMENTATION: |
       short_description: test plugin
       description:
@@ -43,7 +43,7 @@ TEST_CASES = load_test_cases(
       # Example usage
       - name:    run test
         test_module:
-  output:
+  expected:
     DOCUMENTATION: |
       short_description: test plugin
       description:
@@ -69,7 +69,7 @@ TEST_CASES = load_test_cases(
         description: foo return value
         returned: always
         type: str
-  output:
+  expected:
     DOCUMENTATION: >-
       short_description: test plugin
     EXAMPLES: >-
@@ -91,7 +91,7 @@ TEST_CASES = load_test_cases(
           returned: always
           type: dict
           sample: {"key1": "value1", "key2": {"nested": "value2"}}
-  output:
+  expected:
     RETURN: |
       my_list:
         description: A list of items.
@@ -212,7 +212,7 @@ TEST_CASES = load_test_cases(
                 "ignore_errors": false}
             }
           ]
-  output:
+  expected:
     RETURN: |
       member:
         description: Specific balancer member information dictionary, returned when the module is invoked with O(member_host) parameter.
@@ -362,17 +362,16 @@ def test_action_yaml_doc(run_andebox, mock_plugin, testcase, save_fixtures):
             "andebox": run_andebox(andebox_params, context_type=ContextType.COLLECTION)
         }
 
-    def validator(output, data):
+    def validator(expected, data):
         actual = load_module_vars(f"plugins/modules/{data['pyfile']}")
         for var in ["DOCUMENTATION", "EXAMPLES", "RETURN"]:
-            expected = output.get(var)
-            if expected is not None:
+            if (expected_var := expected.get(var)) is not None:
                 print(f"ACTUAL\n{actual[var]}")
-                print(f"EXPECTED\n{expected}")
+                print(f"EXPECTED\n{expected_var}")
                 assert var in actual, f"{var} not found in file"
-                assert expected in actual[var], "\n".join(
+                assert expected_var in actual[var], "\n".join(
                     difflib.unified_diff(
-                        actual[var].splitlines(), expected.splitlines()
+                        actual[var].splitlines(), expected_var.splitlines()
                     )
                 )
 

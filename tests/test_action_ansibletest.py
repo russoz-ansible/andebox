@@ -20,7 +20,7 @@ TEST_CASES = load_test_cases(
       - --docker
       - default
       - plugins/module_utils/deps.py
-  output: {}
+  expected: {}
 
 - id: cg-unit
   input:
@@ -31,7 +31,7 @@ TEST_CASES = load_test_cases(
       - "--docker"
       - "default"
       - "tests/unit/plugins/module_utils/test_cmd_runner.py"
-  output: {}
+  expected: {}
 
 # - id: cg-unit-no-req
 #   input:
@@ -43,7 +43,7 @@ TEST_CASES = load_test_cases(
 #       - "--docker"
 #       - "default"
 #       - "tests/unit/plugins/module_utils/test_cmd_runner.py"
-#   output: {}
+#   expected: {}
 
 - id: ac-sanity-ei
   input:
@@ -59,7 +59,7 @@ TEST_CASES = load_test_cases(
       - "lib/ansible/modules/dnf5.py"
   exception:
     class: AndeboxException
-  output:
+  expected:
     in_stdout: >
       ERROR: lib/ansible/modules/dnf5.py:0:0: parameter-invalid: Argument 'expire-cache' in argument_spec is not a valid python identifier
   flags:

@@ -18,7 +18,7 @@ from andeboxlib.util import set_dir
 class GenericTestCase:
     id: str
     input: Dict[str, Any]
-    output: Dict[str, Any]
+    expected: Dict[str, Any]
     flags: Dict[str, str] = field(default_factory=dict)
     exception: Dict[str, Any] = field(default_factory=dict)
 
@@ -43,7 +43,7 @@ def load_test_cases(
         GenericTestCase(
             id=case["id"],
             input=case["input"],
-            output=case["output"],
+            expected=case["expected"],
             flags=case.get("flags", {}),
             exception=case.get("exception", {}),
         )
@@ -123,15 +123,15 @@ class AndeboxTestHelper:
             self.data["captured"] = self.fixtures["capfd"].readouterr()
 
             for validator in self.validator:
-                validator(self.testcase.output, self.data)
+                validator(self.testcase.expected, self.data)
 
 
-def verify_patterns(output: Dict[str, Any], data: Dict[str, Any]) -> None:
+def verify_patterns(expected: Dict[str, Any], data: Dict[str, Any]) -> None:
     stdout = data["captured"].out
     stderr = data["captured"].err
     msg = f"stdout=\n{stdout}\n\nstderr=\n{stderr}"
 
-    patt_outs = output.get("in_stdout", [])
+    patt_outs = expected.get("in_stdout", [])
     if isinstance(patt_outs, str):
         patt_outs = [patt_outs]
 
@@ -141,7 +141,7 @@ def verify_patterns(output: Dict[str, Any], data: Dict[str, Any]) -> None:
         print(f"{match=}")
         assert bool(match), f"Pattern ({patt_out}) not found in stdout! {msg}"
 
-    patt_errs = output.get("in_stderr", [])
+    patt_errs = expected.get("in_stderr", [])
     if isinstance(patt_errs, str):
         patt_errs = [patt_errs]
 
@@ -152,8 +152,8 @@ def verify_patterns(output: Dict[str, Any], data: Dict[str, Any]) -> None:
         assert bool(match), f"Pattern ({patt_err}) not found in stderr! {msg}"
 
 
-def verify_return_code(output: Dict[str, Any], data: Dict[str, Any]) -> None:
-    expected_rc = output.get("rc")
+def verify_return_code(expected: Dict[str, Any], data: Dict[str, Any]) -> None:
+    expected_rc = expected.get("rc")
 
     if expected_rc is not None:
         assert (

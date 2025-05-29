@@ -12,7 +12,7 @@ TEST_CASES = load_test_cases(
 - id: cg-context
   input:
     repo: https://github.com/ansible-collections/community.general.git
-  output:
+  expected:
     rc: 0
     in_stdout:
       - "^\\s+Type: ContextType\\.COLLECTION"
@@ -21,7 +21,7 @@ TEST_CASES = load_test_cases(
 - id: ac-context
   input:
     repo: https://github.com/ansible/ansible.git
-  output:
+  expected:
     rc: 0
     in_stdout:
       - "^\\s+Type: ContextType\\.ANSIBLE_CORE"
