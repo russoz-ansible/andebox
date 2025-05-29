@@ -33,6 +33,14 @@ class AnsibleTestAction(AndeboxAction):
             ),
         ),
         dict(
+            names=("--galaxy-retry",),
+            specs=dict(
+                type=int,
+                default=3,
+                help="Number of times to retry requirements installation on failure (default: 3)",
+            ),
+        ),
+        dict(
             names=("test",),
             specs=dict(
                 choices=["sanity", "units", "integration"],
@@ -64,7 +72,9 @@ class AnsibleTestAction(AndeboxAction):
                             / "requirements.yml",
                         )
                         context.install_requirements(
-                            reqs=req_path[context.args.test], path=context.top_dir
+                            reqs=req_path[context.args.test],
+                            path=context.top_dir,
+                            retries=context.args.galaxy_retry,
                         )
                 if context.args.exclude_from_ignore:
                     context.exclude_from_ignore()

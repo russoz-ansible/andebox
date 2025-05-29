@@ -6,6 +6,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 from abc import ABC
 from abc import abstractmethod
 from argparse import Namespace
@@ -76,7 +77,7 @@ class AbstractContext(ABC):
     def integration_test_subdir(self) -> Path:
         return self.tests_subdir / "integration"
 
-    def install_requirements(self, reqs: Path, path: Path | None) -> None:
+    def install_requirements(self, reqs: Path, path: Path | None, retries: int) -> None:
         pass
 
     @abstractmethod
@@ -219,7 +220,7 @@ class CollectionContext(AbstractContext):
             return ".".join(coll_split[:-1]), coll_split[-1]
         return self.read_coll_meta()[:2]
 
-    def install_requirements(self, reqs: Path, path: Path | None) -> None:
+    def install_requirements(self, reqs: Path, path: Path | None, retries: int) -> None:
         # reqs = self.integration_test_subdir / "requirements.yml"
         if not reqs.exists():
             print(f"Cannot find requirements file: {reqs}")
@@ -238,7 +239,18 @@ class CollectionContext(AbstractContext):
             + ["-r", f"{reqs}", "-vvv", "--force"]
         )
         print(f"Running: {cmd}")
-        subprocess.run(cmd, check=True)
+        delay = 10
+        for attempt in range(1, retries + 1):
+            try:
+                subprocess.run(cmd, check=True)
+                break
+            except subprocess.CalledProcessError:
+                if attempt == retries:
+                    raise
+                print(
+                    f"Install requirements failed (attempt {attempt}/{retries}), retrying in {delay}s..."
+                )
+                time.sleep(delay)
 
 
 ConcreteContextType = Type[AnsibleCoreContext] | Type[CollectionContext]
