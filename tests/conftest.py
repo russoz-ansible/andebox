@@ -6,7 +6,9 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import Any
+from typing import Callable
 from typing import Dict
+from typing import Generator
 from typing import List
 
 import pytest
@@ -19,7 +21,7 @@ from git import Repo
 
 
 @pytest.fixture(scope="session")
-def git_repo(tmp_path_factory):
+def git_repo(tmp_path_factory) -> Callable[[str], Path]:
     cloned_repos = {}
 
     def _clone(url: str) -> Path:
@@ -39,7 +41,7 @@ def git_repo(tmp_path_factory):
 # See https://pip.pypa.io/en/latest/user_guide/#using-pip-from-your-program
 #
 @pytest.fixture(scope="session", autouse=True)
-def install_andebox():
+def install_andebox() -> Generator[None, None, None]:
     proj_dir = os.getcwd()
 
     print(f"{proj_dir=}")
@@ -72,7 +74,6 @@ def install_andebox():
 
 @pytest.fixture
 def run_andebox(mocker):
-
     def _run_andebox(
         args: List[str],
         context_type: ContextType | None = None,
@@ -97,7 +98,6 @@ def run_andebox(mocker):
 
 @pytest.fixture
 def save_fixtures(request, mocker, capfd):
-
     def _save_fixtures(**extras) -> Dict[str, Any]:
         d = dict(
             request=request,

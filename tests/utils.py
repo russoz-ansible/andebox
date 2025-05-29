@@ -4,11 +4,10 @@ from dataclasses import dataclass
 from dataclasses import field
 from pathlib import Path
 from typing import Any
+from typing import Callable
 from typing import Dict
 from typing import List
-from typing import Optional
 from typing import Sequence
-from typing import Union
 
 import pytest
 import yaml
@@ -25,7 +24,7 @@ class GenericTestCase:
 
 
 def load_test_cases(
-    yaml_path: Optional[Union[str, Path]] = None, yaml_content: Optional[str] = None
+    yaml_path: str | Path | None = None, yaml_content: str | None = None
 ) -> List[GenericTestCase]:
     if (yaml_path is None and yaml_content is None) or (
         yaml_path is not None and yaml_content is not None
@@ -52,10 +51,13 @@ def load_test_cases(
     ]
 
 
-def _enforce_list(arg):
-    if isinstance(arg, Sequence):
+def _enforce_list(arg: Any) -> list[Any]:
+    if isinstance(arg, Sequence) and not isinstance(arg, str):
         return list(arg)
     return [arg]
+
+
+FuncOrFuncList = Callable | List[Callable]
 
 
 class AndeboxTestHelper:
@@ -64,10 +66,10 @@ class AndeboxTestHelper:
         self,
         testcase: GenericTestCase,
         fixtures: Dict[str, Any],
-        setup,
-        executor,
-        validator,
-    ):
+        setup: FuncOrFuncList,
+        executor: Callable,
+        validator: FuncOrFuncList,
+    ) -> None:
         self.testcase: GenericTestCase = testcase
         self.fixtures = fixtures
 
@@ -75,7 +77,7 @@ class AndeboxTestHelper:
         self.executor = executor
         self.validator = _enforce_list(validator)
 
-        self.data = {"basedir": Path.cwd()}
+        self.data: Dict[str, Any] = {"basedir": Path.cwd()}
 
     def check_flags(self) -> None:
         request = self.fixtures["request"]
@@ -93,7 +95,7 @@ class AndeboxTestHelper:
         if f"{sys.version_info.major}.{sys.version_info.minor}" in skip_py:
             pytest.skip("Unsupported python version")
 
-    def execute(self):
+    def execute(self) -> None:
         self.check_flags()
         for setup in self.setup:
             self.data.update(setup(self.testcase.input))
@@ -124,7 +126,7 @@ class AndeboxTestHelper:
                 validator(self.testcase.output, self.data)
 
 
-def verify_patterns(output, data):
+def verify_patterns(output: Dict[str, Any], data: Dict[str, Any]) -> None:
     stdout = data["captured"].out
     stderr = data["captured"].err
     msg = f"stdout=\n{stdout}\n\nstderr=\n{stderr}"
@@ -150,10 +152,10 @@ def verify_patterns(output, data):
         assert bool(match), f"Pattern ({patt_err}) not found in stderr! {msg}"
 
 
-def verify_return_code(output, data):
+def verify_return_code(output: Dict[str, Any], data: Dict[str, Any]) -> None:
     expected_rc = output.get("rc")
 
     if expected_rc is not None:
         assert (
             expected_rc == data["rc"]
-        ), f"Expected return code {data["rc"]}, but got {expected_rc}"
+        ), f"Expected return code {data['rc']}, but got {expected_rc}"

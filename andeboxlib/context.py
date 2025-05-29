@@ -16,7 +16,6 @@ from typing import Any
 from typing import Generator
 from typing import Tuple
 from typing import Type
-from typing import Union
 
 import yaml
 
@@ -35,7 +34,7 @@ class ContextType(Enum):
 
 
 class AbstractContext(ABC):
-    _context_type = None
+    _context_type: ContextType = None  # type: ignore
 
     def __init__(self, base_dir: Path, args: Namespace) -> None:
         self.base_dir = base_dir
@@ -44,8 +43,8 @@ class AbstractContext(ABC):
         self.top_dir = Path(tempfile.mkdtemp(prefix="andebox."))
 
     @property
-    def type(self):
-        return self._context_type
+    def type(self) -> ContextType:
+        return self._context_type  # type: ignore
 
     @property
     @abstractmethod
@@ -77,14 +76,14 @@ class AbstractContext(ABC):
     def integration_test_subdir(self) -> Path:
         return self.tests_subdir / "integration"
 
-    def install_requirements(self, reqs: Path, path: Path | None):
+    def install_requirements(self, reqs: Path, path: Path | None) -> None:
         pass
 
     @abstractmethod
-    def post_sub_dir(self, top_dir: Path):
+    def post_sub_dir(self, top_dir: Path) -> None:
         pass
 
-    def copy_tree(self):
+    def copy_tree(self) -> None:
         # copy files to tmp ansible coll dir
         with os.scandir() as it:
             for entry in it:
@@ -120,19 +119,21 @@ class AbstractContext(ABC):
             print(f"Removing temporary directory: {self.full_dir}")
             shutil.rmtree(self.top_dir)
 
-    def copy_exclude_lines(self, src, dest, exclusion_filenames):
+    def copy_exclude_lines(
+        self, src: str, dest: str, exclusion_filenames: list[str]
+    ) -> None:
         with open(src, "r") as src_file, open(dest, "w") as dest_file:
             for line in src_file.readlines():
                 if not any(line.startswith(f) for f in exclusion_filenames):
                     dest_file.write(line)
 
-    def binary_path(self, binary) -> str:
+    def binary_path(self, binary: str) -> str:
         if self.args.venv:
             return str(Path(self.args.venv) / "bin" / binary)
 
         return str(Path(binary))
 
-    def exclude_from_ignore(self):
+    def exclude_from_ignore(self) -> None:
         files = [f for f in self.args.ansible_test_params if os.path.isfile(f)]
         print(f"Excluding from ignore files: {files}")
         if self.args.exclude_from_ignore:
@@ -154,18 +155,18 @@ class AnsibleCoreContext(AbstractContext):
     _context_type = ContextType.ANSIBLE_CORE
 
     @property
-    def ansible_test(self):
+    def ansible_test(self) -> str:
         return str(self.top_dir / "bin" / "ansible-test")
 
     @property
-    def sub_dir(self):
+    def sub_dir(self) -> str:
         return ""
 
-    def post_sub_dir(self, top_dir):
+    def post_sub_dir(self, top_dir: Path) -> None:
         pass
 
     @property
-    def tests_subdir(self):
+    def tests_subdir(self) -> Path:
         return Path("test")
 
     @property
@@ -176,7 +177,7 @@ class AnsibleCoreContext(AbstractContext):
 class CollectionContext(AbstractContext):
     _context_type = ContextType.COLLECTION
 
-    def __init__(self, base_dir, args) -> None:
+    def __init__(self, base_dir: Path, args: Namespace) -> None:
         super().__init__(base_dir, args)
         self.name = self.version = ""
         self.namespace, self.collection = self.determine_collection(
@@ -184,15 +185,15 @@ class CollectionContext(AbstractContext):
         )
 
     @property
-    def ansible_test(self):
+    def ansible_test(self) -> str:
         return self.binary_path("ansible-test")
 
     @property
-    def sub_dir(self):
+    def sub_dir(self) -> Path:
         coll_dir = Path("ansible_collections") / self.namespace / self.collection
         return coll_dir
 
-    def post_sub_dir(self, top_dir):
+    def post_sub_dir(self, top_dir: Path) -> None:
         print(f"collection = {self.namespace}.{self.collection}", file=sys.stderr)
         os.putenv(
             "ANSIBLE_COLLECTIONS_PATH",
@@ -202,7 +203,7 @@ class CollectionContext(AbstractContext):
             ),
         )
 
-    def read_coll_meta(self):
+    def read_coll_meta(self) -> tuple[str, str, str]:
         with open("galaxy.yml") as galaxy_meta:
             meta = yaml.safe_load(galaxy_meta)
         self.namespace, self.name, self.version = (
@@ -212,13 +213,13 @@ class CollectionContext(AbstractContext):
         )
         return meta["namespace"], meta["name"], meta["version"]
 
-    def determine_collection(self, coll_arg):
+    def determine_collection(self, coll_arg: str) -> tuple[str, str]:
         if coll_arg:
             coll_split = coll_arg.split(".")
             return ".".join(coll_split[:-1]), coll_split[-1]
         return self.read_coll_meta()[:2]
 
-    def install_requirements(self, reqs: Path, path: Path | None):
+    def install_requirements(self, reqs: Path, path: Path | None) -> None:
         # reqs = self.integration_test_subdir / "requirements.yml"
         if not reqs.exists():
             print(f"Cannot find requirements file: {reqs}")
@@ -240,8 +241,8 @@ class CollectionContext(AbstractContext):
         subprocess.run(cmd, check=True)
 
 
-ConcreteContextType = Union[Type[AnsibleCoreContext], Type[CollectionContext]]
-ConcreteContext = Union[AnsibleCoreContext, CollectionContext]
+ConcreteContextType = Type[AnsibleCoreContext] | Type[CollectionContext]
+ConcreteContext = AnsibleCoreContext | CollectionContext
 
 
 def _base_dir_type(
@@ -265,7 +266,7 @@ def _determine_base_dir_rec(
         return _determine_base_dir_rec(dir_.parent)
 
 
-def _determine_base_dir():
+def _determine_base_dir() -> Tuple[Path, ConcreteContextType]:
     cur_dir = Path.cwd()
     try:
         return _determine_base_dir_rec(cur_dir)
