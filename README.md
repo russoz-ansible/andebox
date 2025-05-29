@@ -6,7 +6,7 @@ andebox
 [![PyPI - Version](https://img.shields.io/pypi/v/andebox.svg)](https://pypi.org/project/andebox/)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/andebox)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/andebox)
-[![Build Status](https://github.com/russoz-ansible/andebox/actions/workflows/ci-tests.yml/badge.svg)](https://github.com/russoz-ansible/andebox/actions)
+[![Build Status](https://github.com/russoz-ansible/andebox/actions/workflows/ci-tests.yml/badge.svg?branch=)](https://github.com/russoz-ansible/andebox/actions)
 [![docs](https://readthedocs.org/projects/andebox/badge/?style=flat)](https://andebox.readthedocs.io/en/latest/)
 [![codecov](https://codecov.io/gh/russoz-ansible/andebox/graph/badge.svg?token=D3TPI2PGU9)](https://codecov.io/gh/russoz-ansible/andebox)
 [![Last Commit](https://img.shields.io/github/last-commit/russoz-ansible/andebox)](https://github.com/russoz-ansible/andebox/commits/main)
