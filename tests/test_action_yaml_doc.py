@@ -326,68 +326,44 @@ TEST_CASES_IDS = [item.id for item in TEST_CASES]
 
 
 @pytest.fixture
-def python_file_with_yaml_blocks_in_collection(tmp_path_factory):
+def mock_plugin(tmp_path_factory):
     repo_dir = tmp_path_factory.mktemp("community_crypto")
     module_dir = repo_dir / "plugins" / "modules"
     module_dir.mkdir(parents=True, exist_ok=True)
     pyfile = module_dir / "test_module.py"
     print(f"Creating {pyfile}")
 
-    def _create_file(documentation, examples=None, returns=None):
+    def _create_file(tc_input):
         blocks = []
-        if documentation:
+        if documentation := tc_input.get("DOCUMENTATION"):
             blocks.append(f'DOCUMENTATION = r"""\n{documentation.strip()}\n"""')
-        if examples:
+        if examples := tc_input.get("EXAMPLES"):
             blocks.append(f'EXAMPLES = r"""\n{examples.strip()}\n"""')
-        if returns:
+        if returns := tc_input.get("RETURN"):
             blocks.append(f'RETURN = r"""\n{returns.strip()}\n"""')
         file_content = "\n\n".join(blocks) + "\n"
         pyfile.write_text(file_content)
-        return pyfile
+        return {"pyfile": pyfile.name, "basedir": str(repo_dir)}
 
     return _create_file
 
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
-def test_yaml_doc_action_blocks_in_collection(
-    request, run_andebox, python_file_with_yaml_blocks_in_collection, testcase, capfd
-):
-    """Test the yaml-doc action using the AndeboxTestHelper class."""
+def test_action_yaml_doc(run_andebox, mock_plugin, testcase, save_fixtures):
 
-    # Check any flags like xfail or skip_py
-    AndeboxTestHelper.check_flags(testcase, request)
+    def executor(data):
+        andebox_params = [
+            "-c",
+            "some.collection",
+            "yaml-doc",
+            f"plugins/modules/{data['pyfile']}",
+        ]
+        return {
+            "andebox": run_andebox(andebox_params, context_type=ContextType.COLLECTION)
+        }
 
-    # Define the setup function specific to this test
-    def setup_test(tc):
-        input_data = tc.input
-        pyfile = python_file_with_yaml_blocks_in_collection(
-            input_data.get("DOCUMENTATION"),
-            input_data.get("EXAMPLES"),
-            input_data.get("RETURN"),
-        )
-        return {"pyfile": pyfile, "collection_dir": str(pyfile.parent.parent.parent)}
-
-    # Create the AndeboxTestHelper instance
-    test = AndeboxTestHelper(testcase, capfd)
-
-    # Run the setup phase
-    setup_data = test.setup(setup_test)
-    pyfile = setup_data["pyfile"]
-    collection_dir = setup_data["collection_dir"]
-
-    # Execute andebox command
-    test.execute(
-        run_andebox,
-        collection_dir,
-        ["-c", "some.collection", "yaml-doc", f"plugins/modules/{pyfile.name}"],
-        context_type=ContextType.COLLECTION,
-    )
-
-    # Custom verification function for YAML doc action
-    def verify_yaml_doc(tc, pyfile):
-        actual = load_module_vars(pyfile)
-        output = tc.output
-
+    def validator(output, data):
+        actual = load_module_vars(f"plugins/modules/{data['pyfile']}")
         for var in ["DOCUMENTATION", "EXAMPLES", "RETURN"]:
             expected = output.get(var)
             if expected is not None:
@@ -400,5 +376,7 @@ def test_yaml_doc_action_blocks_in_collection(
                     )
                 )
 
-    # Run custom verification
-    test.verify_custom(verify_yaml_doc, pyfile)
+    test = AndeboxTestHelper(
+        testcase, save_fixtures(), mock_plugin, executor, validator
+    )
+    test.execute()

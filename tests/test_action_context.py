@@ -5,7 +5,7 @@ import pytest
 
 from .utils import AndeboxTestHelper
 from .utils import load_test_cases
-
+from .utils import verify_patterns
 
 TEST_CASES = load_test_cases(
     yaml_content=r"""
@@ -34,28 +34,13 @@ TEST_CASES_IDS = [item.id for item in TEST_CASES]
 
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
-def test_context_action(git_repo, testcase, run_andebox, capfd, request):
-    """Test the context action using the AndeboxTestHelper class."""
+def test_action_context(git_repo, testcase, run_andebox, save_fixtures):
 
-    # Check any flags like xfail or skip_py
-    AndeboxTestHelper.check_flags(testcase, request)
-
-    # Define the setup function specific to this test
-    def setup_test(tc):
-        repo = tc.input["repo"]
-        return git_repo(repo)
-
-    # Create the AndeboxTestHelper instance
-    test = AndeboxTestHelper(testcase, capfd)
-
-    # Run the setup phase
-    repo_dir = test.setup(setup_test)
-
-    # Execute the andebox context command
-    captured = test.execute(run_andebox, repo_dir, ["context"])
-
-    # Verify the patterns in the output
-    test.verify_patterns(captured)
-
-    # Verify the return code
-    test.verify_return_code()
+    test = AndeboxTestHelper(
+        testcase,
+        save_fixtures(),
+        lambda tc_input: {"basedir": git_repo(tc_input["repo"])},
+        lambda data: {"andebox": run_andebox(["context"])},
+        [verify_patterns],
+    )
+    test.execute()

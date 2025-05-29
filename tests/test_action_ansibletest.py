@@ -5,6 +5,8 @@ import pytest
 
 from .utils import AndeboxTestHelper
 from .utils import load_test_cases
+from .utils import verify_patterns
+
 
 TEST_CASES = load_test_cases(
     yaml_content="""
@@ -69,16 +71,16 @@ TEST_CASES_IDS = [item.id for item in TEST_CASES]
 
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
-def test_ansibletest_with_testcase(git_repo, testcase, run_andebox, capfd, request):
-    AndeboxTestHelper.check_flags(testcase, request)
-
-    def setup_test(tc):
-        repo = tc.input["repo"]
+def test_action_test(git_repo, testcase, run_andebox, save_fixtures):
+    def setup_test(tc_input):
+        repo = tc_input["repo"]
         repo_dir = git_repo(repo)
-        return repo_dir
+        return {"basedir": repo_dir}
 
-    test = AndeboxTestHelper(testcase, capfd)
-    repo_dir = test.setup(setup_test)
-    captured = test.execute(run_andebox, repo_dir, ["test"] + testcase.input["argv"])
-    test.verify_patterns(captured)
-    test.verify_return_code()
+    def executor(data):
+        return {"andebox": run_andebox(["test"] + testcase.input["argv"])}
+
+    test = AndeboxTestHelper(
+        testcase, save_fixtures(), setup_test, executor, verify_patterns
+    )
+    test.execute()

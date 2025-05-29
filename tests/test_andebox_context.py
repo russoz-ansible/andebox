@@ -33,9 +33,9 @@ def test_ansible_core(git_repo):
 
 def test_invalid_dir(tmp_path):
     repo_dir = tmp_path / "invalid_repo"
-    os.makedirs(repo_dir, exist_ok=True)
+    repo_dir.mkdir(parents=True, exist_ok=True)
 
-    os.chdir(repo_dir)
+    os.chdir(str(repo_dir))
     parser = _make_parser()
     with pytest.raises(AndeboxUnknownContext):
         create_context(parser.parse_args(args=["context"]))
