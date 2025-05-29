@@ -40,18 +40,36 @@ jobs:
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Create Release
-      env:
-        POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+    - name: Create Build Environment
       run: |
-        poetry install --verbose
+        poetry install --verbose --with dev
         poetry lock
         if ! git diff --quiet poetry.lock; then
           git add poetry.lock
           git commit -m "chore: update poetry.lock"
           git push
         fi
-        python -m pip install --upgrade python-semantic-release
+
+    - name: Run Tests, generate reports
+      env:
+        PYTHONPATH: .
+      run: |
+        poetry run flake8 -v . --count --show-source --statistics
+        poetry run pytest -v \
+          --cov-report=xml \
+          --cov-report=term \
+          --junitxml=junit.xml
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        verbose: true
+
+    - name: Create Release
+      env:
+        POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+      run: |
         GH_TOKEN=${{ github.token }} poetry run semantic-release --verbose version
         GH_TOKEN=${{ github.token }} poetry run semantic-release --verbose publish
         if [ -d dist ] && [ "$(ls -A dist)" ]; then

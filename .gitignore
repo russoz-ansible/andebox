@@ -26,3 +26,9 @@ docs/.buildinfo
 
 # Read the Docs local artifacts
 .rtd-environment.yml
+
+# Test artifacts
+.coverage
+coverage.xml
+htmlcov
+junit.xml
