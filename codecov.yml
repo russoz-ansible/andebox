@@ -12,3 +12,5 @@ coverage:
     patch:
       default:
         enabled: no
+  exclude:
+    - "andebox/__main__.py"
