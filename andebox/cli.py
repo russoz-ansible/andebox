@@ -16,7 +16,7 @@ from pathlib import Path
 import importlib
 import pkgutil
 
-import andeboxlib.actions
+import andebox.actions
 from .actions.base import AndeboxAction
 from .context import create_context
 from .exceptions import AndeboxException
@@ -40,7 +40,7 @@ def iter_namespace(ns_pkg):
 def load_actions():
     results = []
 
-    for finder, name, ispkg in iter_namespace(andeboxlib.actions):
+    for finder, name, ispkg in iter_namespace(andebox.actions):
         for attr in dir(module := importlib.import_module(name)):
             try:
                 action = getattr(module, attr)

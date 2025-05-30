@@ -26,11 +26,11 @@ classifiers = [
 ]
 keywords = [ "ansible", "tox", "vagrant" ]
 packages = [
-    { include = "andeboxlib" }
+    { include = "andebox" }
 ]
 
 [tool.poetry.scripts]
-andebox = "andeboxlib.cli:run"
+andebox = "andebox.cli:run"
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/russoz-ansible/andebox/issues"
@@ -75,7 +75,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.semantic_release]
 version_variables = [
-    "andeboxlib/cli.py:__version__",
+    "andebox/cli.py:__version__",
     "docs/conf.py:release"
 ]
 version_toml = [

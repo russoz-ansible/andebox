@@ -7,10 +7,10 @@
 import os
 
 import pytest
-from andeboxlib.cli import _make_parser
-from andeboxlib.context import AndeboxUnknownContext
-from andeboxlib.context import ContextType
-from andeboxlib.context import create_context
+from andebox.cli import _make_parser
+from andebox.context import AndeboxUnknownContext
+from andebox.context import ContextType
+from andebox.context import create_context
 
 GIT_REPO_CG = "https://github.com/ansible-collections/community.general.git"
 GIT_REPO_AC = "https://github.com/ansible/ansible.git"

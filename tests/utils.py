@@ -17,7 +17,7 @@ from typing import Sequence
 
 import pytest
 import yaml
-from andeboxlib.util import set_dir
+from andebox.util import set_dir
 
 
 @dataclass
