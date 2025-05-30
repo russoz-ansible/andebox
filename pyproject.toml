@@ -8,7 +8,7 @@ readme = "README.md"
 homepage = "https://github.com/russoz-ansible/andebox"
 repository = "https://github.com/russoz-ansible/andebox"
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Environment :: Console",
     "Framework :: Ansible",
     "Intended Audience :: Developers",
