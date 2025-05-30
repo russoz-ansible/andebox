@@ -1,6 +1,6 @@
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.97.0"
+version = "0.98.0"
 tag_format = "v$version"
 bump_message = "bump: release $current_version → $new_version"
 version_files = [
