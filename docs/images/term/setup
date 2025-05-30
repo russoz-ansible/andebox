@@ -9,3 +9,5 @@ sudo apt update
 sudo apt install -y \
     asciinema \
     gifsicle
+
+pip install --user pexpect andebox
