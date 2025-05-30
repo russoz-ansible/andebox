@@ -14,24 +14,10 @@ andebox
 boilerplate tasks, especially the ability of running tests from the root
 directory of the collection project without any additional setup.
 
-Installation
-------------
+Highlights
+----------
 
-Install it as usual:
-
-    pip install andebox
-
-Requirements
-------------
-
-* ansible-core for actions `test` and `tox-test`
-* pyyaml for reading galaxy.yml
-* distutils for comparing `LooseVersion` objects for action `ignore`
-* vagrant for action `vagrant`
-  * `andebox` and any other dependency must be installed inside the VM, but that setup is the user responsibility
-
-Setup-less ansible-test
------------------------
+### Setup-less ansible-test
 
 No need to clone in specific locations or keep track of env variables. Simply clone whichever collection you want and
 run the `ansible-test` command as:
@@ -69,8 +55,7 @@ $ andebox test --collection community.general -- sanity --docker default -v --te
 
 Please notice that `andebox` uses whichever `ansible-test` is available in `PATH` for execution
 
-Stats on ignore files
----------------------
+### Stats on ignore files
 
 Gathering stats from the ignore files can be quite annoying, especially if they are long. One can run:
 
@@ -88,8 +73,7 @@ $ andebox ignores -v2.10 -d4 -fc '.*:parameter-list-no-elements'
      3  plugins/modules/sensu validate-modules:parameter-list-no-elements
 ```
 
-Runtime config
---------------
+### Runtime config
 
 Quickly peek what is the `runtime.yml` status for a specific module:
 
@@ -128,8 +112,7 @@ R module_utils gcp: redirected to community.google.gcp
 ```
 where D=Deprecated, T=Tombstone, R=Redirect.
 
-Run Integration Tests in Vagrant VMs
-------------------------------------
+### Run Integration Tests in Vagrant VMs
 
 To run the test inside a VM managed by [vagrant](https://www.vagrantup.com/):
 
@@ -139,3 +122,10 @@ $ andebox vagrant -n fedora37 -s -- --python 3.9 xfs_quota --color yes
 ```
 
 Also beware that `andebox` does not create nor manage `Vagrantfile`. The user is responsible for creating and setting up the VM definition. It must have `andebox` and `ansible-core` (or `ansible-base` or `ansible`) installed on a virtual environment. By default, the venv is expected to be at `/venv` but the location can be specified using the `--venv` parameter.
+
+Installation
+------------
+
+Install it as usual:
+
+    pip install andebox
