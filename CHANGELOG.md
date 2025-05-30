@@ -1,6 +1,69 @@
 # CHANGELOG
 
 
+## v0.97.0 (2025-05-30)
+
+### Documentation
+
+- **readme**: Add badges
+  ([`c3a0934`](https://github.com/russoz-ansible/andebox/commit/c3a0934b5d227d0b6fb6f2ce6184c0caa73f9e31))
+
+- **readme**: Fix github test badge
+  ([`f1816c1`](https://github.com/russoz-ansible/andebox/commit/f1816c146c860ab628c77694ee16eaf0e76fa0a9))
+
+- **readme**: More badges
+  ([`4eaead2`](https://github.com/russoz-ansible/andebox/commit/4eaead2b95daf7ff3dbbb531ff4f25b9ca3552a3))
+
+### Features
+
+- Change dev status from alpha to beta
+  ([`a1be7a0`](https://github.com/russoz-ansible/andebox/commit/a1be7a02b8f7d54bc6d898e4524a52d3feedf228))
+
+- **ansible-test**: Add retry logic to requirements install
+  ([`18ee1ae`](https://github.com/russoz-ansible/andebox/commit/18ee1ae49b7667f65a5933c90506d84bb8fe8921))
+
+### Refactoring
+
+- Add type hints/annotations
+  ([`40c7b62`](https://github.com/russoz-ansible/andebox/commit/40c7b62a07c54c949084edd924a143eed2cf35c3))
+
+- Move load_module_vars() in tests/test_action_yaml_doc.py
+  ([`c096378`](https://github.com/russoz-ansible/andebox/commit/c096378104f7fd650879f295fd0de00d7e255faa))
+
+For readability
+
+- **tests**: Change testcase field from `output` to `expected`
+  ([`6032251`](https://github.com/russoz-ansible/andebox/commit/603225177fe5e0dfd3303d0d438240628edd10fe))
+
+### Testing
+
+- Create class AndeboxTestHelper
+  ([`3598622`](https://github.com/russoz-ansible/andebox/commit/359862222898b3dad6946dc359c15b83d465ac2a))
+
+Refactored out of existing tests
+
+- Revamp of AndeboxTestHelper
+  ([`3ef9b32`](https://github.com/russoz-ansible/andebox/commit/3ef9b326094bbe9a40d8c2320e4df0a5cc4e7a55))
+
+* Streamline the logic and the separation of concerns between the test files and the helper code. *
+  Add a number of minor improvements.
+
+- **action/ansibletest**: Use AndeboxTestHelper
+  ([`de27943`](https://github.com/russoz-ansible/andebox/commit/de2794362ea61f9797d96e111e79aa45d8640d95))
+
+- **action/context**: Use AndeboxTestHelper
+  ([`cf32b95`](https://github.com/russoz-ansible/andebox/commit/cf32b9571f29fadea086a3292605c813f73b6232))
+
+- **action/yaml-doc**: Use AndeboxTestHelper
+  ([`7674f1e`](https://github.com/russoz-ansible/andebox/commit/7674f1e67831bb6c87915565c2e78a3375562725))
+
+- **reports**: Add junit-style and coverage report
+  ([`7a33e9d`](https://github.com/russoz-ansible/andebox/commit/7a33e9d8504cc49a15df21ab666f018933b6f46d))
+
+- **yaml tests**: Make `exception` a top-level field
+  ([`21b3a31`](https://github.com/russoz-ansible/andebox/commit/21b3a31bfa8d45b0645cd83551dda37129731167))
+
+
 ## v0.96.0 (2025-05-27)
 
 ### Features
