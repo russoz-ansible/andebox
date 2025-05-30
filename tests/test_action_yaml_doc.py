@@ -8,7 +8,7 @@ import difflib
 import importlib.util
 
 import pytest
-from andeboxlib.context import ContextType
+from andebox.context import ContextType
 
 from .utils import AndeboxTestHelper
 from .utils import load_test_cases

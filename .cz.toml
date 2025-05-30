@@ -5,7 +5,7 @@ tag_format = "v$version"
 bump_message = "bump: release $current_version → $new_version"
 version_files = [
     "pyproject.toml:version",
-    "andeboxlib/cli.py:__version__",
+    "andebox/cli.py:__version__",
     "docs/conf.py:release"
 ]
 update_changelog_on_bump = true

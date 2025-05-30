@@ -4,3 +4,7 @@
 #
 # This file is part of the Andebox project and is distributed under the terms
 # of the BSD 3-Clause License. See LICENSE file for details.
+from andebox.cli import run
+
+if __name__ == "__main__":
+    run()
