@@ -14,6 +14,8 @@ andebox
 boilerplate tasks, especially the ability of running tests from the root
 directory of the collection project without any additional setup.
 
+![andebox integration test demo](docs/images/term/integration.gif)
+
 Highlights
 ----------
 

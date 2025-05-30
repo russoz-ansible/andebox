@@ -17,7 +17,6 @@ export CAST_FILE=$DIR/$2
 sudo mkdir -p $WORKDIR
 sudo chown -R $(id -u):$(id -g) $WORKDIR
 (
-    poetry env activate
     cd $WORKDIR;
     asciinema rec --quiet \
         --cols $COLS --rows $ROWS \
