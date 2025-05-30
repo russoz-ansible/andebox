@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
-# (c) 2021, Alexei Znamensky <russoz@gmail.com>
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# Copyright (c) 2021, Alexei Znamensky
+# All rights reserved.
+#
+# This file is part of the Andebox project and is distributed under the terms
+# of the BSD 3-Clause License. See LICENSE file for details.
 from ..context import ConcreteContext
 
 

@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Copyright (c) 2021-2022, Alexei Znamensky
+# All rights reserved.
+#
+# This file is part of the Andebox project and is distributed under the terms
+# of the BSD 3-Clause License. See LICENSE file for details.
 # PYTHON_ARGCOMPLETE_OK
-# (c) 2021-2022, Alexei Znamensky <russoz@gmail.com>
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 __version__ = "0.97.0"
 
