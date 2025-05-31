@@ -4,16 +4,28 @@
 # This file is part of the Andebox project and is distributed under the terms
 # of the BSD 3-Clause License. See LICENSE file for details.
 
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
 # Please see the documentation for all configuration options:
 # https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
 
 version: 2
 updates:
-  - package-ecosystem: "pip" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: "pip"
+    directory: "/"
     schedule:
       interval: "weekly"
+    rebase-strategy: auto
+    groups:
+      python-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "devcontainers"
+    directory: ".devcontainer"
+    schedule:
+      interval: "weekly"
+    rebase-strategy: auto
 
 # code: language=yaml tabSize=2
