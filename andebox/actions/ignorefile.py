@@ -34,11 +34,11 @@ class IgnoreFileEntry:
 
     @property
     def ignore_check(self):
-        return "{self.ignore}:{self.error_code}" if self.error_code else self.ignore
+        return f"{self.ignore}:{self.error_code}" if self.error_code else self.ignore
 
     @property
     def rebuilt_comment(self):
-        return " # {self.comment}" if self.comment else ""
+        return f" # {self.comment}" if self.comment else ""
 
     @property
     def file_parts(self):
@@ -257,7 +257,7 @@ class IgnoreLinesAction(AndeboxAction):
             ignore_entries = self.retrieve_ignore_entries(context.args.ignore_file_spec)
         except Exception as e:
             print(
-                "Error reading ignore file {context.args.ignore_file_spec}: {e}",
+                f"Error reading ignore file {context.args.ignore_file_spec}: {e}",
                 file=sys.stderr,
             )
             raise e
