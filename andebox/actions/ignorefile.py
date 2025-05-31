@@ -7,7 +7,9 @@
 import os
 import re
 import sys
+from dataclasses import dataclass
 from functools import reduce
+from functools import total_ordering
 
 from looseversion import LooseVersion
 
@@ -80,35 +82,22 @@ class IgnoreFileEntry:
         )
 
 
+# pragma: no cover
+@total_ordering
+@dataclass
 class ResultLine:
-    def __init__(self, file_part, ignore_check, count=1):
-        self.file_part = file_part
-        self.ignore_check = ignore_check
-        self.count = count
+    file_part: str
+    ignore_check: str
+    count: int = 1
 
-    def increase(self):
+    def increase(self) -> "ResultLine":
         self.count = self.count + 1
         return self
 
-    def __lt__(self, other):
+    def __lt__(self, other) -> bool:
         return self.count < other.count
 
-    def __le__(self, other):
-        return self.count <= other.count
-
-    def __gt__(self, other):
-        return self.count > other.count
-
-    def __ge__(self, other):
-        return self.count >= other.count
-
-    def __eq__(self, other):
-        return self.count == other.count
-
-    def __ne__(self, other):
-        return self.count != other.count
-
-    def __str__(self):
+    def __str__(self) -> str:
         r = [f"{self.count:6} "]
         if self.file_part:
             r.append(" ")
@@ -118,7 +107,7 @@ class ResultLine:
             r.append(self.ignore_check)
         return "".join(r)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         r = ["<ResultLine: ", str(self.count), ","]
         if self.file_part:
             r.append(" ")
