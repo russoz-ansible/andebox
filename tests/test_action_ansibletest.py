@@ -87,3 +87,6 @@ def test_action_test(git_repo, testcase, run_andebox, save_fixtures):
         testcase, save_fixtures(), setup_test, executor, verify_patterns
     )
     test.execute()
+
+
+# code: language=python tabSize=4

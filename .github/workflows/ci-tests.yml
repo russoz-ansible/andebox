@@ -52,3 +52,5 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
+
+# code: language=yaml tabSize=2

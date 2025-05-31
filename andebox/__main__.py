@@ -8,3 +8,5 @@ from andebox.cli import run
 
 if __name__ == "__main__":
     run()
+
+# code: language=python tabSize=4

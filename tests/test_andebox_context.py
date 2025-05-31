@@ -42,3 +42,6 @@ def test_invalid_dir(tmp_path):
     parser = _make_parser()
     with pytest.raises(AndeboxUnknownContext):
         create_context(parser.parse_args(args=["context"]))
+
+
+# code: language=python tabSize=4

@@ -24,3 +24,5 @@ sudo chown -R $(id -u):$(id -g) $WORKDIR
         --overwrite $CAST_FILE
 )
 sudo rm -rf $WORKDIR
+
+# code: language=shell tabSize=2

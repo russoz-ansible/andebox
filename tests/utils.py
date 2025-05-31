@@ -165,3 +165,6 @@ def verify_return_code(expected: Dict[str, Any], data: Dict[str, Any]) -> None:
         assert (
             expected_rc == data["rc"]
         ), f"Expected return code {data['rc']}, but got {expected_rc}"
+
+
+# code: language=python tabSize=4
