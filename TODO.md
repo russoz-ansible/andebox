@@ -16,9 +16,7 @@ TO-DO
 ## chore
 
 * add pre-commit for
-  * yaml files
-  * toml files
-  * licenses
+  * licenses (not ready for that yet)
 
 ## ci
 
