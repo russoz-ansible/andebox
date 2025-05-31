@@ -1,7 +1,7 @@
 project = "andebox"
 copyright = "2025, Alexei Znamensky"
 author = "Alexei Znamensky"
-release = "0.98.1"
+release = "1.0.0"
 
 extensions = [
     "sphinx.ext.autodoc",
