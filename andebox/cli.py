@@ -111,3 +111,6 @@ def run():
     except (AndeboxException, BrokenPipeError) as e:
         print(str(e), file=sys.stderr)
         return 1
+
+
+# code: language=python tabSize=4

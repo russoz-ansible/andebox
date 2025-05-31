@@ -111,3 +111,6 @@ def save_fixtures(request, mocker, capfd):
         return d
 
     return _save_fixtures
+
+
+# code: language=python tabSize=4

@@ -382,3 +382,6 @@ def test_action_yaml_doc(run_andebox, mock_plugin, testcase, save_fixtures):
         testcase, save_fixtures(), mock_plugin, executor, validator
     )
     test.execute()
+
+
+# code: language=python tabSize=4

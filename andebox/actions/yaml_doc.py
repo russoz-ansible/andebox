@@ -459,3 +459,6 @@ class YAMLDocAction(AndeboxAction):
 
         for file_path in context.args.files:
             processor.process_file(file_path)
+
+
+# code: language=python tabSize=4

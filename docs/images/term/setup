@@ -11,3 +11,5 @@ sudo apt install -y \
     gifsicle
 
 pip install --user pexpect andebox
+
+# code: language=shell tabSize=2

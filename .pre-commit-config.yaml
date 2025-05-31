@@ -25,3 +25,5 @@ repos:
       - id: trailing-whitespace
         exclude: ^.bumpversion\.cfg
       - id: end-of-file-fixer
+
+# code: language=yaml tabSize=2

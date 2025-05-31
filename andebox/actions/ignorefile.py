@@ -271,3 +271,6 @@ class IgnoreLinesAction(AndeboxAction):
 
         lines = [str(s) for s in sorted(count_map.values(), reverse=True)]
         print("\n".join(self.filter_lines(lines, context.args.head)))
+
+
+# code: language=python tabSize=4
