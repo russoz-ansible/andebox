@@ -96,14 +96,14 @@ class AbstractContext(ABC):
                 if entry.is_dir():
                     shutil.copytree(
                         entry.name,
-                        os.path.join(self.full_dir, entry.name),
+                        self.full_dir / entry.name,
                         symlinks=True,
                         ignore_dangling_symlinks=True,
                     )
                 else:
                     shutil.copy(
                         entry.name,
-                        os.path.join(self.full_dir, entry.name),
+                        self.full_dir / entry.name,
                         follow_symlinks=False,
                     )
 
@@ -124,9 +124,9 @@ class AbstractContext(ABC):
             shutil.rmtree(self.top_dir)
 
     def copy_exclude_lines(
-        self, src: str, dest: str, exclusion_filenames: list[str]
+        self, src: Path, dest: Path, exclusion_filenames: list[str]
     ) -> None:
-        with open(src, "r") as src_file, open(dest, "w") as dest_file:
+        with src.open("r") as src_file, dest.open("w") as dest_file:
             for line in src_file.readlines():
                 if not any(line.startswith(f) for f in exclusion_filenames):
                     dest_file.write(line)
@@ -138,7 +138,7 @@ class AbstractContext(ABC):
         return str(Path(binary))
 
     def exclude_from_ignore(self) -> None:
-        files = [f for f in self.args.ansible_test_params if os.path.isfile(f)]
+        files = [f for f in self.args.ansible_test_params if Path(f).is_file()]
         print(f"Excluding from ignore files: {files}")
         if self.args.exclude_from_ignore:
             src_dir = Path.cwd() / self.sanity_test_subdir
@@ -149,8 +149,8 @@ class AbstractContext(ABC):
                         ".txt"
                     ):
                         self.copy_exclude_lines(
-                            os.path.join(src_dir, ts_entry.name),
-                            os.path.join(dest_dir, ts_entry.name),
+                            src_dir / ts_entry.name,
+                            dest_dir / ts_entry.name,
                             files,
                         )
 
