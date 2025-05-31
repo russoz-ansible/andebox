@@ -1,0 +1,11 @@
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError
+    if __name__ == "__main__":
+    pass
+    raise ImportError
+
+[run]
+data_file = /tmp/.coverage
