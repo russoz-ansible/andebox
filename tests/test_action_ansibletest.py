@@ -7,15 +7,17 @@
 import pytest
 
 from .utils import AndeboxTestHelper
+from .utils import GIT_REPO_AC
+from .utils import GIT_REPO_CG
 from .utils import load_test_cases
 from .utils import verify_patterns
 
 
 TEST_CASES = load_test_cases(
-    yaml_content="""
+    yaml_content=f"""
 - id: cg-sanity
   input:
-    repo: https://github.com/ansible-collections/community.general.git
+    repo: {GIT_REPO_CG}
     argv:
       - -R
       - --
@@ -23,18 +25,18 @@ TEST_CASES = load_test_cases(
       - --docker
       - default
       - plugins/module_utils/deps.py
-  expected: {}
+  expected: {{}}
 
 - id: cg-unit
   input:
-    repo: https://github.com/ansible-collections/community.general.git
+    repo: {GIT_REPO_CG}
     argv:
       - "--"
       - "units"
       - "--docker"
       - "default"
       - "tests/unit/plugins/module_utils/test_cmd_runner.py"
-  expected: {}
+  expected: {{}}
 
 # - id: cg-unit-no-req
 #   input:
@@ -46,11 +48,11 @@ TEST_CASES = load_test_cases(
 #       - "--docker"
 #       - "default"
 #       - "tests/unit/plugins/module_utils/test_cmd_runner.py"
-#   expected: {}
+#   expected: {{}}
 
 - id: ac-sanity-ei
   input:
-    repo: https://github.com/ansible/ansible.git
+    repo: {GIT_REPO_AC}
     argv:
       - "-ei"
       - "--"
@@ -75,7 +77,7 @@ TEST_CASES_IDS = [item.id for item in TEST_CASES]
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
 def test_action_test(git_repo, testcase, run_andebox, save_fixtures):
-    def setup_test(tc_input):
+    def setup_repo(tc_input):
         repo = tc_input["repo"]
         repo_dir = git_repo(repo)
         return {"basedir": repo_dir}
@@ -84,6 +86,9 @@ def test_action_test(git_repo, testcase, run_andebox, save_fixtures):
         return {"andebox": run_andebox(["test"] + testcase.input["argv"])}
 
     test = AndeboxTestHelper(
-        testcase, save_fixtures(), setup_test, executor, verify_patterns
+        testcase, save_fixtures(), setup_repo, executor, verify_patterns
     )
     test.execute()
+
+
+# code: language=python tabSize=4

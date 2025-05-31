@@ -1,7 +1,7 @@
 project = "andebox"
 copyright = "2025, Alexei Znamensky"
 author = "Alexei Znamensky"
-release = "0.97.0"
+release = "0.98.1"
 
 extensions = [
     "sphinx.ext.autodoc",
@@ -13,3 +13,5 @@ templates_path = ["_templates"]
 exclude_patterns = []
 
 html_theme = "furo"
+
+# code: language=python tabSize=4

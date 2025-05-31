@@ -6,22 +6,30 @@
 
 repos:
   - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.13.0
+    rev: v3.15.0
     hooks:
       - id: reorder-python-imports
         args: ["--application-directories", "src"]
   - repo: https://github.com/psf/black
-    rev: 24.4.2
+    rev: 25.1.0
     hooks:
       - id: black
   - repo: https://github.com/PyCQA/flake8
-    rev: 7.1.0
+    rev: 7.2.0
     hooks:
       - id: flake8
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: fix-byte-order-marker
       - id: trailing-whitespace
-        exclude: ^.bumpversion\.cfg
       - id: end-of-file-fixer
+      - id: check-json
+      - id: check-toml
+      - id: check-yaml
+  # - repo: https://github.com/fsfe/reuse-tool
+  #   rev: v1.1.0
+  #   hooks:
+  #     - id: reuse
+
+# code: language=yaml tabSize=2
