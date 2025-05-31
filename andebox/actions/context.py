@@ -28,3 +28,6 @@ class ContextAction(AndeboxAction):
         if context.type == ContextType.COLLECTION:
             ns, name, version = context.read_coll_meta()  # type: ignore
             printline("Collection", f"{ns}.{name} {version}")
+
+
+# code: language=python tabSize=4

@@ -31,3 +31,6 @@ def test_tox_docs_runs():
     ), f"Sphinx did not report successful build: {result.stdout}"
     index_html = build_dir / "html" / "index.html"
     assert index_html.exists(), "index.html was not generated in docs/_build/html/"
+
+
+# code: language=python tabSize=4

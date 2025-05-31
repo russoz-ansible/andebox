@@ -1,0 +1,16 @@
+coverage:
+  status:
+    project:
+      default:
+        # basic
+        target: auto
+        threshold: 1%
+    patch:
+      default:
+        target: 30%
+  ignore:
+    - "andebox/__main__.py"
+
+comment:
+  layout: "header, diff, files"
+  require_changes: false

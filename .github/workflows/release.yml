@@ -83,3 +83,5 @@ jobs:
         else
           echo "No build artifacts to publish."
         fi
+
+# code: language=yaml tabSize=2

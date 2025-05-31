@@ -19,3 +19,6 @@ def set_dir(path: Path) -> Generator[Any, Any, Any]:
         yield
     finally:
         os.chdir(previous)
+
+
+# code: language=python tabSize=4
