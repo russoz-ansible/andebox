@@ -34,4 +34,8 @@ TO-DO
 
 ## test
 
-* add tests for actions without them
+* add tests for actions:
+  * docsite
+  * runtime
+  * toxtest
+  * vagrant
