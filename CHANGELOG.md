@@ -1,6 +1,103 @@
 # CHANGELOG
 
 
+## v0.98.1 (2025-05-31)
+
+### Bug Fixes
+
+- **action/ignores**: Add missing `f` to f-strings
+  ([`241616c`](https://github.com/russoz-ansible/andebox/commit/241616cae5a2e3ca602e4ac15f6ce46e8388738c))
+
+### Chores
+
+- Add modelines to files
+  ([`6121cb7`](https://github.com/russoz-ansible/andebox/commit/6121cb7cdd8df5c994374c4c77f20ada62d7906f))
+
+- Update .pre-commit-config.yaml
+  ([`4261993`](https://github.com/russoz-ansible/andebox/commit/42619934c9bb866c4d631bdbbb1f416d628f26c3))
+
+- **devcontainer**: Fix structure, add vscode plugins
+  ([`cb8d55f`](https://github.com/russoz-ansible/andebox/commit/cb8d55f8c4303a655338767b072bae671a9778fe))
+
+- **TODO**: Pre-commit updates
+  ([`cb4ccfa`](https://github.com/russoz-ansible/andebox/commit/cb4ccfa4daae6e29ebab8193bcfe5e4c280db322))
+
+### Continuous Integration
+
+- **codecov**: Add codecov.yml (again)
+  ([`a6df881`](https://github.com/russoz-ansible/andebox/commit/a6df881fd39c09493959b65c8767db00cd3b3d1e))
+
+- **codecov**: Lower coverage target for now
+  ([`c961156`](https://github.com/russoz-ansible/andebox/commit/c96115601abf4c020520dd634abe3de56ec2090f))
+
+### Documentation
+
+- Revamp TODO.md
+  ([`8c33bbe`](https://github.com/russoz-ansible/andebox/commit/8c33bbe7b8203f625c475ee92237b0d05d882613))
+
+- **ascii-demo**: Fix URL for integration demo
+  ([`f4a09dd`](https://github.com/russoz-ansible/andebox/commit/f4a09dd93a7306e5986a7b5dd65aca92b882a0c0))
+
+### Refactoring
+
+- **test_action_ansibletest**: Rename function
+  ([`ad09bc9`](https://github.com/russoz-ansible/andebox/commit/ad09bc99b9abc2ff126b740953dee74cb81f2d3b))
+
+- **tests**: Move constans with repo URLs to utils
+  ([`18da888`](https://github.com/russoz-ansible/andebox/commit/18da88855326acc001e1fbdcd33b8c404134c807))
+
+### Testing
+
+- **coverage**: Add definition for excluded lines
+  ([`906f5db`](https://github.com/russoz-ansible/andebox/commit/906f5db8dc97f17a7406af5a3bf130396b27d8ae))
+
+- **ignores**: Add initial testcase
+  ([`1935510`](https://github.com/russoz-ansible/andebox/commit/193551022998b49c700f811225977dba79ddb10d))
+
+
+## v0.98.0 (2025-05-30)
+
+### Chores
+
+- Remove unused MANIFEST.in
+  ([`64fee42`](https://github.com/russoz-ansible/andebox/commit/64fee42a1b2f218dfda8420b255088108b026026))
+
+- Review license headers
+  ([`02cc52a`](https://github.com/russoz-ansible/andebox/commit/02cc52a7d922e46a8940f2db0040f86c69492402))
+
+### Continuous Integration
+
+- **codecov**: Add config, prevent codecov from blocking CI
+  ([`098f33c`](https://github.com/russoz-ansible/andebox/commit/098f33ca2e68abaadbec0e808ebf54f57380b9aa))
+
+### Documentation
+
+- Add TODO.md
+  ([`a964e7a`](https://github.com/russoz-ansible/andebox/commit/a964e7aac60c25966df0870613248cd1077ce15c))
+
+- **ascii-demo**: Add ability to generate ascii demos
+  ([`50e492e`](https://github.com/russoz-ansible/andebox/commit/50e492efee787d101cb90f046cf1fb7a989ada5b))
+
+- **ascii-demo**: Improve setup of dependencies
+  ([`8b7231e`](https://github.com/russoz-ansible/andebox/commit/8b7231e3f413b1350e652ca946f11d9321c6f964))
+
+- **readme**: Adjust badges
+  ([`92fbdce`](https://github.com/russoz-ansible/andebox/commit/92fbdce6973e59760ae165198a7d778c0e44380b))
+
+- **readme**: Adjust text order and headings
+  ([`9096b6d`](https://github.com/russoz-ansible/andebox/commit/9096b6d94d2aa16b5104e55897032c80010f544f))
+
+### Features
+
+- Add module execution protocol
+  ([`715bd74`](https://github.com/russoz-ansible/andebox/commit/715bd742482e8e6e73411eb892ab43ba3b067f1e))
+
+### Refactoring
+
+- Rename module from andeboxlib to andebox
+  ([`735967e`](https://github.com/russoz-ansible/andebox/commit/735967ee1985c83156704a39cc6b390a8646e324))
+
+
 ## v0.97.0 (2025-05-30)
 
 ### Documentation

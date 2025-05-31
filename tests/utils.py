@@ -17,7 +17,11 @@ from typing import Sequence
 
 import pytest
 import yaml
-from andeboxlib.util import set_dir
+from andebox.util import set_dir
+
+
+GIT_REPO_CG = "https://github.com/ansible-collections/community.general.git"
+GIT_REPO_AC = "https://github.com/ansible/ansible.git"
 
 
 @dataclass
@@ -165,3 +169,6 @@ def verify_return_code(expected: Dict[str, Any], data: Dict[str, Any]) -> None:
         assert (
             expected_rc == data["rc"]
         ), f"Expected return code {data['rc']}, but got {expected_rc}"
+
+
+# code: language=python tabSize=4

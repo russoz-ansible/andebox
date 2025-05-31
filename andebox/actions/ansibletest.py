@@ -92,3 +92,6 @@ class AnsibleTestAction(AndeboxAction):
                 )
         except Exception as e:
             raise AndeboxException(f"Error running ansible-test: {e}") from e
+
+
+# code: language=python tabSize=4

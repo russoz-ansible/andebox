@@ -21,3 +21,5 @@ build:
 
 sphinx:
   configuration: docs/conf.py
+
+# code: language=yaml tabSize=2

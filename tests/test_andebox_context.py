@@ -7,13 +7,13 @@
 import os
 
 import pytest
-from andeboxlib.cli import _make_parser
-from andeboxlib.context import AndeboxUnknownContext
-from andeboxlib.context import ContextType
-from andeboxlib.context import create_context
+from andebox.cli import _make_parser
+from andebox.context import AndeboxUnknownContext
+from andebox.context import ContextType
+from andebox.context import create_context
 
-GIT_REPO_CG = "https://github.com/ansible-collections/community.general.git"
-GIT_REPO_AC = "https://github.com/ansible/ansible.git"
+from .utils import GIT_REPO_AC
+from .utils import GIT_REPO_CG
 
 
 def test_ansible_cg(git_repo):
@@ -42,3 +42,6 @@ def test_invalid_dir(tmp_path):
     parser = _make_parser()
     with pytest.raises(AndeboxUnknownContext):
         create_context(parser.parse_args(args=["context"]))
+
+
+# code: language=python tabSize=4

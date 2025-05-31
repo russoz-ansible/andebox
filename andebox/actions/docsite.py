@@ -87,3 +87,6 @@ class DocsiteAction(AndeboxAction):
             webbrowser.open(
                 f"{context.args.dest_dir / 'build' / 'html' / 'index.html'}"
             )
+
+
+# code: language=python tabSize=4

@@ -7,7 +7,7 @@
 # of the BSD 3-Clause License. See LICENSE file for details.
 # PYTHON_ARGCOMPLETE_OK
 
-__version__ = "0.97.0"
+__version__ = "0.98.1"
 
 import argparse
 import signal
@@ -16,7 +16,7 @@ from pathlib import Path
 import importlib
 import pkgutil
 
-import andeboxlib.actions
+import andebox.actions
 from .actions.base import AndeboxAction
 from .context import create_context
 from .exceptions import AndeboxException
@@ -40,7 +40,7 @@ def iter_namespace(ns_pkg):
 def load_actions():
     results = []
 
-    for finder, name, ispkg in iter_namespace(andeboxlib.actions):
+    for finder, name, ispkg in iter_namespace(andebox.actions):
         for attr in dir(module := importlib.import_module(name)):
             try:
                 action = getattr(module, attr)
@@ -111,3 +111,6 @@ def run():
     except (AndeboxException, BrokenPipeError) as e:
         print(str(e), file=sys.stderr)
         return 1
+
+
+# code: language=python tabSize=4

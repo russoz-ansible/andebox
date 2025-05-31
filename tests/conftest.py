@@ -15,11 +15,11 @@ from typing import Generator
 from typing import List
 
 import pytest
-from andeboxlib.cli import _make_parser
-from andeboxlib.cli import AndeBox
-from andeboxlib.context import AnsibleCoreContext
-from andeboxlib.context import CollectionContext
-from andeboxlib.context import ContextType
+from andebox.cli import _make_parser
+from andebox.cli import AndeBox
+from andebox.context import AnsibleCoreContext
+from andebox.context import CollectionContext
+from andebox.context import ContextType
 from git import Repo
 
 
@@ -85,7 +85,7 @@ def run_andebox(mocker):
         parsed_args = parser.parse_args(args)
 
         if context_type is not None:
-            mock_base_dir_type = mocker.patch("andeboxlib.context._base_dir_type")
+            mock_base_dir_type = mocker.patch("andebox.context._base_dir_type")
             mock_base_dir_type.return_value = (
                 AnsibleCoreContext
                 if context_type == ContextType.ANSIBLE_CORE
@@ -111,3 +111,6 @@ def save_fixtures(request, mocker, capfd):
         return d
 
     return _save_fixtures
+
+
+# code: language=python tabSize=4

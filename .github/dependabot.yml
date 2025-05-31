@@ -15,3 +15,5 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+
+# code: language=yaml tabSize=2
