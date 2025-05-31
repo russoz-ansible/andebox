@@ -10,6 +10,7 @@ import sys
 from dataclasses import dataclass
 from functools import reduce
 from functools import total_ordering
+from pathlib import Path
 
 from looseversion import LooseVersion
 
@@ -45,9 +46,9 @@ class IgnoreFileEntry:
     @property
     def file_parts(self):
         if self.file_parts_depth is None:
-            return os.path.join(*self._file_parts)
+            return str(Path(*self._file_parts))
 
-        return os.path.join(*self._file_parts[: self.file_parts_depth])
+        return str(Path(*self._file_parts[: self.file_parts_depth]))
 
     def __str__(self):
         return f"<IgnoreFileEntry: {self.filename} {self.ignore_check}{self.rebuilt_comment}>"
@@ -120,9 +121,9 @@ class ResultLine:
 
 
 # @TODO works only for collections because of the hardcoded path
-_ignore_path = os.path.join(".", "tests", "sanity")
+_ignore_path = Path(".") / "tests" / "sanity"
 try:
-    with os.scandir(os.path.join(_ignore_path)) as sanity_dir:
+    with os.scandir(_ignore_path) as sanity_dir:
         _ignore_versions = sorted(
             [
                 str(LooseVersion(entry.name[7:-4]))
@@ -200,11 +201,11 @@ class IgnoreLinesAction(AndeboxAction):
         if version == "-":
             return [sys.stdin]
         if version:
-            return [open(os.path.join(_ignore_path, f"ignore-{version}.txt"))]
+            return [open(_ignore_path / f"ignore-{version}.txt")]
 
-        with os.scandir(os.path.join(_ignore_path)) as it:
+        with os.scandir(_ignore_path) as it:
             return [
-                open(os.path.join(_ignore_path, entry.name))
+                open(_ignore_path / entry.name)
                 for entry in it
                 if entry.name.startswith("ignore-") and entry.name.endswith(".txt")
             ]
