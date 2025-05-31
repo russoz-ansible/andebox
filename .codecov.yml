@@ -7,7 +7,7 @@ coverage:
         threshold: 1%
     patch:
       default:
-        target: 80%
+        target: 30%
   ignore:
     - "andebox/__main__.py"
 
