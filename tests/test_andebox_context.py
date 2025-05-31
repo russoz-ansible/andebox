@@ -12,8 +12,8 @@ from andebox.context import AndeboxUnknownContext
 from andebox.context import ContextType
 from andebox.context import create_context
 
-GIT_REPO_CG = "https://github.com/ansible-collections/community.general.git"
-GIT_REPO_AC = "https://github.com/ansible/ansible.git"
+from .utils import GIT_REPO_AC
+from .utils import GIT_REPO_CG
 
 
 def test_ansible_cg(git_repo):
