@@ -13,6 +13,7 @@ TEST_CASES = load_test_cases(
     yaml_content=r"""
 - id: cg-context
   input:
+    args: [context]
     repo: https://github.com/ansible-collections/community.general.git
   expected:
     rc: 0
@@ -22,6 +23,7 @@ TEST_CASES = load_test_cases(
 
 - id: ac-context
   input:
+    args: [context]
     repo: https://github.com/ansible/ansible.git
   expected:
     rc: 0
@@ -41,7 +43,7 @@ def test_action_context(git_repo, testcase, run_andebox, make_helper):
     test = make_helper(
         testcase,
         git_repo,
-        lambda tc_input, data: {"andebox": run_andebox(["context"])},
+        run_andebox,
         [verify_patterns],
     )
     test.execute()

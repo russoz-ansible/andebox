@@ -78,6 +78,7 @@ def install_andebox() -> Generator[None, None, None]:
 
 @pytest.fixture
 def run_andebox(mocker):
+
     def _run_andebox(
         args: List[str],
         context_type: ContextType | None = None,
@@ -92,7 +93,21 @@ def run_andebox(mocker):
             )
         return cli_run()
 
-    return _run_andebox
+    def _make_run_andebox(tc_input: dict, data: dict) -> dict:
+        args = tc_input["args"]
+        context_type = tc_input.get("andebox_context_type")
+        match context_type:
+            case "ansible-core":
+                context_type = ContextType.ANSIBLE_CORE
+            case "collection":
+                context_type = ContextType.COLLECTION
+            case None:
+                context_type = None
+            case _:
+                raise ValueError(f"Unknown context type: {context_type}")
+        return {"rc": _run_andebox(args, context_type)}
+
+    return _make_run_andebox
 
 
 @pytest.fixture
