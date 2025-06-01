@@ -35,7 +35,5 @@ TO-DO
 ## test
 
 * add tests for actions:
-  * docsite
-  * runtime
   * toxtest
   * vagrant
