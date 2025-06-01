@@ -117,7 +117,7 @@ class AndeboxTestHelper:
             if expected_exception:
                 expected_class = expected_exception["class"]
                 with pytest.raises(Exception) as exc_info:
-                    self.data.update(executor(self.data))
+                    self.data.update(executor(self.testcase.input, self.data))
                 actual_class = exc_info.value.__class__.__name__
                 assert (
                     actual_class == expected_class
@@ -129,7 +129,7 @@ class AndeboxTestHelper:
                         exc_info.value
                     ), f"Expected exception message to contain '{expected_value}', but got: {exc_info.value}"
             else:
-                self.data.update(executor(self.data))
+                self.data.update(executor(self.testcase.input, self.data))
 
             self.data["captured"] = self.fixtures["capfd"].readouterr()
 

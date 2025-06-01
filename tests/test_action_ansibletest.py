@@ -6,7 +6,6 @@
 # of the BSD 3-Clause License. See LICENSE file for details.
 import pytest
 
-from .utils import AndeboxTestHelper
 from .utils import GIT_REPO_AC
 from .utils import GIT_REPO_CG
 from .utils import load_test_cases
@@ -75,15 +74,17 @@ TEST_CASES_IDS = [item.id for item in TEST_CASES]
 
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
-def test_action_test(git_repo, testcase, run_andebox, save_fixtures):
-    def executor(data):
-        return {"rc": run_andebox(["test"] + testcase.input["argv"])}
+def test_action_test(make_helper, git_repo, testcase, run_andebox, save_fixtures):
+    def executor(tc_input, data):
+        return {"rc": run_andebox(["test"] + tc_input["argv"])}
 
-    test = AndeboxTestHelper(
+    test = make_helper(
         testcase,
-        save_fixtures(),
-        git_repo,  # pass git_repo directly, it now expects tc_input
+        git_repo,
         executor,
         [verify_patterns, verify_return_code],
     )
     test.execute()
+
+
+# code: language=python tabSize=4

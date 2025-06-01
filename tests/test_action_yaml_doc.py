@@ -10,7 +10,6 @@ import importlib.util
 import pytest
 from andebox.context import ContextType
 
-from .utils import AndeboxTestHelper
 from .utils import load_test_cases
 
 
@@ -352,9 +351,11 @@ def load_module_vars(pyfile) -> dict[str, str | None]:
 
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
-def test_action_yaml_doc(run_andebox, mock_plugin, testcase, save_fixtures):
+def test_action_yaml_doc(
+    make_helper, run_andebox, mock_plugin, testcase, save_fixtures
+):
 
-    def executor(data):
+    def executor(tc_input, data):
         andebox_params = [
             "-c",
             "some.collection",
@@ -378,9 +379,7 @@ def test_action_yaml_doc(run_andebox, mock_plugin, testcase, save_fixtures):
                     )
                 )
 
-    test = AndeboxTestHelper(
-        testcase, save_fixtures(), mock_plugin, executor, validator
-    )
+    test = make_helper(testcase, mock_plugin, executor, validator)
     test.execute()
 
 
