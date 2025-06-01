@@ -42,7 +42,7 @@ def test_action_context(git_repo, testcase, run_andebox, save_fixtures):
     test = AndeboxTestHelper(
         testcase,
         save_fixtures(),
-        lambda tc_input: {"basedir": git_repo(tc_input["repo"])},
+        git_repo,
         lambda data: {"andebox": run_andebox(["context"])},
         [verify_patterns],
     )

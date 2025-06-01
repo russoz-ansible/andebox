@@ -76,22 +76,14 @@ TEST_CASES_IDS = [item.id for item in TEST_CASES]
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
 def test_action_test(git_repo, testcase, run_andebox, save_fixtures):
-    def setup_repo(tc_input):
-        repo = tc_input["repo"]
-        repo_dir = git_repo(repo)
-        return {"basedir": repo_dir}
-
     def executor(data):
         return {"rc": run_andebox(["test"] + testcase.input["argv"])}
 
     test = AndeboxTestHelper(
         testcase,
         save_fixtures(),
-        setup_repo,
+        git_repo,  # pass git_repo directly, it now expects tc_input
         executor,
         [verify_patterns, verify_return_code],
     )
     test.execute()
-
-
-# code: language=python tabSize=4

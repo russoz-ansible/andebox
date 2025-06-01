@@ -28,15 +28,10 @@ TEST_CASES_IDS = [item.id for item in TEST_CASES]
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
 def test_action_ignorefile(git_repo, testcase, run_andebox, save_fixtures):
-    def setup_repo(tc_input):
-        repo = tc_input["repo"]
-        repo_dir = git_repo(repo)
-        return {"basedir": repo_dir}
-
     def executor(data):
         return {"andebox": run_andebox(["ignores"] + testcase.input["args"])}
 
     test = AndeboxTestHelper(
-        testcase, save_fixtures(), setup_repo, executor, verify_patterns
+        testcase, save_fixtures(), git_repo, executor, verify_patterns
     )
     test.execute()
