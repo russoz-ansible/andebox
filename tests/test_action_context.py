@@ -6,7 +6,6 @@
 # of the BSD 3-Clause License. See LICENSE file for details.
 import pytest
 
-from .utils import AndeboxTestHelper
 from .utils import load_test_cases
 from .utils import verify_patterns
 
@@ -37,13 +36,12 @@ TEST_CASES_IDS = [item.id for item in TEST_CASES]
 
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
-def test_action_context(git_repo, testcase, run_andebox, save_fixtures):
+def test_action_context(git_repo, testcase, run_andebox, make_helper):
 
-    test = AndeboxTestHelper(
+    test = make_helper(
         testcase,
-        save_fixtures(),
         git_repo,
-        lambda data: {"andebox": run_andebox(["context"])},
+        lambda tc_input, data: {"andebox": run_andebox(["context"])},
         [verify_patterns],
     )
     test.execute()

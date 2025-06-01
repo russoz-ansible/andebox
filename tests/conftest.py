@@ -20,6 +20,8 @@ from andebox.context import CollectionContext
 from andebox.context import ContextType
 from git import Repo
 
+from .utils import AndeboxTestHelper
+
 
 @pytest.fixture(scope="session")
 def git_repo(tmp_path_factory) -> Callable[[dict], dict]:
@@ -105,6 +107,26 @@ def save_fixtures(request, mocker, capfd):
         return d
 
     return _save_fixtures
+
+
+@pytest.fixture
+def make_helper(save_fixtures):
+
+    def _make_helper(
+        testcase,
+        setup,
+        executor,
+        validator,
+    ) -> AndeboxTestHelper:
+        return AndeboxTestHelper(
+            testcase,
+            save_fixtures(),
+            setup,
+            executor,
+            validator,
+        )
+
+    return _make_helper
 
 
 # code: language=python tabSize=4
