@@ -31,7 +31,7 @@ jobs:
         fetch-depth: 0
         ref: ${{ github.head_ref || github.ref_name }}
 
-    - name: Python Setup
+    - name: Python setup
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
@@ -46,7 +46,7 @@ jobs:
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Create Build Environment
+    - name: Create build environment
       run: |
         poetry install --verbose --with dev
         poetry lock
@@ -56,15 +56,12 @@ jobs:
           git push
         fi
 
-    - name: Run Tests, generate reports
+    - name: Run linter and tests
       env:
         PYTHONPATH: .
       run: |
         poetry run flake8 -v . --count --show-source --statistics
-        poetry run pytest -v \
-          --cov-report=xml \
-          --cov-report=term \
-          --junitxml=junit.xml
+        poetry run pytest -v
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v5

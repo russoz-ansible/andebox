@@ -40,12 +40,7 @@ jobs:
         run: poetry run flake8 -v . --count --show-source --statistics
 
       - name: Run tests
-        run: |
-          poetry run pytest -v \
-            --cov-branch \
-            --cov-report=xml \
-            --cov-report=term \
-            --junitxml=junit.xml
+        run: poetry run pytest -v --cov-branch
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
