@@ -7,7 +7,6 @@
 import os
 import subprocess
 import sys
-from pathlib import Path
 from typing import Any
 from typing import Callable
 from typing import Dict
@@ -23,19 +22,20 @@ from git import Repo
 
 
 @pytest.fixture(scope="session")
-def git_repo(tmp_path_factory) -> Callable[[str], Path]:
+def git_repo(tmp_path_factory) -> Callable[[dict], dict]:
     cloned_repos = {}
 
-    def _clone(url: str) -> Path:
+    def _clone(tc_input: dict) -> dict:
+        url = tc_input["repo"]
         if url in cloned_repos:
-            return cloned_repos[url]
-
-        repo_name = url.rstrip("/").split("/")[-1].replace(".git", "")
-        dest = tmp_path_factory.mktemp(repo_name)
-        print(f"Cloning {url} into {dest}")
-        Repo.clone_from(url, dest, depth=1)
-        cloned_repos[url] = dest
-        return dest
+            dest = cloned_repos[url]
+        else:
+            repo_name = url.rstrip("/").split("/")[-1].replace(".git", "")
+            dest = tmp_path_factory.mktemp(repo_name)
+            print(f"Cloning {url} into {dest}")
+            Repo.clone_from(url, dest, depth=1)
+            cloned_repos[url] = dest
+        return {"basedir": dest}
 
     return _clone
 
