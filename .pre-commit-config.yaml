@@ -14,7 +14,6 @@ repos:
     rev: 25.1.0
     hooks:
       - id: black
-        exclude: andebox/cli.py
   - repo: https://github.com/PyCQA/flake8
     rev: 7.2.0
     hooks:
