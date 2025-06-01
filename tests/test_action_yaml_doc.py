@@ -8,7 +8,6 @@ import difflib
 import importlib.util
 
 import pytest
-from andebox.context import ContextType
 
 from .utils import load_test_cases
 
@@ -339,6 +338,24 @@ def mock_plugin(tmp_path_factory):
     return _create_file
 
 
+@pytest.fixture
+def yaml_doc_executor(run_andebox):
+
+    def _executor(tc_input, data):
+        tc = dict(tc_input)
+        tc["args"] = [
+            "-c",
+            "some.collection",
+            "yaml-doc",
+            f"plugins/modules/{data['pyfile']}",
+        ]
+        tc["andebox_context_type"] = "collection"
+
+        return run_andebox(tc, data)
+
+    return _executor
+
+
 def load_module_vars(pyfile) -> dict[str, str | None]:
     spec = importlib.util.spec_from_file_location("test_module", str(pyfile))
     mod = importlib.util.module_from_spec(spec)
@@ -351,20 +368,7 @@ def load_module_vars(pyfile) -> dict[str, str | None]:
 
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
-def test_action_yaml_doc(
-    make_helper, run_andebox, mock_plugin, testcase, save_fixtures
-):
-
-    def executor(tc_input, data):
-        andebox_params = [
-            "-c",
-            "some.collection",
-            "yaml-doc",
-            f"plugins/modules/{data['pyfile']}",
-        ]
-        return {
-            "andebox": run_andebox(andebox_params, context_type=ContextType.COLLECTION)
-        }
+def test_action_yaml_doc(make_helper, yaml_doc_executor, mock_plugin, testcase):
 
     def validator(expected, data):
         actual = load_module_vars(f"plugins/modules/{data['pyfile']}")
@@ -379,7 +383,7 @@ def test_action_yaml_doc(
                     )
                 )
 
-    test = make_helper(testcase, mock_plugin, executor, validator)
+    test = make_helper(testcase, mock_plugin, yaml_doc_executor, validator)
     test.execute()
 
 
