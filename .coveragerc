@@ -6,6 +6,8 @@ exclude_lines =
     if __name__ == "__main__":
     pass
     raise ImportError
+    except ImportError
+    if IMPORT_ERROR
 
 [run]
 data_file = /tmp/.coverage
