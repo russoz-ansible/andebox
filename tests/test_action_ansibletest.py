@@ -11,7 +11,7 @@ from .utils import GIT_REPO_AC
 from .utils import GIT_REPO_CG
 from .utils import load_test_cases
 from .utils import verify_patterns
-
+from .utils import verify_return_code
 
 TEST_CASES = load_test_cases(
     yaml_content=f"""
@@ -62,9 +62,8 @@ TEST_CASES = load_test_cases(
       - "--skip-test"
       - "release-names"
       - "lib/ansible/modules/dnf5.py"
-  exception:
-    class: AndeboxException
   expected:
+    rc: 1
     in_stdout: >
       ERROR: lib/ansible/modules/dnf5.py:0:0: parameter-invalid: Argument 'expire-cache' in argument_spec is not a valid python identifier
   flags:
@@ -83,10 +82,14 @@ def test_action_test(git_repo, testcase, run_andebox, save_fixtures):
         return {"basedir": repo_dir}
 
     def executor(data):
-        return {"andebox": run_andebox(["test"] + testcase.input["argv"])}
+        return {"rc": run_andebox(["test"] + testcase.input["argv"])}
 
     test = AndeboxTestHelper(
-        testcase, save_fixtures(), setup_repo, executor, verify_patterns
+        testcase,
+        save_fixtures(),
+        setup_repo,
+        executor,
+        [verify_patterns, verify_return_code],
     )
     test.execute()
 
