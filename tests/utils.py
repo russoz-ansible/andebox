@@ -111,12 +111,13 @@ class AndeboxTestHelper:
             self.data.update(setup(self.testcase.input))
         self.fixtures["capfd"].readouterr()
 
+        executor = self.executor
         with set_dir(self.data["basedir"]):
             expected_exception = self.testcase.exception
             if expected_exception:
                 expected_class = expected_exception["class"]
                 with pytest.raises(Exception) as exc_info:
-                    (self.executor)(self.data)
+                    self.data.update(executor(self.data))
                 actual_class = exc_info.value.__class__.__name__
                 assert (
                     actual_class == expected_class
@@ -128,7 +129,7 @@ class AndeboxTestHelper:
                         exc_info.value
                     ), f"Expected exception message to contain '{expected_value}', but got: {exc_info.value}"
             else:
-                (self.executor)(self.data)
+                self.data.update(executor(self.data))
 
             self.data["captured"] = self.fixtures["capfd"].readouterr()
 

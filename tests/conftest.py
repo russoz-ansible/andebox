@@ -15,8 +15,7 @@ from typing import Generator
 from typing import List
 
 import pytest
-from andebox.cli import _make_parser
-from andebox.cli import AndeBox
+from andebox.cli import run as cli_run
 from andebox.context import AnsibleCoreContext
 from andebox.context import CollectionContext
 from andebox.context import ContextType
@@ -80,10 +79,8 @@ def run_andebox(mocker):
     def _run_andebox(
         args: List[str],
         context_type: ContextType | None = None,
-    ) -> AndeBox:
-        parser = _make_parser()
-        parsed_args = parser.parse_args(args)
-
+    ) -> int:
+        mocker.patch("sys.argv", ["andebox"] + args)
         if context_type is not None:
             mock_base_dir_type = mocker.patch("andebox.context._base_dir_type")
             mock_base_dir_type.return_value = (
@@ -91,10 +88,7 @@ def run_andebox(mocker):
                 if context_type == ContextType.ANSIBLE_CORE
                 else CollectionContext
             )
-
-        box = AndeBox(parsed_args)
-        box.run()
-        return box
+        return cli_run()
 
     return _run_andebox
 
