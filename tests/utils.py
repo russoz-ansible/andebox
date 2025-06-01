@@ -172,4 +172,9 @@ def verify_return_code(expected: Dict[str, Any], data: Dict[str, Any]) -> None:
         ), f"Expected return code {expected_rc}, but got {data['rc']}"
 
 
+def validate_stdout(expected, data):
+    if expected.get("stdout_line_count"):
+        assert len(data["captured"].out.splitlines()) == expected["stdout_line_count"]
+
+
 # code: language=python tabSize=4
