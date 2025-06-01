@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2021-2023, Alexei Znamensky
 # All rights reserved.
 #
@@ -19,6 +20,3 @@ def set_dir(path: Path) -> Generator[Any, Any, Any]:
         yield
     finally:
         os.chdir(previous)
-
-
-# code: language=python tabSize=4

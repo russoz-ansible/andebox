@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2021, Alexei Znamensky
 # All rights reserved.
 #
@@ -119,6 +120,3 @@ class RuntimeAction(AndeboxAction):
         self.name_tests = [partial(test_func, n) for n in context.args.plugin_names]
 
         self.runtime_process_plugin(runtime["plugin_routing"], plugin_types)
-
-
-# code: language=python tabSize=4

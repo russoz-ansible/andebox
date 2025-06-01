@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2024-2025, Alexei Znamensky
 # All rights reserved.
 #
@@ -459,6 +460,3 @@ class YAMLDocAction(AndeboxAction):
 
         for file_path in context.args.files:
             processor.process_file(file_path)
-
-
-# code: language=python tabSize=4

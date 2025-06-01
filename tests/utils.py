@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2024, Alexei Znamensky
 # All rights reserved.
 #
@@ -175,6 +176,3 @@ def verify_return_code(expected: Dict[str, Any], data: Dict[str, Any]) -> None:
 def validate_stdout(expected, data):
     if expected.get("stdout_line_count"):
         assert len(data["captured"].out.splitlines()) == expected["stdout_line_count"]
-
-
-# code: language=python tabSize=4

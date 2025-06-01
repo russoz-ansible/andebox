@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2024, Alexei Znamensky
 # All rights reserved.
 #
@@ -47,6 +48,3 @@ def test_action_context(git_repo, testcase, run_andebox, make_helper):
         [verify_patterns],
     )
     test.execute()
-
-
-# code: language=python tabSize=4

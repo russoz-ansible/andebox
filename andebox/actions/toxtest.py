@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2021-2023, Alexei Znamensky
 # All rights reserved.
 #
@@ -89,6 +90,3 @@ class ToxTestAction(AndeboxAction):
 
         if rc != 0:
             raise ToxTestError(f"Error running tox (rc={rc})")
-
-
-# code: language=python tabSize=4

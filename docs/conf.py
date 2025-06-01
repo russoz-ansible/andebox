@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# code: language=python tabSize=4
+
 project = "andebox"
 copyright = "2025, Alexei Znamensky"
 author = "Alexei Znamensky"
@@ -13,5 +16,3 @@ templates_path = ["_templates"]
 exclude_patterns = []
 
 html_theme = "furo"
-
-# code: language=python tabSize=4

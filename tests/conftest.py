@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2024, Alexei Znamensky
 # All rights reserved.
 #
@@ -142,6 +143,3 @@ def make_helper(save_fixtures):
         )
 
     return _make_helper
-
-
-# code: language=python tabSize=4

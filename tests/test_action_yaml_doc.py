@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2025, Alexei Znamensky
 # All rights reserved.
 #
@@ -385,6 +386,3 @@ def test_action_yaml_doc(make_helper, yaml_doc_executor, mock_plugin, testcase):
 
     test = make_helper(testcase, mock_plugin, yaml_doc_executor, validator)
     test.execute()
-
-
-# code: language=python tabSize=4

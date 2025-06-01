@@ -1,3 +1,4 @@
+# code: language=yaml tabSize=2
 # Copyright (c) 2025, Alexei Znamensky
 # All rights reserved.
 #
@@ -80,5 +81,3 @@ jobs:
         else
           echo "No build artifacts to publish."
         fi
-
-# code: language=yaml tabSize=2

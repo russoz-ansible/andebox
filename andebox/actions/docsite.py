@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2024, Alexei Znamensky
 # All rights reserved.
 #
@@ -87,6 +88,3 @@ class DocsiteAction(AndeboxAction):
             webbrowser.open(
                 f"{context.args.dest_dir / 'build' / 'html' / 'index.html'}"
             )
-
-
-# code: language=python tabSize=4

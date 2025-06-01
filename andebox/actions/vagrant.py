@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2021-2023, Alexei Znamensky
 # All rights reserved.
 #
@@ -97,6 +98,3 @@ class VagrantAction(AndeboxAction):
             if context.args.destroy:
                 v.destroy()
             print(f"== END   vagrant andebox: {machine_name} ".ljust(80, "="))
-
-
-# code: language=python tabSize=4

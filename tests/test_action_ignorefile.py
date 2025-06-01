@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2025, Alexei Znamensky
 # All rights reserved.
 #
@@ -61,6 +62,3 @@ def test_action_ignorefile(make_helper, git_repo, testcase, run_andebox):
         testcase, git_repo, run_andebox, [verify_patterns, validate_stdout]
     )
     test.execute()
-
-
-# code: language=python tabSize=4

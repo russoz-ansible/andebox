@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2024, Alexei Znamensky
 # All rights reserved.
 #
@@ -93,6 +94,3 @@ def test_action_test(make_helper, git_repo, testcase, run_andebox):
         [verify_patterns, verify_return_code],
     )
     test.execute()
-
-
-# code: language=python tabSize=4

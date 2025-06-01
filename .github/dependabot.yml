@@ -1,3 +1,4 @@
+# code: language=yaml tabSize=2
 # Copyright (c) 2025, Alexei Znamensky
 # All rights reserved.
 #
@@ -27,5 +28,3 @@ updates:
     schedule:
       interval: "weekly"
     rebase-strategy: auto
-
-# code: language=yaml tabSize=2

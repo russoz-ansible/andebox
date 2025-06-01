@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2021, Alexei Znamensky
 # All rights reserved.
 #
@@ -8,6 +9,3 @@
 
 class AndeboxException(Exception):
     pass
-
-
-# code: language=python tabSize=4

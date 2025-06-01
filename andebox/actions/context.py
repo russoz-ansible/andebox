@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # (c) 2021, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from ..context import ConcreteContext
@@ -28,6 +29,3 @@ class ContextAction(AndeboxAction):
         if context.type == ContextType.COLLECTION:
             ns, name, version = context.read_coll_meta()  # type: ignore
             printline("Collection", f"{ns}.{name} {version}")
-
-
-# code: language=python tabSize=4

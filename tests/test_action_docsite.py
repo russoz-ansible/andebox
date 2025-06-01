@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2025, Alexei Znamensky
 # All rights reserved.
 #
@@ -40,6 +41,3 @@ def test_tox_docs_runs(make_helper, git_repo, run_andebox, tmp_path):
         [validate_stdout, verify_patterns, validate_index_html],
     )
     test.execute()
-
-
-# code: language=python tabSize=4

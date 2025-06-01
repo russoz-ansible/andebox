@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2024, Alexei Znamensky
 # All rights reserved.
 #
@@ -42,6 +43,3 @@ def test_invalid_dir(tmp_path):
         parser = _make_parser()
         with pytest.raises(AndeboxUnknownContext):
             create_context(parser.parse_args(args=["context"]))
-
-
-# code: language=python tabSize=4

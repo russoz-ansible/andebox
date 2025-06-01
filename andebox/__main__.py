@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2025, Alexei Znamensky
 # All rights reserved.
 #
@@ -8,5 +9,3 @@ from andebox.cli import run
 
 if __name__ == "__main__":
     run()
-
-# code: language=python tabSize=4

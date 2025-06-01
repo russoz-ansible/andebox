@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2021, Alexei Znamensky
 # All rights reserved.
 #
@@ -261,6 +262,3 @@ class IgnoreLinesAction(AndeboxAction):
 
         lines = [str(s) for s in sorted(count_map.values(), reverse=True)]
         print("\n".join(self.filter_lines(lines, context.args.head)))
-
-
-# code: language=python tabSize=4

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2021, Alexei Znamensky
 # All rights reserved.
 #
@@ -24,6 +25,3 @@ class AndeboxAction:
 
     def __str__(self):
         return f"<AndeboxAction: {self.name}>"
-
-
-# code: language=python tabSize=4

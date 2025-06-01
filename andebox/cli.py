@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2021-2022, Alexei Znamensky
 # All rights reserved.
 #
@@ -111,6 +112,3 @@ def run():
     except (AndeboxException, BrokenPipeError) as e:
         print(str(e), file=sys.stderr)
         return 1
-
-
-# code: language=python tabSize=4

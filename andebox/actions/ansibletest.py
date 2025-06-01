@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# code: language=python tabSize=4
 # Copyright (c) 2021, Alexei Znamensky
 # All rights reserved.
 #
@@ -92,6 +93,3 @@ class AnsibleTestAction(AndeboxAction):
                 )
         except Exception as e:
             raise AndeboxException(f"Error running ansible-test: {e}") from e
-
-
-# code: language=python tabSize=4
