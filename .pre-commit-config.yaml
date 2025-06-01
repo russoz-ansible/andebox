@@ -19,7 +19,6 @@ repos:
     rev: 7.2.0
     hooks:
       - id: flake8
-        exclude: andebox/cli.py
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
