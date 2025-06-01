@@ -95,7 +95,7 @@ class AndeBox:
             action.run(context)
 
 
-#pragma: no     # noqa: E265
+# pragma: no cover    # noqa: E265
 def run():
     parser = _make_parser()
     argcomplete.autocomplete(parser)
