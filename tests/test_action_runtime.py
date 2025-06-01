@@ -5,10 +5,10 @@
 # This file is part of the Andebox project and is distributed under the terms
 # of the BSD 3-Clause License. See LICENSE file for details.
 import pytest
-from tests.utils import validate_stdout
 
 from .utils import GIT_REPO_CG
 from .utils import load_test_cases
+from .utils import validate_stdout
 from .utils import verify_patterns
 
 
@@ -18,36 +18,41 @@ TEST_CASES = load_test_cases(
   input:
     repo: {GIT_REPO_CG}
     args:
-      - ignores
+      - runtime
+      - --regex
+      - -it
+      - tombstone
+      - .*
   expected:
-    in_stdout: "tests/unit/plugins/modules/test_gio_mime.yaml no-smart-quotes"
-- id: specific-version
-  flags:
-    xfail: "Not finding ignore-2.19.txt"
+    in_stdout: >
+      T modules rax_clb_nodes: terminated in 9.0.0: This module relied on the deprecated package pyrax.
+- id: redirects-endswith-y
   input:
     repo: {GIT_REPO_CG}
     args:
-      - ignores
-      - -ifs
-      - "2.19"
-      - -H5
+      - runtime
+      - --regex
+      - -it
+      - redirect
+      - y$
   expected:
-    in_stdout: "1  tests/unit/plugins/modules/test_gio_mime.yaml no-smart-quotes"
-    stdout_line_count: 5
-- id: specific-version-and-file
-  flags:
-    xfail: "Not finding ignore-2.19.txt"
+    in_stdout: >
+      R modules postgresql_query: redirected to community.postgresql.postgresql_query
+    stdout_line_count: 4
+- id: redirects-callbacks-endswith-y
   input:
     repo: {GIT_REPO_CG}
     args:
-      - ignores
-      - -ifs
-      - "2.19"
-      - -H5
-      - -ff
-      - test_gio_mime
+      - runtime
+      - --regex
+      - -it
+      - redirect
+      - -pt
+      - callback
+      - y$
   expected:
-    in_stdout: "1  tests/unit/plugins/modules/test_gio_mime.yaml no-smart-quotes"
+    in_stdout: >
+      R callback osx_say: redirected to community.general.say
     stdout_line_count: 1
 """
 )
