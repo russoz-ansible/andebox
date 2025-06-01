@@ -1,0 +1,45 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2025, Alexei Znamensky
+# All rights reserved.
+#
+# This file is part of the Andebox project and is distributed under the terms
+# of the BSD 3-Clause License. See LICENSE file for details.
+from .utils import GenericTestCase
+from .utils import GIT_REPO_CG
+from .utils import validate_stdout
+from .utils import verify_patterns
+
+
+def test_tox_docs_runs(make_helper, git_repo, run_andebox, tmp_path):
+
+    doc_dir = tmp_path / "docsite"
+    doc_dir.mkdir(parents=True, exist_ok=True)
+
+    testcase = GenericTestCase(
+        id="basic",
+        input=dict(
+            repo=GIT_REPO_CG,
+            args=["docsite", "-d", str(doc_dir)],
+        ),
+        expected=dict(
+            rc=0,
+            in_stdout="build succeeded",
+        ),
+    )
+
+    def validate_index_html(expected, data):
+        index_html = doc_dir / "build" / "html" / "index.html"
+        assert (
+            index_html.exists()
+        ), f"index.html was not generated in {doc_dir}/_build/html/"
+
+    test = make_helper(
+        testcase,
+        git_repo,
+        run_andebox,
+        [validate_stdout, verify_patterns, validate_index_html],
+    )
+    test.execute()
+
+
+# code: language=python tabSize=4
