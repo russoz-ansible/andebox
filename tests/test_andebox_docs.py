@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 
-def test_tox_docs_runs():
+def test_doc_build():
     # Always run from project root
     project_root = Path(__file__).resolve().parent.parent
     build_dir = project_root / "docs" / "_build"
