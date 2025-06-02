@@ -132,15 +132,17 @@ class AndeboxTestHelper:
             else:
                 self.data.update(executor(self.testcase.input, self.data))
 
-            self.data["captured"] = self.fixtures["capfd"].readouterr()
+            capfd_capture = self.fixtures["capfd"].readouterr()
+            self.data["stdout"] = capfd_capture.out
+            self.data["stderr"] = capfd_capture.err
 
             for validator in self.validator:
                 validator(self.testcase.expected, self.data)
 
 
 def verify_patterns(expected: Dict[str, Any], data: Dict[str, Any]) -> None:
-    stdout = data["captured"].out
-    stderr = data["captured"].err
+    stdout = data["stdout"]
+    stderr = data["stderr"]
     msg = f"stdout=\n{stdout}\n\nstderr=\n{stderr}"
 
     patt_outs = expected.get("in_stdout", [])
@@ -175,4 +177,4 @@ def verify_return_code(expected: Dict[str, Any], data: Dict[str, Any]) -> None:
 
 def validate_stdout(expected, data):
     if expected.get("stdout_line_count"):
-        assert len(data["captured"].out.splitlines()) == expected["stdout_line_count"]
+        assert len(data["stdout"].splitlines()) == expected["stdout_line_count"]
