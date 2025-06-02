@@ -13,7 +13,7 @@ from .utils import validate_stdout
 from .utils import verify_patterns
 
 
-@pytest.mark.xfail("this test is very slow")
+@pytest.mark.xfail(reason="this test is very slow")
 def test_docsite(make_helper, git_repo, run_andebox, tmp_path):
 
     doc_dir = tmp_path / "docsite"

@@ -11,6 +11,7 @@ import importlib.util
 import pytest
 
 from .utils import load_test_cases
+from .utils import verify_patterns
 
 
 TEST_CASES = load_test_cases(
@@ -328,6 +329,75 @@ TEST_CASES = load_test_cases(
   expected: {}
   exception:
     class: YAMLDocException
+
+- id: description-offender
+  input:
+    yaml_doc_args:
+      - -o
+    DOCUMENTATION: |
+      ---
+      short_description: test plugin
+      description:
+        - This will be fine.
+      options:
+        foo:
+          description: foo option
+          type: wrong_type
+  expected:
+    DOCUMENTATION: |
+      short_description: Test plugin
+      description:
+        - This will be fine.
+      options:
+        foo:
+          description: Foo option.
+          type: wrong_type
+    in_stdout: >-
+        - This __FIXME__\\(will\\) be fine\\.
+
+- id: description-fix-offender
+  input:
+    yaml_doc_args:
+      - -O
+    DOCUMENTATION: |
+      ---
+      short_description: test plugin
+      description:
+        - This will be fine.
+      options:
+        foo:
+          description: foo option
+          type: wrong_type
+  expected:
+    DOCUMENTATION: |
+      short_description: Test plugin
+      description:
+        - This __FIXME__(will) be fine.
+      options:
+        foo:
+          description: Foo option.
+          type: wrong_type
+    in_stdout: >-
+        - This __FIXME__\\(will\\) be fine\\.
+
+- id: word-wrapper
+  input:
+    yaml_doc_args:
+      - -w
+      - "40"
+    DOCUMENTATION: |
+      short_description: test plugin
+      description:
+        - Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus.
+      options: {}
+  expected:
+    DOCUMENTATION: |
+      short_description: Test plugin
+      description:
+        - Lorem ipsum dolor sit amet consectetur
+          adipiscing elit quisque faucibus.
+      options: {}
+
 """
 )
 
@@ -362,12 +432,11 @@ def yaml_doc_executor(run_andebox):
 
     def _executor(tc_input, data):
         tc = dict(tc_input)
-        tc["args"] = [
-            "-c",
-            "some.collection",
-            "yaml-doc",
-            f"plugins/modules/{data['pyfile']}",
-        ]
+        tc["args"] = (
+            ["-c", "some.collection", "yaml-doc"]
+            + tc.get("yaml_doc_args", [])
+            + [f"plugins/modules/{data['pyfile']}"]
+        )
         tc["andebox_context_type"] = "collection"
 
         return run_andebox(tc, data)
@@ -389,18 +458,24 @@ def load_module_vars(pyfile) -> dict[str, str | None]:
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
 def test_action_yaml_doc(make_helper, yaml_doc_executor, mock_plugin, testcase):
 
-    def validator(expected, data):
-        actual = load_module_vars(f"plugins/modules/{data['pyfile']}")
+    def validate_yaml_doc(expected, data):
+        actual_docs = load_module_vars(f"plugins/modules/{data['pyfile']}")
         for var in ["DOCUMENTATION", "EXAMPLES", "RETURN"]:
             if (expected_var := expected.get(var)) is not None:
-                print(f"ACTUAL\n{actual[var]}")
-                print(f"EXPECTED\n{expected_var}")
-                assert var in actual, f"{var} not found in file"
-                assert expected_var in actual[var], "\n".join(
+                assert var in actual_docs, f"{var} not found in file"
+                actual_var = actual_docs[var].strip()
+                print(f"ACTUAL\n{actual_var}")
+
+                expected_var = expected_var.strip()
+                print(f"EXPECTED\n{expected_var.strip()}")
+                assert expected_var in actual_var, "\n".join(
                     difflib.unified_diff(
-                        actual[var].splitlines(), expected_var.splitlines()
+                        actual_var.splitlines(),
+                        expected_var.splitlines(),
                     )
                 )
 
-    test = make_helper(testcase, mock_plugin, yaml_doc_executor, validator)
+    test = make_helper(
+        testcase, mock_plugin, yaml_doc_executor, [validate_yaml_doc, verify_patterns]
+    )
     test.execute()
