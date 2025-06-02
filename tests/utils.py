@@ -116,13 +116,13 @@ class AndeboxTestHelper:
         with set_dir(self.data["basedir"]):
             expected_exception = self.testcase.exception
             if expected_exception:
-                expected_class = expected_exception["class"]
+                expected_classname = expected_exception["class"]
                 with pytest.raises(Exception) as exc_info:
                     self.data.update(executor(self.testcase.input, self.data))
-                actual_class = exc_info.value.__class__.__name__
+                actual_classname = exc_info.value.__class__.__name__
                 assert (
-                    actual_class == expected_class
-                ), f"Expected exception class {expected_class}, but got {actual_class}"
+                    actual_classname == expected_classname
+                ), f"Expected exception class {expected_classname}, but got {actual_classname}"
 
                 expected_value = expected_exception.get("value")
                 if expected_value:
