@@ -193,8 +193,10 @@ class AnsibleDocProcessor:
 
     def process_documentation(self, data: Dict[str, Any]) -> Dict[str, Any]:
         try:
-            if data.get("short_description", " ").endswith("."):
-                data["short_description"] = data["short_description"].rstrip(".")
+            if short_desc := data.get("short_description"):
+                data["short_description"] = str(
+                    self.process_description(short_desc)
+                ).rstrip(".")
             if desc := data.get("description"):
                 data["description"] = self.process_description(desc)
             if notes := data.get("notes"):
