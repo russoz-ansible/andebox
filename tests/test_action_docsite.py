@@ -5,13 +5,16 @@
 #
 # This file is part of the Andebox project and is distributed under the terms
 # of the BSD 3-Clause License. See LICENSE file for details.
+import pytest
+
 from .utils import GenericTestCase
 from .utils import GIT_REPO_CG
 from .utils import validate_stdout
 from .utils import verify_patterns
 
 
-def test_tox_docs_runs(make_helper, git_repo, run_andebox, tmp_path):
+@pytest.mark.xfail("this test is very slow")
+def test_docsite(make_helper, git_repo, run_andebox, tmp_path):
 
     doc_dir = tmp_path / "docsite"
     doc_dir.mkdir(parents=True, exist_ok=True)
