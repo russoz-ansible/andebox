@@ -27,7 +27,7 @@ TEST_CASES = load_test_cases(
           description: foo option
   expected:
     DOCUMENTATION: |
-      short_description: test plugin
+      short_description: Test plugin
       description:
         - This is a test.
       options:
@@ -38,7 +38,7 @@ TEST_CASES = load_test_cases(
   input:
     DOCUMENTATION: |
       ---
-      short_description: test plugin
+      short_description: test plugin.
       description:
         -      this is a test
     EXAMPLES: |
@@ -47,7 +47,7 @@ TEST_CASES = load_test_cases(
         test_module:
   expected:
     DOCUMENTATION: |
-      short_description: test plugin
+      short_description: Test plugin
       description:
         - This is a test.
     EXAMPLES: |
@@ -59,7 +59,7 @@ TEST_CASES = load_test_cases(
   input:
     DOCUMENTATION: |
       ---
-      short_description: test plugin
+      short_description:       test plugin...
       description:
         - This is a test.
     EXAMPLES: |
@@ -73,7 +73,7 @@ TEST_CASES = load_test_cases(
         type: str
   expected:
     DOCUMENTATION: >-
-      short_description: test plugin
+      short_description: Test plugin
     EXAMPLES: >-
       Example usage
     RETURN: >-
