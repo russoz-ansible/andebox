@@ -77,8 +77,6 @@ TEST_CASES = load_test_cases(
     rc: 1
     in_stdout: >
       ERROR: lib/ansible/modules/dnf5.py:0:0: parameter-invalid: Argument 'expire-cache' in argument_spec is not a valid python identifier
-  flags:
-    skip_py: ["3.9", "3.10"]
 """
 )
 

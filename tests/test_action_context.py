@@ -30,8 +30,6 @@ TEST_CASES = load_test_cases(
     rc: 0
     in_stdout:
       - "^\\s+Type: ContextType\\.ANSIBLE_CORE"
-  flags:
-    skip_py: ["3.9", "3.10"]
 """
 )
 
