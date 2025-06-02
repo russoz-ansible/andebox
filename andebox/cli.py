@@ -8,7 +8,7 @@
 # of the BSD 3-Clause License. See LICENSE file for details.
 # PYTHON_ARGCOMPLETE_OK
 
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 
 import argparse
 import signal
