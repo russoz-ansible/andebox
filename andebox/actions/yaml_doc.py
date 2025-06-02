@@ -85,11 +85,11 @@ class YAMLDocException(Exception):
 class AnsibleDocProcessor:
     def __init__(
         self,
-        indent: int = 2,
-        width: int = 120,
-        offenders: bool = False,
-        fix_offenders: bool = False,
-        dry_run: bool = False,
+        indent: int,
+        width: int,
+        offenders: bool,
+        fix_offenders: bool,
+        dry_run: bool,
     ):
         self.indent = indent
         self.width = width
