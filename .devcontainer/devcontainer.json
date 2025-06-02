@@ -1,5 +1,5 @@
 {
-  "name": "My Project Dev Container",
+  "name": "Andebox Dev Container",
   "build": {
     "dockerfile": "Dockerfile",
     "context": ".."
