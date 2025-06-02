@@ -145,8 +145,9 @@ class AnsibleDocProcessor:
         try:
             if isinstance(desc, str):
                 return self.fix_desc_str(desc)
-            else:
+            elif isinstance(desc, list):
                 return [self.fix_desc_str(x) for x in desc]
+            raise TypeError(f"Expected str or list, got {type(desc).__name__}")
         except Exception as e:
             raise YAMLDocException(desc) from e
 
@@ -194,9 +195,9 @@ class AnsibleDocProcessor:
     def process_documentation(self, data: Dict[str, Any]) -> Dict[str, Any]:
         try:
             if short_desc := data.get("short_description"):
-                data["short_description"] = str(
-                    self.process_description(short_desc)
-                ).rstrip(".")
+                data["short_description"] = (
+                    str(self.process_description(short_desc)).rstrip(".").rstrip()
+                )
             if desc := data.get("description"):
                 data["description"] = self.process_description(desc)
             if notes := data.get("notes"):

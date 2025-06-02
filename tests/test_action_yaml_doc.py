@@ -59,7 +59,7 @@ TEST_CASES = load_test_cases(
   input:
     DOCUMENTATION: |
       ---
-      short_description:       test plugin...
+      short_description:       test plugin ...
       description:
         - This is a test.
     EXAMPLES: |
@@ -310,6 +310,24 @@ TEST_CASES = load_test_cases(
               }
             }
           ]
+
+- id: dict-description
+  input:
+    DOCUMENTATION: |
+      ---
+      short_description: test plugin
+      description:
+        this: is a test
+        that: should fail
+        because: description is not
+        meant: to be a dict
+      options:
+        foo:
+          description: foo option
+          type: wrong_type
+  expected: {}
+  exception:
+    class: YAMLDocException
 """
 )
 
