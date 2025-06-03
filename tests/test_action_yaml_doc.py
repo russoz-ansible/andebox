@@ -15,7 +15,7 @@ from .utils import verify_patterns
 
 
 TEST_CASES = load_test_cases(
-    yaml_content="""
+    """
 - id: doc-only
   input:
     DOCUMENTATION: |

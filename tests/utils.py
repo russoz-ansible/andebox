@@ -34,21 +34,22 @@ class GenericTestCase:
     exception: Dict[str, Any] = field(default_factory=dict)
 
 
-def load_test_cases(
-    yaml_path: str | Path | None = None, yaml_content: str | None = None
-) -> List[GenericTestCase]:
-    if (yaml_path is None and yaml_content is None) or (
-        yaml_path is not None and yaml_content is not None
-    ):
-        raise ValueError("Exactly one of yaml_path or yaml_content must be provided")
-
-    if yaml_path is not None:
-        yaml_path = Path(yaml_path)
+def load_test_cases(source: str | Path) -> List[GenericTestCase]:
+    """
+    Loads test cases from a YAML string or from a file path.
+    Tries to parse as YAML content first (if str); if that fails with a yaml.YAMLError, or if not a str, tries to open as a file.
+    """
+    if isinstance(source, str):
+        try:
+            data = yaml.safe_load(source)
+        except yaml.YAMLError:
+            yaml_path = Path(source)
+            with yaml_path.open() as f:
+                data = yaml.safe_load(f)
+    else:
+        yaml_path = Path(source)
         with yaml_path.open() as f:
             data = yaml.safe_load(f)
-    else:
-        assert yaml_content is not None
-        data = yaml.safe_load(yaml_content)
 
     return [
         GenericTestCase(

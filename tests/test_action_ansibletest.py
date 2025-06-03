@@ -14,7 +14,7 @@ from .utils import verify_patterns
 from .utils import verify_return_code
 
 TEST_CASES = load_test_cases(
-    yaml_content=f"""
+    f"""
 - id: cg-sanity
   input:
     repo: {GIT_REPO_CG}
