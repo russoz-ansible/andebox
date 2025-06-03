@@ -11,7 +11,7 @@ from .utils import load_test_cases
 from .utils import verify_patterns
 
 TEST_CASES = load_test_cases(
-    yaml_content=r"""
+    r"""
 - id: cg-context
   input:
     args: [context]

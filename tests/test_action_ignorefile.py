@@ -14,7 +14,7 @@ from .utils import verify_patterns
 
 
 TEST_CASES = load_test_cases(
-    yaml_content=f"""
+    f"""
 - id: basic
   input:
     repo: {GIT_REPO_CG}
