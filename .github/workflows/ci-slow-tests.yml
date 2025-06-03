@@ -1,0 +1,46 @@
+# (C) 2025 Alexei Znamensky
+# Licensed under the MIT License. See LICENSES/MIT.txt for details.
+# SPDX-FileCopyrightText: 2025 Alexei Znamensky
+# SPDX-License-Identifier: MIT
+
+name: Weekly Slow Tests
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    # Runs at 00:00 UTC every Saturday
+    - cron: '0 0 * * 6'
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        run: |
+          pip install poetry
+          poetry lock
+
+      - name: Install all dependencies (including dev)
+        run: poetry install --with dev,docs
+
+      - name: Run all tests including slow
+        run: poetry run pytest -v --slow
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
