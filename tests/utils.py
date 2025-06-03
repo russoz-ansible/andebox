@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # code: language=python tabSize=4
-# Copyright (c) 2024, Alexei Znamensky
-# All rights reserved.
 #
-# This file is part of the Andebox project and is distributed under the terms
-# of the BSD 3-Clause License. See LICENSE file for details.
+# (C) 2024 Alexei Znamensky
+# Licensed under the MIT License. See LICENSES/MIT.txt for details.
+# SPDX-FileCopyrightText: 2024 Alexei Znamensky
+# SPDX-License-Identifier: MIT
+#
 import re
 import sys
 from dataclasses import dataclass

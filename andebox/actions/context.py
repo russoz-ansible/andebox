@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 # code: language=python tabSize=4
-# (c) 2021, Alexei Znamensky <russoz@gmail.com>
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+#
+# (C) 2021 Alexei Znamensky
+# Licensed under the MIT License. See LICENSES/MIT.txt for details.
+# SPDX-FileCopyrightText: 2021 Alexei Znamensky
+# SPDX-License-Identifier: MIT
+#
 from ..context import ConcreteContext
 from ..context import ContextType
 from .base import AndeboxAction

@@ -1,0 +1,10 @@
+# Copyright (c) Alexei Znamensky
+# SPDX-License-Identifier: MIT
+
+version = 1
+
+[[annotations]]
+path = "**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Alexei Znamensky"
+SPDX-License-Identifier = "MIT"

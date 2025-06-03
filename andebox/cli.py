@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # code: language=python tabSize=4
-# Copyright (c) 2021-2022, Alexei Znamensky
-# All rights reserved.
+# (C) 2021-2022 Alexei Znamensky
+# Licensed under the MIT License. See LICENSES/MIT.txt for details.
+# SPDX-FileCopyrightText: 2021-2022 Alexei Znamensky
+# SPDX-License-Identifier: MIT
 #
-# This file is part of the Andebox project and is distributed under the terms
-# of the BSD 3-Clause License. See LICENSE file for details.
 # PYTHON_ARGCOMPLETE_OK
 
 __version__ = "1.1.1"
