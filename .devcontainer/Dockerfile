@@ -1,8 +1,7 @@
-# Copyright (c) 2025, Alexei Znamensky
-# All rights reserved.
-#
-# This file is part of the Andebox project and is distributed under the terms
-# of the BSD 3-Clause License. See LICENSE file for details.
+# (C) 2025 Alexei Znamensky
+# Licensed under the MIT License. See LICENSES/MIT.txt for details.
+# SPDX-FileCopyrightText: 2025 Alexei Znamensky
+# SPDX-License-Identifier: MIT
 
 # Use the official Microsoft Python devcontainer image from the Docker Hub
 FROM mcr.microsoft.com/devcontainers/python:3
