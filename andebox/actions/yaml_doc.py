@@ -252,9 +252,7 @@ class AnsibleDocProcessor:
             if self.fix_offenders:
                 content = fixed_content
         if in_variable != "EXAMPLES":
-            fixed_content = self.postprocess_line_length(content)
-            if self.fix_offenders:
-                content = fixed_content
+            content = self.postprocess_line_length(content)
         return content
 
     def apply_offender_rule(self, line_num: int, line: str) -> str:

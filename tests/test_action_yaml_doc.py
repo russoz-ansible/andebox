@@ -15,7 +15,7 @@ from .utils import load_test_cases
 from .utils import verify_patterns
 
 
-TEST_CASES = load_test_cases(
+TEST_CASES_MOCK = load_test_cases(
     """
 - id: doc-only
   input:
@@ -399,10 +399,25 @@ TEST_CASES = load_test_cases(
           adipiscing elit quisque faucibus.
       options: {}
 
+- id: word-wrapper-long-word
+  input:
+    DOCUMENTATION: |
+      short_description: test plugin
+      description:
+        - Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in U(https://andebox.readthedocs.io/en/latest/actions.html). # noqa: E501
+      options: {}
+  expected:
+    DOCUMENTATION: |
+      short_description: Test plugin
+      description:
+        - Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in
+          U(https://andebox.readthedocs.io/en/latest/actions.html).
+      options: {}
+
 """
 )
 
-TEST_CASES_IDS = [item.id for item in TEST_CASES]
+TEST_CASES_MOCK_IDS = [item.id for item in TEST_CASES_MOCK]
 
 
 @pytest.fixture
@@ -456,25 +471,26 @@ def load_module_vars(pyfile) -> dict[str, str | None]:
     }
 
 
-@pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
-def test_action_yaml_doc(make_helper, yaml_doc_executor, mock_plugin, testcase):
+def validate_yaml_doc(expected, data):
+    actual_docs = load_module_vars(f"plugins/modules/{data['pyfile']}")
+    for var in ["DOCUMENTATION", "EXAMPLES", "RETURN"]:
+        if (expected_var := expected.get(var)) is not None:
+            assert var in actual_docs, f"{var} not found in file"
+            actual_var = actual_docs[var].strip()
+            print(f"ACTUAL\n{actual_var}")
 
-    def validate_yaml_doc(expected, data):
-        actual_docs = load_module_vars(f"plugins/modules/{data['pyfile']}")
-        for var in ["DOCUMENTATION", "EXAMPLES", "RETURN"]:
-            if (expected_var := expected.get(var)) is not None:
-                assert var in actual_docs, f"{var} not found in file"
-                actual_var = actual_docs[var].strip()
-                print(f"ACTUAL\n{actual_var}")
-
-                expected_var = expected_var.strip()
-                print(f"EXPECTED\n{expected_var.strip()}")
-                assert expected_var in actual_var, "\n".join(
-                    difflib.unified_diff(
-                        actual_var.splitlines(),
-                        expected_var.splitlines(),
-                    )
+            expected_var = expected_var.strip()
+            print(f"EXPECTED\n{expected_var.strip()}")
+            assert expected_var in actual_var, "\n".join(
+                difflib.unified_diff(
+                    actual_var.splitlines(),
+                    expected_var.splitlines(),
                 )
+            )
+
+
+@pytest.mark.parametrize("testcase", TEST_CASES_MOCK, ids=TEST_CASES_MOCK_IDS)
+def test_action_yaml_doc_mocks(make_helper, yaml_doc_executor, mock_plugin, testcase):
 
     test = make_helper(
         testcase, mock_plugin, yaml_doc_executor, [validate_yaml_doc, verify_patterns]
