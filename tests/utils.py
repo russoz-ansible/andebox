@@ -92,19 +92,28 @@ class AndeboxTestHelper:
 
     def check_flags(self) -> None:
         request = self.fixtures["request"]
-        flags = self.testcase.flags
-        if "xfail" in flags:
-            request.node.add_marker(
-                pytest.mark.xfail(
-                    reason=flags["xfail"],
-                    strict=False,
-                    run=True,
-                )
-            )
+        flags = dict(self.testcase.flags)
 
-        skip_py = flags.get("skip_py", [])
-        if f"{sys.version_info.major}.{sys.version_info.minor}" in skip_py:
-            pytest.skip("Unsupported python version")
+        if skip_py := flags.get("skip_py", []):
+            if f"{sys.version_info.major}.{sys.version_info.minor}" in skip_py:
+                pytest.skip("Unsupported python version")
+                return
+            del flags["skip_py"]
+
+        for marker_name, marker_params in flags.items():
+            marker = pytest.mark.__getattr__(marker_name)
+            if isinstance(marker_params, str):
+                request.node.add_marker(marker(marker_params))
+            elif isinstance(marker_params, list):
+                request.node.add_marker(marker(*marker_params))
+            elif isinstance(marker_params, dict):
+                request.node.add_marker(marker(**marker_params))
+            elif marker_params is None:
+                request.node.add_marker(marker())
+            else:
+                raise TypeError(
+                    f"Unsupported marker parameters type: {type(marker_params)}"
+                )
 
     def execute(self) -> None:
         self.check_flags()
