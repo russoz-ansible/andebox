@@ -24,7 +24,8 @@ TEST_CASES = load_test_cases(
     in_stdout: "tests/unit/plugins/modules/test_gio_mime.yaml no-smart-quotes"
 - id: specific-version
   flags:
-    xfail: "Not finding ignore-2.19.txt"
+    xfail:
+      reason: "Not finding ignore-2.19.txt"
   input:
     repo: {GIT_REPO_CG}
     args:
@@ -37,7 +38,8 @@ TEST_CASES = load_test_cases(
     stdout_line_count: 5
 - id: specific-version-and-file
   flags:
-    xfail: "Not finding ignore-2.19.txt"
+    xfail:
+      reason: "Not finding ignore-2.19.txt"
   input:
     repo: {GIT_REPO_CG}
     args:
