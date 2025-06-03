@@ -1,3 +1,8 @@
+# (C) 2025 Alexei Znamensky
+# Licensed under the MIT License. See LICENSES/MIT.txt for details.
+# SPDX-FileCopyrightText: 2025 Alexei Znamensky
+# SPDX-License-Identifier: MIT
+
 # GitHub Copilot Chat Prompt for Andebox
 
 This prompt configures the AI assistant's expertise and behavior for the Andebox project.
