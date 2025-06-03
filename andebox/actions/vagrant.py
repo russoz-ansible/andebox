@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 # code: language=python tabSize=4
-# Copyright (c) 2021-2023, Alexei Znamensky
-# All rights reserved.
-#
-# This file is part of the Andebox project and is distributed under the terms
-# of the BSD 3-Clause License. See LICENSE file for details.
+# (C) 2021-2023 Alexei Znamensky
+# Licensed under the MIT License. See LICENSES/MIT.txt for details.
+# SPDX-FileCopyrightText: 2021-2023 Alexei Znamensky
+# SPDX-License-Identifier: MIT
 from pathlib import Path
 
 try:
