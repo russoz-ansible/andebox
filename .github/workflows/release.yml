@@ -60,7 +60,7 @@ jobs:
         PYTHONPATH: .
       run: |
         poetry run flake8 -v . --count --show-source --statistics
-        poetry run pytest - --cov
+        poetry run pytest -v --cov
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v5
