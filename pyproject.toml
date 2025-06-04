@@ -79,8 +79,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.semantic_release]
 version_variables = [
-    "andebox/cli.py:__version__",
-    "docs/conf.py:release"
+    "andebox/__init__.py:__version__",
 ]
 version_toml = [
     "pyproject.toml:tool.poetry.version",

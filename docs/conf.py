@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 # code: language=python tabSize=4
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath("../andebox"))
+from andebox import __version__  # noqa: E402
 
 project = "andebox"
 copyright = "2025, Alexei Znamensky"
 author = "Alexei Znamensky"
-release = "1.1.2"
+release = __version__
 
 extensions = [
     "sphinx.ext.autodoc",
