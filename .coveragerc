@@ -10,4 +10,5 @@ exclude_lines =
     if IMPORT_ERROR
 
 [run]
+source = andebox
 data_file = /tmp/.coverage
