@@ -12,8 +12,6 @@ from functools import reduce
 from functools import total_ordering
 from pathlib import Path
 
-from looseversion import LooseVersion
-
 from .base import AndeboxAction
 
 
@@ -120,35 +118,15 @@ class ResultLine:
         return "".join(r)
 
 
-# @TODO works only for collections because of the hardcoded path
-_ignore_path = Path(".") / "tests" / "sanity"
-try:
-    with os.scandir(_ignore_path) as sanity_dir:
-        _ignore_versions = sorted(
-            [
-                str(LooseVersion(entry.name[7:-4]))
-                for entry in sanity_dir
-                if entry.name.startswith("ignore-") and entry.name.endswith(".txt")
-            ]
-        )
-except FileNotFoundError:
-    _ignore_versions = []
-
-
 class IgnoreLinesAction(AndeboxAction):
     name = "ignores"
     help = "gathers stats on ignore*.txt file(s)"
     args = [
         dict(
-            names=["--ignore-file-spec", "-ifs"],
+            names=["--spec", "-s"],
             specs=dict(
-                choices=_ignore_versions + ["-"],
-                help=(
-                    "use the ignore file matching this Ansible version; "
-                    "special value '-' may be specified to read "
-                    "from stdin instead; if not specified, will use all available files; "
-                    "if no choices are presented, the collection structure was not recognized"
-                ),
+                type=str,
+                help=("use ignore-SPEC.txt, or pass '-' to read from stdin"),
             ),
         ),
         dict(
@@ -197,15 +175,15 @@ class IgnoreLinesAction(AndeboxAction):
     ]
 
     # pylint: disable=consider-using-with
-    def make_fh_list_for_version(self, version):
-        if version == "-":
+    def make_fh_list_for_version(self, sanity_test_path, ignore_file_spec):
+        if ignore_file_spec == "-":
             return [sys.stdin]
-        if version:
-            return [open(_ignore_path / f"ignore-{version}.txt")]
+        if ignore_file_spec:
+            return [open(sanity_test_path / f"ignore-{ignore_file_spec}.txt")]
 
-        with os.scandir(_ignore_path) as it:
+        with os.scandir(sanity_test_path) as it:
             return [
-                open(_ignore_path / entry.name)
+                open(sanity_test_path / entry.name)
                 for entry in it
                 if entry.name.startswith("ignore-") and entry.name.endswith(".txt")
             ]
@@ -220,12 +198,14 @@ class IgnoreLinesAction(AndeboxAction):
                     result.append(entry)
         return result
 
-    def retrieve_ignore_entries(self, version):
+    def retrieve_ignore_entries(self, sanity_test_path, ignore_file_spec):
         return reduce(
             lambda a, b: a + b,
             [
                 self.read_ignore_file(fh)
-                for fh in self.make_fh_list_for_version(version)
+                for fh in self.make_fh_list_for_version(
+                    sanity_test_path, ignore_file_spec
+                )
             ],
         )
 
@@ -244,10 +224,12 @@ class IgnoreLinesAction(AndeboxAction):
             IgnoreFileEntry.file_parts_depth = context.args.depth
 
         try:
-            ignore_entries = self.retrieve_ignore_entries(context.args.ignore_file_spec)
+            ignore_entries = self.retrieve_ignore_entries(
+                context.sanity_test_subdir, context.args.spec
+            )
         except Exception as e:
             print(
-                f"Error reading ignore file {context.args.ignore_file_spec}: {e}",
+                f"Error reading ignore file {context.args.spec}: {e}",
                 file=sys.stderr,
             )
             raise e
