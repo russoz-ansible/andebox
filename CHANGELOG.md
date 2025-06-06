@@ -1,6 +1,235 @@
 # CHANGELOG
 
 
+## v1.2.1 (2025-06-06)
+
+### Bug Fixes
+
+- **semantic-release**: Trying to fix the CHANGELOG generation
+  ([`95a6419`](https://github.com/russoz-ansible/andebox/commit/95a6419fb2f89ee7852f83b634f0d6b3e222c565))
+
+
+## v1.2.0 (2025-06-05)
+
+### Chores
+
+- **deps**: Bump the python-dependencies group across 1 directory with 2 updates
+  ([`0a428ef`](https://github.com/russoz-ansible/andebox/commit/0a428ef08ca8be4465d93334269d64ab0e078822))
+
+- **tox**: Update tox action `docs` to install the namesake group in the poetry venv
+  ([`f0405f4`](https://github.com/russoz-ansible/andebox/commit/f0405f42817493789579a6c340551d17ed54a553))
+
+### Continuous Integration
+
+- Fix typo in workflow
+  ([`7f70245`](https://github.com/russoz-ansible/andebox/commit/7f70245bbc9500886214259b2773d8346fc8afb5))
+
+### Documentation
+
+- **ascii-demo**: Add pexpect to pyproject docs group
+  ([`b908843`](https://github.com/russoz-ansible/andebox/commit/b908843e8cef200a8f672a7465593a84ab8deda8))
+
+- **ascii-demo**: Add README file for docs/images/term
+  ([`55bff66`](https://github.com/russoz-ansible/andebox/commit/55bff669bc96189fe80b4da59d2012da6b7bea8e))
+
+### Features
+
+- **action/ignores**: Remove restriction to spec parameter
+  ([`d4dea99`](https://github.com/russoz-ansible/andebox/commit/d4dea99a4634b9e04d73070a0e741be7629afdc9))
+
+### Refactoring
+
+- Move definition of `__version__` to `andebox/__init.py__`
+  ([`d40caa9`](https://github.com/russoz-ansible/andebox/commit/d40caa92f4fbb5ae7f3b7f519615b459f22f507c))
+
+### Testing
+
+- **coverage**: Do not generate coverage by default
+  ([`ba1c31b`](https://github.com/russoz-ansible/andebox/commit/ba1c31b661d0b16bd0c4382a9c7c87a5778f25b2))
+
+
+## v1.1.2 (2025-06-03)
+
+### Bug Fixes
+
+- **action/yaml-doc**: Fix the wrapping of long lines
+  ([`8bb120c`](https://github.com/russoz-ansible/andebox/commit/8bb120c01d9ca0f06cc0c5a56a42f78e7b6216d3))
+
+### Chores
+
+- **ai-prompt**: Refine the Python developer aspect
+  ([`993ad3b`](https://github.com/russoz-ansible/andebox/commit/993ad3b12462144d518e665d2e1bcc21852f0abf))
+
+- **license**: Make project SPDX compliant
+  ([`b9cdd66`](https://github.com/russoz-ansible/andebox/commit/b9cdd66aeca1f691d07389903cf1b60a935275fc))
+
+- **license**: Make project SPDX compliant
+  ([`213fad6`](https://github.com/russoz-ansible/andebox/commit/213fad6fae7b5c38255954427d799cc18ef8e7be))
+
+### Continuous Integration
+
+- **slow-test**: Add weekly workflow for slow tests
+  ([`68e1a9e`](https://github.com/russoz-ansible/andebox/commit/68e1a9e0b9b09e9cc6cebea51f384c6b0fbd6ba4))
+
+### Testing
+
+- Remove flags to skip python 3.9 and 3.10
+  ([`18f7842`](https://github.com/russoz-ansible/andebox/commit/18f7842c9d1d0098bfe4524b70f5b851ce287d48))
+
+- **action/docsite**: Add marker for slow test
+  ([`5ef4552`](https://github.com/russoz-ansible/andebox/commit/5ef4552bffc25e17565b70ecfc0c680d89752361))
+
+- **docs**: Rename test function
+  ([`bbe7648`](https://github.com/russoz-ansible/andebox/commit/bbe7648e659344c463632bb799f1e3535227bf7e))
+
+- **helper**: Use better names for attributes capturing stdout and stderr
+  ([`3ec717e`](https://github.com/russoz-ansible/andebox/commit/3ec717e6cd550e17ed5a3765a98562c496057425))
+
+- **yaml tests**: Make handling of pytest markers more generic
+  ([`08526c4`](https://github.com/russoz-ansible/andebox/commit/08526c4f9dd3a80cf30087aff05e92b6d4b8ad7e))
+
+- **yaml tests**: Simplify signature of load_test_cases()
+  ([`2990f4d`](https://github.com/russoz-ansible/andebox/commit/2990f4da4053453a4ae6fc02ac90634387db8577))
+
+
+## v1.1.1 (2025-06-02)
+
+### Bug Fixes
+
+- **action/yaml-doc**: Fix the processing of short description
+  ([`cbbf95f`](https://github.com/russoz-ansible/andebox/commit/cbbf95f5bb85feaea00e1d14b458e14208a9dbcb))
+
+- **action/yaml-doc**: Handle case when description is neither str nor list
+  ([`c8fafab`](https://github.com/russoz-ansible/andebox/commit/c8fafab05614aaa94cab37ae23157ea8ddc60d9e))
+
+### Chores
+
+- **devcontainer**: Change the name of the devcontainer
+  ([`566a0ce`](https://github.com/russoz-ansible/andebox/commit/566a0cee27984b7e6df6b2b963a44f6ef86ebc53))
+
+### Code Style
+
+- Move modeline comments to top of files
+  ([`1dca1bb`](https://github.com/russoz-ansible/andebox/commit/1dca1bbf6fe7b6f47fe671e75a2c89c4ca6a7f5a))
+
+### Testing
+
+- **action/docsite**: Rename test and mark as xfail
+  ([`1446614`](https://github.com/russoz-ansible/andebox/commit/144661457b71e86f8dfa2a7e4fe66626693dde32))
+
+- **action/yaml-doc**: Add more testcases
+  ([`05c4c8e`](https://github.com/russoz-ansible/andebox/commit/05c4c8e004c6d3a1270283e29774e55771736b42))
+
+
+## v1.1.0 (2025-06-01)
+
+### Bug Fixes
+
+- **docsite**: Add missing dependency antsibull-docs
+  ([`ea55648`](https://github.com/russoz-ansible/andebox/commit/ea5564827619a68d72ec9f6fd693661218b439f6))
+
+### Chores
+
+- Add documentation link to pyproject
+  ([`45b50a8`](https://github.com/russoz-ansible/andebox/commit/45b50a8eeadfc88c44ff025acc44bc7b92f27727))
+
+- Add no cover pragma to script entrypoint
+  ([`692e7a2`](https://github.com/russoz-ansible/andebox/commit/692e7a240b1462538277530abc1094a332beb902))
+
+- Add no cover pragma to script entrypoint (fix comment)
+  ([`e7c5b23`](https://github.com/russoz-ansible/andebox/commit/e7c5b23f3816f1f8847ee5e281c3676669ba3368))
+
+- Add no cover pragma to script entrypoint (fix comment)
+  ([`d2cd4e1`](https://github.com/russoz-ansible/andebox/commit/d2cd4e16d3cd2f2de5868ed5f161506ac7f3bee9))
+
+- Add no cover pragma to script entrypoint (slightly different)
+  ([`4d810ac`](https://github.com/russoz-ansible/andebox/commit/4d810ac25e84ce3bc305529cd77616767acb65cd))
+
+- Add no cover pragma to script entrypoint (with flake8 exclude)
+  ([`0b6d9b5`](https://github.com/russoz-ansible/andebox/commit/0b6d9b519a54633124f3803e839abf2f1b535037))
+
+- Add pragma on the function def line
+  ([`91b469b`](https://github.com/russoz-ansible/andebox/commit/91b469b61ffeeb910e8ba2fa28e41eec185530e4))
+
+- Ensure --cover=xml is passed to pytest
+  ([`8594a1e`](https://github.com/russoz-ansible/andebox/commit/8594a1e8db76684e802c92d9464d3216e3fe32fb))
+
+- Remove outdated comment from workflow
+  ([`bfb54c3`](https://github.com/russoz-ansible/andebox/commit/bfb54c3794b437c6e5d0102bd0ddd916492839f9))
+
+- **coverage**: Exclude code handling ImportError
+  ([`790f161`](https://github.com/russoz-ansible/andebox/commit/790f161e806340ba33e2ab88a09d8db4d03ab21a))
+
+- **deps**: Bump ruamel-yaml from 0.18.10 to 0.18.12
+  ([`07b2e86`](https://github.com/russoz-ansible/andebox/commit/07b2e86c4c361c1be53cb0af46748321e6da20c8))
+
+### Continuous Integration
+
+- Simplify pytest command line
+  ([`ce9a295`](https://github.com/russoz-ansible/andebox/commit/ce9a29565ba6d197ec391c1284c76cd5d4d60c70))
+
+- **dependabot**: Tuning parameters
+  ([`e60e453`](https://github.com/russoz-ansible/andebox/commit/e60e4531094e308ec3c75213656554e95f424099))
+
+### Documentation
+
+- **README**: Make file more concise
+  ([`3a5a171`](https://github.com/russoz-ansible/andebox/commit/3a5a1716f3107b0a05afc771e0c982227fa5cc14))
+
+- **todo**: Expand names of modules
+  ([`ec66f10`](https://github.com/russoz-ansible/andebox/commit/ec66f1014fa2115f3e074fb9c6263bb266c41dde))
+
+### Features
+
+- **action/tox-test**: Update the initial tox config file
+  ([`4241e41`](https://github.com/russoz-ansible/andebox/commit/4241e41f57800b3e07407be0e96fee3d53577d04))
+
+### Refactoring
+
+- **action/ignores**: Simplify ResultLine with dataclass
+  ([`39bcdaa`](https://github.com/russoz-ansible/andebox/commit/39bcdaac5defeba00bf48ec54dff8d05331b54c6))
+
+- **action/ignores**: Use pathlib instead of os.path
+  ([`251ff79`](https://github.com/russoz-ansible/andebox/commit/251ff79492b81e586cb6a1cd2ea570f370d67d31))
+
+- **context**: Use pathlib instead of os.path
+  ([`e918013`](https://github.com/russoz-ansible/andebox/commit/e9180134fc1f1ac7bb9002af28300d5fbce18b83))
+
+### Testing
+
+- Encapsulate AndeboxTestHelper creation in a fixture
+  ([`7533fe9`](https://github.com/russoz-ansible/andebox/commit/7533fe9739672b31639b811fdb3236d087765b14))
+
+- Improve execution of andebox in tests
+  ([`913be97`](https://github.com/russoz-ansible/andebox/commit/913be973d64d0b83246e3546db1b376810da8931))
+
+- Make fixture git_repo suitable as setup for test helper
+  ([`2778648`](https://github.com/russoz-ansible/andebox/commit/2778648db976ca14c5228ded3b3db3abad5d7d77))
+
+- Revamp run_andebox fixture for test helper
+  ([`65b8026`](https://github.com/russoz-ansible/andebox/commit/65b80264161b8b0f9f5fee9e6a317ac72848f3cc))
+
+- **action/docsite**: Add basic test
+  ([`f683505`](https://github.com/russoz-ansible/andebox/commit/f68350546b0e66f8b4c17d5f6dd7a3ec10129b75))
+
+- **action/runtime**: Add basic tests
+  ([`63fca78`](https://github.com/russoz-ansible/andebox/commit/63fca785c36f6786963b30b0a082a1ed03c9644a))
+
+- **coverage**: Move coverage config to .coveragerc
+  ([`6fefd5a`](https://github.com/russoz-ansible/andebox/commit/6fefd5a532c70d55591545fe66555e6d41bef4ed))
+
+
+## v1.0.0 (2025-05-31)
+
+### Chores
+
+- **deps-dev**: Bump pytest-mock from 3.14.0 to 3.14.1
+  ([`a9dd3d1`](https://github.com/russoz-ansible/andebox/commit/a9dd3d1e932bc7948cdbe270d01c1d0cde2360d8))
+
+- **deps-dev**: Bump python-semantic-release from 9.21.1 to 10.0.2
+  ([`2baa652`](https://github.com/russoz-ansible/andebox/commit/2baa65229f363703e269f72f89e2d85df7d74ca7))
+
+
 ## v0.98.1 (2025-05-31)
 
 ### Bug Fixes
@@ -127,8 +356,6 @@
 - Move load_module_vars() in tests/test_action_yaml_doc.py
   ([`c096378`](https://github.com/russoz-ansible/andebox/commit/c096378104f7fd650879f295fd0de00d7e255faa))
 
-For readability
-
 - **tests**: Change testcase field from `output` to `expected`
   ([`6032251`](https://github.com/russoz-ansible/andebox/commit/603225177fe5e0dfd3303d0d438240628edd10fe))
 
@@ -137,13 +364,8 @@ For readability
 - Create class AndeboxTestHelper
   ([`3598622`](https://github.com/russoz-ansible/andebox/commit/359862222898b3dad6946dc359c15b83d465ac2a))
 
-Refactored out of existing tests
-
 - Revamp of AndeboxTestHelper
   ([`3ef9b32`](https://github.com/russoz-ansible/andebox/commit/3ef9b326094bbe9a40d8c2320e4df0a5cc4e7a55))
-
-* Streamline the logic and the separation of concerns between the test files and the helper code. *
-  Add a number of minor improvements.
 
 - **action/ansibletest**: Use AndeboxTestHelper
   ([`de27943`](https://github.com/russoz-ansible/andebox/commit/de2794362ea61f9797d96e111e79aa45d8640d95))
@@ -167,14 +389,6 @@ Refactored out of existing tests
 
 - Install requirements by default
   ([`90d3fcf`](https://github.com/russoz-ansible/andebox/commit/90d3fcf80fb5583fc203e28b4c4d15058d72ea5d))
-
-When running unit or integration tests, install the Ansible dependencies defined in the
-  corresponding `requirements.yml` file. The semantics of the `-R` parameter has been inverted, and
-  its long form has been renamed to `--skip-requirements`. As the suggests, when passed, that option
-  skips the installation of those requirements.
-
-The `vagrant` action is affected - requirements should be installed when running andebox inside the
-  VM, so the `-R` has been removed from that execution.
 
 
 ## v0.95.1 (2025-05-27)
@@ -252,9 +466,6 @@ The `vagrant` action is affected - requirements should be installed when running
 - Improve dependecy handling in actions
   ([`32c6ab3`](https://github.com/russoz-ansible/andebox/commit/32c6ab3855e148a542fa32180dbfe98c01c56bb0))
 
-In both `vagrant` and `yaml-doc` actions, dependency handling now does a better job in terms of good
-  practices in code and informing hte user of the issue
-
 ### Refactoring
 
 - **yaml_doc**: Remove redundant assert for json_samples
@@ -273,8 +484,6 @@ In both `vagrant` and `yaml-doc` actions, dependency handling now does a better 
 
 - **yaml_doc**: Use counter to generate unique sample id
   ([`b6001a4`](https://github.com/russoz-ansible/andebox/commit/b6001a4ec40b1e8bd6a2d1f5ed920138fcc52507))
-
-Even when the contents are the same
 
 ### Testing
 
@@ -765,3 +974,5 @@ Even when the contents are the same
 
 
 ## v0.2.0 (2021-03-25)
+
+- Initial Release
