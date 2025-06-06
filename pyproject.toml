@@ -85,7 +85,7 @@ version_toml = [
     ".cz.toml:tool.commitizen.version"
 ]
 branch = "main"
-changelog_file = "CHANGELOG.md"
+changelog = { file = "CHANGELOG.md", mode = "init" }
 build_command = "poetry build"
 dist_path = "dist/"
 upload_to_pypi = true
