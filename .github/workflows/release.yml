@@ -47,8 +47,8 @@ jobs:
 
     - name: Create build environment
       run: |
-        poetry install --verbose --with dev
         poetry lock
+        poetry install --verbose --with dev
         if ! git diff --quiet poetry.lock; then
           git add poetry.lock
           git commit -m "chore: update poetry.lock"
