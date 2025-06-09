@@ -36,6 +36,7 @@ andebox = "andebox.cli:run"
 "Bug Tracker" = "https://github.com/russoz-ansible/andebox/issues"
 "Source Code" = "https://github.com/russoz-ansible/andebox"
 "Documentation" = "https://andebox.readthedocs.io/en/latest/index.html"
+"Changelog" = "https://github.com/russoz-ansible/andebox/blob/main/CHANGELOG.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
