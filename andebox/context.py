@@ -286,9 +286,7 @@ def _determine_base_dir() -> Tuple[Path, ConcreteContextType]:
     try:
         return _determine_base_dir_rec(cur_dir)
     except AndeboxUnknownContext as e:
-        raise AndeboxUnknownContext(
-            f"Cannot determine current directory context: f{cur_dir}"
-        ) from e
+        raise AndeboxUnknownContext(f"Cannot determine context for: {cur_dir}") from e
 
 
 def create_context(args: Namespace) -> ConcreteContext:
