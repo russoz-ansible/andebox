@@ -1,6 +1,29 @@
 # CHANGELOG
 
 
+## v1.3.0 (2025-06-09)
+
+### Bug Fixes
+
+- Make sphinx a dependency for andebox, as required by docsite action
+  ([`d4be373`](https://github.com/russoz-ansible/andebox/commit/d4be3736efcc544c79089082110c025ca6d5e312))
+
+### Chores
+
+- Add CHANGELOG URL to the project
+  ([`5e7949b`](https://github.com/russoz-ansible/andebox/commit/5e7949bc669e43183ee4c42d2b8277a987675bb0))
+
+### Documentation
+
+- Add documentation for actions
+  ([`6450e53`](https://github.com/russoz-ansible/andebox/commit/6450e53466b501fcdf00f5018ff5b129c99e85be))
+
+### Features
+
+- **action/docsite**: Make destination arg required
+  ([`6a325da`](https://github.com/russoz-ansible/andebox/commit/6a325da886eb9b5752f8ea4c1e8a9b9c6ac2cd23))
+
+
 ## v1.2.3 (2025-06-09)
 
 ### Bug Fixes
