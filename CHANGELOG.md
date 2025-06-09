@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.2.3 (2025-06-09)
+
+### Bug Fixes
+
+- Adjust error message for unknown context
+  ([`735e621`](https://github.com/russoz-ansible/andebox/commit/735e6216b9f526aeae5a7e9874bb066f3aa7ebd2))
+
+
 ## v1.2.2 (2025-06-09)
 
 ### Bug Fixes
