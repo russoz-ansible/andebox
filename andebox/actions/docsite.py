@@ -37,8 +37,8 @@ class DocsiteAction(AndeboxAction):
         dict(
             names=("--dest-dir", "-d"),
             specs=dict(
-                help="directory which should contain the docsite",
-                default=".builtdocs",
+                help="directory where docsite is generated",
+                required=True,
                 type=Path,
             ),
         ),
