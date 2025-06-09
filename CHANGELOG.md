@@ -1,6 +1,30 @@
 # CHANGELOG
 
 
+## v1.2.2 (2025-06-09)
+
+### Bug Fixes
+
+- Remove extraneous dependencies
+  ([`beec4a3`](https://github.com/russoz-ansible/andebox/commit/beec4a355c7ed27566daefd10c15b32e7263b9aa))
+
+### Chores
+
+- Remove commitizen and references to ti
+  ([`a69b6c9`](https://github.com/russoz-ansible/andebox/commit/a69b6c9eafbade075825ec19772e168759d6c410))
+
+- Update poetry.lock
+  ([`f2dfd0a`](https://github.com/russoz-ansible/andebox/commit/f2dfd0a881a0a1011334c0d05bbcbb46f3307d96))
+
+### Continuous Integration
+
+- Undo commit: update workflows to lock deps sooner rather than later
+  ([`fceafa3`](https://github.com/russoz-ansible/andebox/commit/fceafa325ecaf0e3b3067748596e0bf04893afc4))
+
+- Update workflows to lock deps sooner rather than later
+  ([`6404eb6`](https://github.com/russoz-ansible/andebox/commit/6404eb60ac3b3513695a71b7bf50f7464ef20cc2))
+
+
 ## v1.2.1 (2025-06-06)
 
 ### Bug Fixes
