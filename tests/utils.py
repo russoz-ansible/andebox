@@ -33,6 +33,7 @@ class GenericTestCase:
     expected: Dict[str, Any]
     flags: Dict[str, str] = field(default_factory=dict)
     exception: Dict[str, Any] = field(default_factory=dict)
+    data: Dict[str, Any] = field(default_factory=dict)
 
 
 def load_test_cases(source: str | Path) -> List[GenericTestCase]:
@@ -79,18 +80,18 @@ class AndeboxTestHelper:
         self,
         testcase: GenericTestCase,
         fixtures: Dict[str, Any],
-        setup: FuncOrFuncList,
+        setups: FuncOrFuncList,
         executor: Callable,
-        validator: FuncOrFuncList,
+        validators: FuncOrFuncList,
     ) -> None:
         self.testcase: GenericTestCase = testcase
         self.fixtures = fixtures
 
-        self.setup = _enforce_list(setup)
+        self.setups = _enforce_list(setups)
         self.executor = executor
-        self.validator = _enforce_list(validator)
+        self.validators = _enforce_list(validators)
 
-        self.data: Dict[str, Any] = {"basedir": Path.cwd()}
+        self.testcase.data["basedir"] = Path.cwd()
 
     def check_flags(self) -> None:
         request = self.fixtures["request"]
@@ -119,17 +120,19 @@ class AndeboxTestHelper:
 
     def execute(self) -> None:
         self.check_flags()
-        for setup in self.setup:
-            self.data.update(setup(self.testcase.input))
+        for setup in self.setups:
+            self.testcase.data.update(setup(self.testcase.input))
         self.fixtures["capfd"].readouterr()
 
         executor = self.executor
-        with set_dir(self.data["basedir"]):
+        with set_dir(self.testcase.data["basedir"]):
             expected_exception = self.testcase.exception
             if expected_exception:
                 expected_classname = expected_exception["class"]
                 with pytest.raises(Exception) as exc_info:
-                    self.data.update(executor(self.testcase.input, self.data))
+                    self.testcase.data.update(
+                        executor(self.testcase.input, self.testcase.data)
+                    )
                 actual_classname = exc_info.value.__class__.__name__
                 assert (
                     actual_classname == expected_classname
@@ -141,14 +144,16 @@ class AndeboxTestHelper:
                         exc_info.value
                     ), f"Expected exception message to contain '{expected_value}', but got: {exc_info.value}"
             else:
-                self.data.update(executor(self.testcase.input, self.data))
+                self.testcase.data.update(
+                    executor(self.testcase.input, self.testcase.data)
+                )
 
             capfd_capture = self.fixtures["capfd"].readouterr()
-            self.data["stdout"] = capfd_capture.out
-            self.data["stderr"] = capfd_capture.err
+            self.testcase.data["stdout"] = capfd_capture.out
+            self.testcase.data["stderr"] = capfd_capture.err
 
-            for validator in self.validator:
-                validator(self.testcase.expected, self.data)
+            for validator in self.validators:
+                validator(self.testcase.expected, self.testcase.data)
 
 
 def verify_patterns(expected: Dict[str, Any], data: Dict[str, Any]) -> None:
