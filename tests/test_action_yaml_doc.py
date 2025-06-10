@@ -11,6 +11,7 @@ import importlib.util
 
 import pytest
 
+from .utils import GenericTestCase
 from .utils import load_test_cases
 from .utils import verify_patterns
 
@@ -428,13 +429,13 @@ def mock_plugin(tmp_path_factory):
     pyfile = module_dir / "test_module.py"
     print(f"Creating {pyfile}")
 
-    def _create_file(tc_input):
+    def _create_file(tc):
         blocks = []
-        if documentation := tc_input.get("DOCUMENTATION"):
+        if documentation := tc.input.get("DOCUMENTATION"):
             blocks.append(f'DOCUMENTATION = r"""\n{documentation.strip()}\n"""')
-        if examples := tc_input.get("EXAMPLES"):
+        if examples := tc.input.get("EXAMPLES"):
             blocks.append(f'EXAMPLES = r"""\n{examples.strip()}\n"""')
-        if returns := tc_input.get("RETURN"):
+        if returns := tc.input.get("RETURN"):
             blocks.append(f'RETURN = r"""\n{returns.strip()}\n"""')
         file_content = "\n\n".join(blocks) + "\n"
         pyfile.write_text(file_content)
@@ -446,16 +447,25 @@ def mock_plugin(tmp_path_factory):
 @pytest.fixture
 def yaml_doc_executor(run_andebox):
 
-    def _executor(tc_input, data):
-        tc = dict(tc_input)
-        tc["args"] = (
+    def _executor(tc):
+        tc_input = dict(tc.input)
+        tc_input["args"] = (
             ["-c", "some.collection", "yaml-doc"]
-            + tc.get("yaml_doc_args", [])
-            + [f"plugins/modules/{data['pyfile']}"]
+            + tc_input.get("yaml_doc_args", [])
+            + [f"plugins/modules/{tc.data['pyfile']}"]
         )
-        tc["andebox_context_type"] = "collection"
+        tc_input["andebox_context_type"] = "collection"
 
-        return run_andebox(tc, data)
+        tc2 = GenericTestCase(
+            id=tc.id,
+            input=tc_input,
+            expected=tc.expected,
+            flags=tc.flags,
+            exception=tc.exception,
+            data=tc.data,
+        )
+
+        return run_andebox(tc2)
 
     return _executor
 
@@ -471,7 +481,9 @@ def load_module_vars(pyfile) -> dict[str, str | None]:
     }
 
 
-def validate_yaml_doc(expected, data):
+def validate_yaml_doc(testcase: GenericTestCase) -> None:
+    expected = testcase.expected
+    data = testcase.data
     actual_docs = load_module_vars(f"plugins/modules/{data['pyfile']}")
     for var in ["DOCUMENTATION", "EXAMPLES", "RETURN"]:
         if (expected_var := expected.get(var)) is not None:
@@ -495,4 +507,4 @@ def test_action_yaml_doc_mocks(make_helper, yaml_doc_executor, mock_plugin, test
     test = make_helper(
         testcase, mock_plugin, yaml_doc_executor, [validate_yaml_doc, verify_patterns]
     )
-    test.execute()
+    test.run()

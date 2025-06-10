@@ -46,4 +46,4 @@ def test_action_context(git_repo, testcase, run_andebox, make_helper):
         run_andebox,
         [verify_patterns],
     )
-    test.execute()
+    test.run()

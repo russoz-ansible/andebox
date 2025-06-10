@@ -13,13 +13,19 @@ from andebox.context import ContextType
 from andebox.context import create_context
 from andebox.util import set_dir
 
+from .utils import GenericTestCase
 from .utils import GIT_REPO_AC
 from .utils import GIT_REPO_CG
 
 
 @pytest.fixture
 def repo_dir(git_repo):
-    return lambda repo: git_repo(dict(repo=repo))["basedir"]
+    def _repo_dir(repo: str) -> str:
+        tc = GenericTestCase(id="repo_dir", input={"repo": repo}, expected={})
+        result = git_repo(tc)
+        return result["basedir"]
+
+    return _repo_dir
 
 
 def test_ansible_cg(repo_dir):

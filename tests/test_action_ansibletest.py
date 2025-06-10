@@ -92,4 +92,4 @@ def test_action_test(make_helper, git_repo, testcase, run_andebox):
         run_andebox,
         [verify_patterns, verify_return_code],
     )
-    test.execute()
+    test.run()

@@ -126,21 +126,34 @@ class AndeboxTestHelper:
                     f"Unsupported marker parameters type: {type(marker_params)}"
                 )
 
-    def execute(self) -> None:
+    @staticmethod
+    def _execute(executor_callable: Callable, testcase: GenericTestCase) -> None:
+        executor_name = getattr(executor_callable, "__name__", repr(executor_callable))
+        executor_result = executor_callable(testcase)
+        if executor_result is not None:
+            assert isinstance(
+                executor_result, Mapping
+            ), f"Data returned from executor function {executor_name} must be a Mapping or None, but got {type(executor_result)}"
+            testcase.data.update(executor_result)
+
+    def run(self) -> None:
         self.check_flags()
         for setup in self.setups:
-            self.testcase.data.update(setup(self.testcase.input))
+            update_data = setup(self.testcase)
+            if update_data:
+                assert isinstance(
+                    update_data, Mapping
+                ), f"Data returned from setup function {getattr(setup, '__name__', repr(setup))} must be a Mapping but got {type(update_data)}"
+                self.testcase.data.update(update_data)
         self.fixtures["capfd"].readouterr()
 
-        executor = self.executor
         with set_dir(self.testcase.data["basedir"]):
             expected_exception = self.testcase.exception
             if expected_exception:
                 expected_classname = expected_exception["class"]
                 with pytest.raises(Exception) as exc_info:
-                    self.testcase.data.update(
-                        executor(self.testcase.input, self.testcase.data)
-                    )
+                    AndeboxTestHelper._execute(self.executor, self.testcase)
+
                 actual_classname = exc_info.value.__class__.__name__
                 assert (
                     actual_classname == expected_classname
@@ -152,19 +165,19 @@ class AndeboxTestHelper:
                         exc_info.value
                     ), f"Expected exception message to contain '{expected_value}', but got: {exc_info.value}"
             else:
-                self.testcase.data.update(
-                    executor(self.testcase.input, self.testcase.data)
-                )
+                AndeboxTestHelper._execute(self.executor, self.testcase)
 
             capfd_capture = self.fixtures["capfd"].readouterr()
             self.testcase.data["stdout"] = capfd_capture.out
             self.testcase.data["stderr"] = capfd_capture.err
 
             for validator in self.validators:
-                validator(self.testcase.expected, self.testcase.data)
+                validator(self.testcase)  # Pass the entire testcase object
 
 
-def verify_patterns(expected: Dict[str, Any], data: Dict[str, Any]) -> None:
+def verify_patterns(testcase: GenericTestCase) -> None:
+    expected = testcase.expected
+    data = testcase.data
     stdout = data["stdout"]
     stderr = data["stderr"]
     msg = f"stdout=\n{stdout}\n\nstderr=\n{stderr}"
@@ -190,7 +203,9 @@ def verify_patterns(expected: Dict[str, Any], data: Dict[str, Any]) -> None:
         assert bool(match), f"Pattern ({patt_err}) not found in stderr! {msg}"
 
 
-def verify_return_code(expected: Dict[str, Any], data: Dict[str, Any]) -> None:
+def verify_return_code(testcase: GenericTestCase) -> None:
+    expected = testcase.expected
+    data = testcase.data
     expected_rc = expected.get("rc")
 
     if expected_rc is not None:
@@ -199,6 +214,8 @@ def verify_return_code(expected: Dict[str, Any], data: Dict[str, Any]) -> None:
         ), f"Expected return code {expected_rc}, but got {data['rc']}"
 
 
-def validate_stdout(expected, data):
+def validate_stdout(testcase: GenericTestCase) -> None:
+    expected = testcase.expected
+    data = testcase.data
     if expected.get("stdout_line_count"):
         assert len(data["stdout"].splitlines()) == expected["stdout_line_count"]
