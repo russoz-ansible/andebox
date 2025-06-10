@@ -11,10 +11,12 @@ import sys
 from dataclasses import dataclass
 from dataclasses import field
 from pathlib import Path
+from types import MappingProxyType
 from typing import Any
 from typing import Callable
 from typing import Dict
 from typing import List
+from typing import Mapping
 from typing import Sequence
 
 import pytest
@@ -29,11 +31,17 @@ GIT_REPO_AC = "https://github.com/ansible/ansible.git"
 @dataclass
 class GenericTestCase:
     id: str
-    input: Dict[str, Any]
-    expected: Dict[str, Any]
-    flags: Dict[str, str] = field(default_factory=dict)
+    input: Mapping[str, Any]
+    expected: Mapping[str, Any]
+    flags: Dict[str, Any] = field(default_factory=dict)
     exception: Dict[str, Any] = field(default_factory=dict)
     data: Dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self):
+        if not isinstance(self.input, MappingProxyType):
+            self.input = MappingProxyType(dict(self.input))
+        if not isinstance(self.expected, MappingProxyType):
+            self.expected = MappingProxyType(dict(self.expected))
 
 
 def load_test_cases(source: str | Path) -> List[GenericTestCase]:
