@@ -58,4 +58,4 @@ def test_action_ignorefile(make_helper, git_repo, testcase, run_andebox):
     test = make_helper(
         testcase, git_repo, run_andebox, [verify_patterns, validate_stdout]
     )
-    test.execute()
+    test.run()

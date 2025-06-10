@@ -23,14 +23,15 @@ from andebox.context import ContextType
 from git import Repo
 
 from .utils import AndeboxTestHelper
+from .utils import GenericTestCase
 
 
 @pytest.fixture(scope="session")
-def git_repo(tmp_path_factory) -> Callable[[dict], dict]:
+def git_repo(tmp_path_factory) -> Callable[[Any], dict]:
     cloned_repos = {}
 
-    def _clone(tc_input: dict) -> dict:
-        url = tc_input["repo"]
+    def _clone(testcase: GenericTestCase) -> dict:
+        url = testcase.input["repo"]
         if url in cloned_repos:
             dest = cloned_repos[url]
         else:
@@ -95,9 +96,9 @@ def run_andebox(mocker):
             )
         return cli_run()
 
-    def _make_run_andebox(tc_input: dict, data: dict) -> dict:
-        args = tc_input["args"]
-        context_type = tc_input.get("andebox_context_type")
+    def _make_run_andebox(tc: GenericTestCase) -> dict:
+        args = tc.input["args"]
+        context_type = tc.input.get("andebox_context_type")
         match context_type:
             case "ansible-core":
                 context_type = ContextType.ANSIBLE_CORE

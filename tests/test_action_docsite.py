@@ -44,4 +44,4 @@ def test_docsite(make_helper, git_repo, run_andebox, tmp_path):
         run_andebox,
         [validate_stdout, verify_patterns, validate_index_html],
     )
-    test.execute()
+    test.run()
