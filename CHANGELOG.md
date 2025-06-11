@@ -1,6 +1,35 @@
 # CHANGELOG
 
 
+## v1.3.1 (2025-06-11)
+
+### Bug Fixes
+
+- **deps**: Update dependencies
+  ([`642334c`](https://github.com/russoz-ansible/andebox/commit/642334c29710c6b819933a4b6a85d5922336a7ad))
+
+### Chores
+
+- **ai-prompt**: Rename prompt file
+  ([`96f1487`](https://github.com/russoz-ansible/andebox/commit/96f1487e3321d69889d059c5af50c0897ddd149e))
+
+### Refactoring
+
+- Make attributes input and expected immutables in GenericTestCase
+  ([`3f84646`](https://github.com/russoz-ansible/andebox/commit/3f846466e9412622f2bb05a575dccd8681df8604))
+
+- Move attribute data from the helper to GenericTestCase
+  ([`a296cda`](https://github.com/russoz-ansible/andebox/commit/a296cdaab77cf93f8a6f75f4d5425028b55fea20))
+
+- Standardize test helpers to use GenericTestCase, rename execute to run
+  ([`4a6b748`](https://github.com/russoz-ansible/andebox/commit/4a6b7482a391a548ba0ceaba29af4e8337da149a))
+
+### Testing
+
+- Add debugging info, rename test functions
+  ([`7de1c23`](https://github.com/russoz-ansible/andebox/commit/7de1c23c69ed1953f248a4d6300ec0965289c970))
+
+
 ## v1.3.0 (2025-06-09)
 
 ### Bug Fixes
