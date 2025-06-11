@@ -15,7 +15,7 @@ from .utils import verify_patterns
 
 
 @pytest.mark.slow
-def test_docsite(make_helper, git_repo, run_andebox, tmp_path):
+def test_action_docsite(make_helper, git_repo, run_andebox, tmp_path):
 
     doc_dir = tmp_path / "docsite"
     doc_dir.mkdir(parents=True, exist_ok=True)
