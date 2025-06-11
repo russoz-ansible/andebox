@@ -54,7 +54,7 @@ TEST_CASES_IDS = [item.id for item in TEST_CASES]
 
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
-def test_action_ignorefile(make_helper, git_repo, testcase, run_andebox):
+def test_action_ignores(make_helper, git_repo, testcase, run_andebox):
     test = make_helper(
         testcase, git_repo, run_andebox, [verify_patterns, validate_stdout]
     )

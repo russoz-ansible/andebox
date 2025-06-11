@@ -481,6 +481,11 @@ def load_module_vars(pyfile) -> dict[str, str | None]:
     }
 
 
+def _pp(text: str):
+    lines = [f"|{ll}|" for ll in text.splitlines()]
+    return "\n".join(lines)
+
+
 def validate_yaml_doc(testcase: GenericTestCase) -> None:
     expected = testcase.expected
     data = testcase.data
@@ -489,10 +494,10 @@ def validate_yaml_doc(testcase: GenericTestCase) -> None:
         if (expected_var := expected.get(var)) is not None:
             assert var in actual_docs, f"{var} not found in file"
             actual_var = actual_docs[var].strip()
-            print(f"ACTUAL\n{actual_var}")
+            print(f"ACTUAL\n{_pp(actual_var)}")
 
             expected_var = expected_var.strip()
-            print(f"EXPECTED\n{expected_var.strip()}")
+            print(f"EXPECTED\n{_pp(expected_var)}")
             assert expected_var in actual_var, "\n".join(
                 difflib.unified_diff(
                     actual_var.splitlines(),
