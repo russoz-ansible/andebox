@@ -48,7 +48,7 @@ pyyaml = ">=5.4"
 python-vagrant = "^1.0.0"
 fabric = "^3.1.0"
 tox = "^4.5.2"
-ruamel-yaml = "^0.18.6"
+ruamel-yaml = ">=0.18.6,!=0.18.13,!=0.18.14"
 argcomplete = "^3.5.3"
 antsibull-docs = "^2.16.3"
 
