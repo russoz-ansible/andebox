@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## v1.4.0 (2025-06-14)
+
+### Chores
+
+- Use safer release process
+  ([`cfa9911`](https://github.com/russoz-ansible/andebox/commit/cfa9911e6b628523ba295617bbadfbbda2ce3ebf))
+
+### Features
+
+- Use asciinwriter to generate term demos
+  ([`5951dfd`](https://github.com/russoz-ansible/andebox/commit/5951dfd73be8d2e8e680f47828664c8796ff37ae))
+
+
 ## v1.3.1 (2025-06-11)
 
 ### Bug Fixes
