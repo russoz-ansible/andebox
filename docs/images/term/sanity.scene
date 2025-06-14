@@ -1,0 +1,21 @@
+#
+# (C) 2025 Alexei Znamensky
+# Licensed under the MIT License. See LICENSES/MIT.txt for details.
+# SPDX-FileCopyrightText: 2025 Alexei Znamensky
+# SPDX-License-Identifier: MIT
+#
+
+  SEND(git clone --quiet --depth 1 https://github.com/ansible-collections/community.general.git)
+ ENTER()
+EXPECT($ )
+
+  SEND(cd community.general)
+ ENTER()
+EXPECT($ )
+  SEND(ls)
+ ENTER()
+EXPECT($ )
+
+  SEND(andebox test -- sanity --docker default --python 3.13 plugins/modules/ansible_galaxy_install.py)
+ ENTER()
+EXPECT($ )

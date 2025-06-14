@@ -13,7 +13,7 @@ WORKDIR=/workdir
 COLS=124
 ROWS=32
 
-export PEXP_FILE=$DIR/$1
+export SCENE_FILE=$DIR/$1
 export CAST_FILE=$DIR/$2
 
 sudo mkdir -p $WORKDIR
@@ -22,7 +22,7 @@ sudo chown -R $(id -u):$(id -g) $WORKDIR
     cd $WORKDIR;
     asciinema rec --quiet \
         --cols $COLS --rows $ROWS \
-        --command ${DIR}/pexp \
+        --command asciinwriter \
         --overwrite $CAST_FILE
 )
 sudo rm -rf $WORKDIR
