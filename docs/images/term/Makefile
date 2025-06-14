@@ -5,10 +5,9 @@
 # SPDX-License-Identifier: MIT
 #
 
-PEXPS = integration.pexp units.pexp sanity.pexp
-CASTS = $(PEXPS:.pexp=.cast)
+SCENES = integration.scene units.scene sanity.scene
+CASTS = $(SCENES:.scene=.cast)
 GIFS = $(CASTS:.cast=.gif)
-
 
 PLAY_SPEED = 3.5
 
@@ -19,7 +18,7 @@ all: $(GIFS)
 clean:
 	rm -f *.cast *.gif
 
-%.cast: %.pexp pexp make-cast
+%.cast: %.scene make-cast
 	@echo "=== Making cast file"
 	./make-cast $< $@
 	@echo "=== Cast file generated: $@\n\n"
@@ -38,3 +37,6 @@ clean:
 	gifsicle --lossy=80 -k 128 -O2 -Okeep-empty $@ -o small-$@ && mv small-$@ $@
 	ls -lh $@
 	@echo "=== GIF file generated: $@\n\n"
+
+setup:
+	sudo apt update -qq && sudo apt install -y asciinema gifsicle

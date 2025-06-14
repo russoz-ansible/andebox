@@ -378,7 +378,7 @@ version = "3.6.2"
 description = "Bash tab completion for argparse"
 optional = false
 python-versions = ">=3.8"
-groups = ["main"]
+groups = ["main", "dev"]
 files = [
     {file = "argcomplete-3.6.2-py3-none-any.whl", hash = "sha256:65b3133a29ad53fb42c48cf5114752c7ab66c1c38544fdf6460f450c09b42591"},
     {file = "argcomplete-3.6.2.tar.gz", hash = "sha256:d0519b1bc867f5f4f4713c41ad0aba73a4a5f007449716b16f385f2166dc6adf"},
@@ -386,6 +386,22 @@ files = [
 
 [package.extras]
 test = ["coverage", "mypy", "pexpect", "ruff", "wheel"]
+
+[[package]]
+name = "asciinwriter"
+version = "0.2.2"
+description = "Script and automate interactive terminal sessions for generating asciinema .cast files and reproducible demos."
+optional = false
+python-versions = "<4.0,>=3.11"
+groups = ["dev"]
+files = [
+    {file = "asciinwriter-0.2.2-py3-none-any.whl", hash = "sha256:5879c5175b831128e55f2844fe1fc1c66fb7ca895217654e71a20d0cfe0dd623"},
+    {file = "asciinwriter-0.2.2.tar.gz", hash = "sha256:6e8debae6b570d8db7d387db28919b9c6f79ab521c3a7feb66e00230011bd3a6"},
+]
+
+[package.dependencies]
+argcomplete = ">=3.5.3,<4.0.0"
+pexpect = ">=4.9.0,<5.0.0"
 
 [[package]]
 name = "astroid"
@@ -1760,7 +1776,7 @@ version = "4.9.0"
 description = "Pexpect allows easy control of interactive console applications."
 optional = false
 python-versions = "*"
-groups = ["docs"]
+groups = ["dev"]
 files = [
     {file = "pexpect-4.9.0-py2.py3-none-any.whl", hash = "sha256:7236d1e080e4936be2dc3e326cec0af72acf9212a7e1d060210e70a47e253523"},
     {file = "pexpect-4.9.0.tar.gz", hash = "sha256:ee7d41123f3c9911050ea2c2dac107568dc43b2d3b0c7557a33212c398ead30f"},
@@ -1935,7 +1951,7 @@ version = "0.7.0"
 description = "Run a subprocess in a pseudo terminal"
 optional = false
 python-versions = "*"
-groups = ["docs"]
+groups = ["dev"]
 files = [
     {file = "ptyprocess-0.7.0-py2.py3-none-any.whl", hash = "sha256:4b41f3967fce3af57cc7e94b888626c18bf37a083e3651ca8feeb66d492fef35"},
     {file = "ptyprocess-0.7.0.tar.gz", hash = "sha256:5c5d0a3b48ceee0b48485e0c26037c0acd7d29765ca3fbb5cb3831d347423220"},
@@ -3215,4 +3231,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "d00fd24997be11a67072cb459fc0677d9cad18870c062dd41f276a6a6757b2b6"
+content-hash = "501387824ef27173dcb0207dc3b26986a14c8e065a43b4ddc303e17ae6c479a1"
