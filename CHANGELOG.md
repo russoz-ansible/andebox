@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.4.1 (2025-06-14)
+
+### Bug Fixes
+
+- Fix action docsite test
+  ([`1a9a278`](https://github.com/russoz-ansible/andebox/commit/1a9a278743808c54ef98bdd67293f7d93e4d756b))
+
+
 ## v1.4.0 (2025-06-14)
 
 ### Chores
