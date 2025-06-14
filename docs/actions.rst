@@ -2,7 +2,6 @@ Actions
 =======
 
 .. toctree::
-   :maxdepth: 2
    :hidden:
 
    actions/context
@@ -14,56 +13,34 @@ Actions
    actions/vagrant
    actions/yaml_doc
 
-andebox provides several actions:
+``andebox`` provides these actions to be executed:
 
-test
-----
+:doc:`actions/context`
+   This action is merely informative and will show the execution context detected by ``andebox``.
 
-Runs `ansible-test` directly in your collection.
+:doc:`actions/docsite`
+   This action allows you to build the collection documentation site using ``antsibull-docs``, straight from the collection directory, no setup needed.
 
-.. code-block:: bash
+:doc:`actions/ignorefile`
+   This action consolidates occurrences of sanity tests exemptions from the ``<test or tests>/sanity/ignore*.txt`` files.
 
-   andebox test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
+:doc:`actions/runtime`
+   This action shows information from the ``meta/runtime.yml`` (redirects, deprecations, tombstones).
 
-tox-test
---------
+:doc:`actions/ansibletest`
+   This action allows you to run ``ansible-test``, for sanity, unit, or integration tests, straight from the collection directory, no setup needed.
 
-Runs `ansible-test` inside tox environments for multiple Ansible versions.
+:doc:`actions/toxtest`
+   This action allows you to run ``ansible-test``, just like the ``test`` action, but testing in different ``tox`` environments.
+   By using this action you can run your test in multiple versions of Ansible, with just one command.
 
-.. code-block:: bash
+:doc:`actions/vagrant`
+   Some integration tests require more complicated and sometimes heavier setups, making them more suitable to be executed in virtual machines.
+   For those cases, it is interesting to leverage ``vagrant`` to easily create, provision, and destroy these environments, and
+   the ``vagrant`` action enables you to use Vagrant VMs to smoothly run those tests.
 
-   andebox tox-test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
+:doc:`actions/yaml_doc`
+   You can use this action to reformat the YAML documentation blocks in your plugins, and also to pick on some style issues.
 
-yaml-doc
---------
 
-Analyzes and reformats YAML documentation blocks in your plugins.
-
-.. code-block:: bash
-
-   andebox yaml-doc plugins/modules/mymodule.py
-
-Options:
-- ``--offenders``: Report style issues.
-- ``--fix-offenders``: Fix style issues.
-- ``--dry-run``: Do not modify files.
-
-runtime
--------
-
-Shows information from ``runtime.yml`` (redirects, deprecations, tombstones).
-
-.. code-block:: bash
-
-   andebox runtime --plugin-type modules gce_net
-
-docsite
--------
-
-Builds the collection documentation site using ``antsibull-docs``.
-
-.. code-block:: bash
-
-   andebox docsite --dest-dir .builtdocs
-
-See the CLI help (`andebox --help`) for more.
+See the CLI help (``andebox --help``) for more.
