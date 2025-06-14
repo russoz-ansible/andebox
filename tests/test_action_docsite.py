@@ -32,7 +32,7 @@ def test_action_docsite(make_helper, git_repo, run_andebox, tmp_path):
         ),
     )
 
-    def validate_index_html(expected, data):
+    def validate_index_html(testcase):
         index_html = doc_dir / "build" / "html" / "index.html"
         assert (
             index_html.exists()
