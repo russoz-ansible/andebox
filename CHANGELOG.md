@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.4.2 (2025-06-15)
+
+### Bug Fixes
+
+- Ignore EXAMPLES with multiple YAML docs
+  ([`8c3b05b`](https://github.com/russoz-ansible/andebox/commit/8c3b05bcb076ff1a8328527520ba37c5fe5a03a0))
+
+
 ## v1.4.1 (2025-06-14)
 
 ### Bug Fixes
