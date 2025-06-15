@@ -18,6 +18,7 @@ from typing import Union
 
 try:
     from ruamel.yaml import YAML
+    from ruamel.yaml.composer import ComposerError
 
     IMPORT_ERROR = None
 except ImportError as e:
@@ -341,7 +342,7 @@ class AnsibleDocProcessor:
 
         return results
 
-    def process_file(self, file_path: Path) -> None:
+    def process_file(self, file_path: Path) -> None:  # noqa: C901
         """Process a single file."""
         QUOTE_RE_FRAG = r'(?:"|\'){3}'
         VAR_RE_FRAG = r"(?:[A-Z]+)"
@@ -372,7 +373,17 @@ class AnsibleDocProcessor:
                 processor = self.get_processor(
                     "DOCUMENTATION" if is_doc_frag else in_variable
                 )
-                outbound_content = self.process_yaml(quoted_content, processor)
+                try:
+                    outbound_content = self.process_yaml(quoted_content, processor)
+                except ComposerError as e:
+                    if (
+                        in_variable != "EXAMPLES"
+                        or "expected a single document" not in str(e)
+                    ):
+                        raise YAMLDocException(
+                            f"Error processing YAML in {file_path} at line {line_no + 1}: {e}"
+                        ) from e
+                    outbound_content = quoted_content
                 updated_lines.extend(
                     self.postprocess_content(in_variable, outbound_content)
                 )

@@ -415,6 +415,114 @@ TEST_CASES_MOCK = load_test_cases(
           U(https://andebox.readthedocs.io/en/latest/actions.html).
       options: {}
 
+# testcase copied from the EXAMPLES section of the connection plugin community.general.wsl
+- id: multiple-docs-in-examples
+  input:
+    EXAMPLES: |
+      # ------------------------
+      # Inventory: inventory.yml
+      # ------------------------
+      ---
+      all:
+        children:
+          wsl:
+            hosts:
+              example-wsl-ubuntu:
+                ansible_host: 10.0.0.10
+                wsl_distribution: ubuntu
+                wsl_user: ubuntu
+            vars:
+              ansible_connection: community.general.wsl
+              ansible_user: vagrant
+      # ----------------------
+      # Playbook: playbook.yml
+      # ----------------------
+      ---
+      - name: WSL Example
+        hosts: wsl
+        gather_facts: true
+        become: true
+        tasks:
+          - name: Ping
+            ansible.builtin.ping:
+          - name: Id (with become false)
+            become: false
+            changed_when: false
+            args:
+              executable: /bin/bash
+            ansible.builtin.shell: |
+              exec 2>&1
+              set -x
+              echo "$0"
+              pwd
+              id
+          - name: Id (with become true)
+            changed_when: false
+            args:
+              executable: /bin/bash
+            ansible.builtin.shell: |
+              exec 2>&1
+              set -x
+              echo "$0"
+              pwd
+              id
+          - name: Reboot
+            ansible.builtin.reboot:
+              boot_time_command: systemctl show -p ActiveEnterTimestamp init.scope
+  expected:
+    EXAMPLES: |
+      # ------------------------
+      # Inventory: inventory.yml
+      # ------------------------
+      ---
+      all:
+        children:
+          wsl:
+            hosts:
+              example-wsl-ubuntu:
+                ansible_host: 10.0.0.10
+                wsl_distribution: ubuntu
+                wsl_user: ubuntu
+            vars:
+              ansible_connection: community.general.wsl
+              ansible_user: vagrant
+      # ----------------------
+      # Playbook: playbook.yml
+      # ----------------------
+      ---
+      - name: WSL Example
+        hosts: wsl
+        gather_facts: true
+        become: true
+        tasks:
+          - name: Ping
+            ansible.builtin.ping:
+          - name: Id (with become false)
+            become: false
+            changed_when: false
+            args:
+              executable: /bin/bash
+            ansible.builtin.shell: |
+              exec 2>&1
+              set -x
+              echo "$0"
+              pwd
+              id
+          - name: Id (with become true)
+            changed_when: false
+            args:
+              executable: /bin/bash
+            ansible.builtin.shell: |
+              exec 2>&1
+              set -x
+              echo "$0"
+              pwd
+              id
+          - name: Reboot
+            ansible.builtin.reboot:
+              boot_time_command: systemctl show -p ActiveEnterTimestamp init.scope
+
+
 """
 )
 
@@ -507,7 +615,7 @@ def validate_yaml_doc(testcase: GenericTestCase) -> None:
 
 
 @pytest.mark.parametrize("testcase", TEST_CASES_MOCK, ids=TEST_CASES_MOCK_IDS)
-def test_action_yaml_doc_mocks(make_helper, yaml_doc_executor, mock_plugin, testcase):
+def test_action_yaml_doc(make_helper, yaml_doc_executor, mock_plugin, testcase):
 
     test = make_helper(
         testcase, mock_plugin, yaml_doc_executor, [validate_yaml_doc, verify_patterns]
