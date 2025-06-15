@@ -6,6 +6,10 @@ Overview
 This action rewrites the YAML documentation blocks using consistent YAML formatting.
 Additionally, it can report or fix potential style issues in the YAML content.
 
+Please note that the ``EXAMPLES`` section of the YAML documentation may contains multiple
+YAML documents, delimited with the ``---`` marker. In those cases, the action will
+not process the content of the section, keeping it unchanged.
+
 Parameters
 ----------
 The following parameters are supported:
