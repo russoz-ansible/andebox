@@ -82,6 +82,25 @@ class YAMLDocException(Exception):
         self.args = args
 
 
+def remove_quotes(s: str) -> str:
+    if s[0] == s[-1] and s[0] in ('"', "'"):
+        return s[1:-1].strip()
+    return s
+
+
+def is_json_content(sample: str, type_: str) -> bool:
+    output_sample = sample.strip()
+    if type_ == "list":
+        return output_sample.startswith("[") or remove_quotes(output_sample).startswith(
+            "["
+        )
+    elif type_ == "dict":
+        return output_sample.startswith("{") or remove_quotes(output_sample).startswith(
+            "{"
+        )
+    return False
+
+
 class AnsibleDocProcessor:
     def __init__(
         self,
@@ -151,25 +170,51 @@ class AnsibleDocProcessor:
         except Exception as e:
             raise YAMLDocException(desc) from e
 
-    def _store_json_sample(self, sample: Any) -> str:
-        json_str = json.dumps(sample, indent=self.indent)
+    def _store_json_sample(self, sample: Any, has_indent: bool) -> str:
+        json_str = json.dumps(sample, indent=self.indent if has_indent else None)
         sample_hash = hashlib.md5(
             (json_str + str(self.json_sample_id_count)).encode()
         ).hexdigest()[:8]
-        sample_id = f"{JSON_SAMPLE_PREFIX}-{sample_hash}"
+        sample_id = f"{'ID' if has_indent else 'NI'}{JSON_SAMPLE_PREFIX}-{sample_hash}"
         self.json_samples[sample_id] = json_str
         self.json_sample_id_count += 1
         return sample_id
 
     def process_sample(self, sample: Any, type_: str) -> Any:
+        if type_ not in ("list", "dict"):
+            return sample
+
         output_sample = self.dump_yaml(sample)
-        is_json = (type_ == "list" and output_sample.strip().startswith("[")) or (
-            type_ == "dict" and output_sample.strip().startswith("{")
-        )
+        is_json = is_json_content(output_sample, type_)
+
         if not is_json:
             return sample
+
+        if isinstance(sample, str):
+            json_sample = json.loads(sample)
+        else:
+            json_sample = sample
+
+        if "\n" in sample:
+            has_indent = True
+        elif len(sample) > self.width:
+            has_indent = True
+        elif type_ == "list" and (
+            len(json_sample) > 3
+            or any(isinstance(x, (dict, list)) for x in json_sample)
+        ):
+            assert isinstance(json_sample, list), "Expected a list for JSON sample"
+            has_indent = True
+        elif type_ == "dict" and (
+            len(json_sample) > 2
+            or any(isinstance(x, (dict, list)) for x in json_sample.values())
+        ):
+            assert isinstance(json_sample, dict), "Expected a dict for JSON sample"
+            has_indent = True
+        else:
+            has_indent = False
         # Store the JSON and return a placeholder ID
-        return self._store_json_sample(sample)
+        return self._store_json_sample(json_sample, has_indent)
 
     def process_options(
         self, opts: Dict[str, Any], suboptions_kw: str
@@ -185,9 +230,8 @@ class AnsibleDocProcessor:
                         option[suboptions_kw], suboptions_kw
                     )
                 if "sample" in option and option["type"] in ("list", "dict"):
-                    option["sample"] = self.process_sample(
-                        option["sample"], option["type"]
-                    )
+                    sample = self.process_sample(option["sample"], option["type"])
+                    option["sample"] = sample
             return opts
         except Exception as e:
             raise YAMLDocException(opts, suboptions_kw) from e
@@ -291,7 +335,7 @@ class AnsibleDocProcessor:
     def postprocess_json_samples(self, content: List[str]) -> List[str]:
         result = []
         sample_pattern = re.compile(
-            rf"^(\s+sample:)\s+({JSON_SAMPLE_PREFIX}-[0-9a-f]{{8}})$"
+            rf"^(\s+sample:)\s+['\"]?((ID|NI){JSON_SAMPLE_PREFIX}-[0-9a-f]{{8}})['\"]?$"
         )
 
         for line in content:
@@ -300,15 +344,19 @@ class AnsibleDocProcessor:
                 result.append(line)
                 continue
 
-            indentend_sample_key = match.group(1)
+            indented_sample_key = match.group(1)
             sample_id = match.group(2)
+            json_indent = match.group(3)
 
-            json_lines = self.json_samples[sample_id].splitlines()
-            base_indent = " " * (
-                len(indentend_sample_key) - len("sample:") + self.indent
-            )
-            result.append(f"{indentend_sample_key}")
-            result.extend(f"{base_indent}{line}" for line in json_lines)
+            if json_indent == "ID":
+                json_lines = self.json_samples[sample_id].splitlines()
+                base_indent = " " * (
+                    len(indented_sample_key) - len("sample:") + self.indent
+                )
+                result.append(f"{indented_sample_key}")
+                result.extend(f"{base_indent}{line}" for line in json_lines)
+            else:
+                result.append(f"{indented_sample_key} {self.json_samples[sample_id]}")
 
             del self.json_samples[sample_id]
 
