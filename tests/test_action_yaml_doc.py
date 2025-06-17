@@ -82,238 +82,6 @@ TEST_CASES_MOCK = load_test_cases(
     RETURN: >-
       Foo return value.
 
-- id: return-with-json-sample
-  input:
-    RETURN: |
-      ---
-      my_list:
-          description: A list of items
-          returned: always
-          type: list
-          sample: [{"id": 1, "name": "item1"}, {"id": 2, "name": "item2"}]
-      my_dict:
-          description: A dictionary of data
-          returned: always
-          type: dict
-          sample: {"key1": "value1", "key2": {"nested": "value2"}}
-  expected:
-    RETURN: |
-      my_list:
-        description: A list of items.
-        returned: always
-        type: list
-        sample:
-          [
-            {
-              "id": 1,
-              "name": "item1"
-            },
-            {
-              "id": 2,
-              "name": "item2"
-            }
-          ]
-      my_dict:
-        description: A dictionary of data.
-        returned: always
-        type: dict
-        sample:
-          {
-            "key1": "value1",
-            "key2": {
-              "nested": "value2"
-            }
-          }
-
-- id: json-sample-cg-apache2_mod_proxy
-  input:
-    RETURN: |
-      ---
-      member:
-        description: Specific balancer member information dictionary, returned when the module is invoked with O(member_host) parameter.
-        type: dict
-        returned: success
-        sample:
-          {"attributes":
-                {"Busy": "0",
-                "Elected": "42",
-                "Factor": "1",
-                "From": "136K",
-                "Load": "0",
-                "Route": null,
-                "RouteRedir": null,
-                "Set": "0",
-                "Status": "Init Ok ",
-                "To": " 47K",
-                "Worker URL": null
-            },
-            "balancer_url": "http://10.10.0.2/balancer-manager/",
-            "host": "10.10.0.20",
-            "management_url": "http://10.10.0.2/lb/?b=mywsbalancer&w=http://10.10.0.20:8080/ws&nonce=8925436c-79c6-4841-8936-e7d13b79239b",
-            "path": "/ws",
-            "port": 8080,
-            "protocol": "http",
-            "status": {
-                "disabled": false,
-                "drained": false,
-                "hot_standby": false,
-                "ignore_errors": false
-            }
-          }
-      members:
-        description: List of member (defined above) dictionaries, returned when the module is invoked with no O(member_host)
-          and O(state) args.
-        returned: success
-        type: list
-        sample:
-          [{"attributes": {
-                "Busy": "0",
-                "Elected": "42",
-                "Factor": "1",
-                "From": "136K",
-                "Load": "0",
-                "Route": null,
-                "RouteRedir": null,
-                "Set": "0",
-                "Status": "Init Ok ",
-                "To": " 47K",
-                "Worker URL": null
-            },
-            "balancer_url": "http://10.10.0.2/balancer-manager/",
-            "host": "10.10.0.20",
-            "management_url": "http://10.10.0.2/lb/?b=mywsbalancer&w=http://10.10.0.20:8080/ws&nonce=8925436c-79c6-4841-8936-e7d13b79239b",
-            "path": "/ws",
-            "port": 8080,
-            "protocol": "http",
-            "status": {
-                "disabled": false,
-                "drained": false,
-                "hot_standby": false,
-                "ignore_errors": false}
-            },
-            {"attributes": {
-                "Busy": "0",
-                "Elected": "42",
-                "Factor": "1",
-                "From": "136K",
-                "Load": "0",
-                "Route": null,
-                "RouteRedir": null,
-                "Set": "0",
-                "Status": "Init Ok ",
-                "To": " 47K",
-                "Worker URL": null
-            },
-            "balancer_url": "http://10.10.0.2/balancer-manager/",
-            "host": "10.10.0.21",
-            "management_url": "http://10.10.0.2/lb/?b=mywsbalancer&w=http://10.10.0.21:8080/ws&nonce=8925436c-79c6-4841-8936-e7d13b79239b",
-            "path": "/ws",
-            "port": 8080,
-            "protocol": "http",
-            "status": {
-                "disabled": false,
-                "drained": false,
-                "hot_standby": false,
-                "ignore_errors": false}
-            }
-          ]
-  expected:
-    RETURN: |
-      member:
-        description: Specific balancer member information dictionary, returned when the module is invoked with O(member_host) parameter.
-        type: dict
-        returned: success
-        sample:
-          {
-            "attributes": {
-              "Busy": "0",
-              "Elected": "42",
-              "Factor": "1",
-              "From": "136K",
-              "Load": "0",
-              "Route": null,
-              "RouteRedir": null,
-              "Set": "0",
-              "Status": "Init Ok ",
-              "To": " 47K",
-              "Worker URL": null
-            },
-            "balancer_url": "http://10.10.0.2/balancer-manager/",
-            "host": "10.10.0.20",
-            "management_url": "http://10.10.0.2/lb/?b=mywsbalancer&w=http://10.10.0.20:8080/ws&nonce=8925436c-79c6-4841-8936-e7d13b79239b",
-            "path": "/ws",
-            "port": 8080,
-            "protocol": "http",
-            "status": {
-              "disabled": false,
-              "drained": false,
-              "hot_standby": false,
-              "ignore_errors": false
-            }
-          }
-      members:
-        description: List of member (defined above) dictionaries, returned when the module is invoked with no O(member_host) and
-          O(state) args.
-        returned: success
-        type: list
-        sample:
-          [
-            {
-              "attributes": {
-                "Busy": "0",
-                "Elected": "42",
-                "Factor": "1",
-                "From": "136K",
-                "Load": "0",
-                "Route": null,
-                "RouteRedir": null,
-                "Set": "0",
-                "Status": "Init Ok ",
-                "To": " 47K",
-                "Worker URL": null
-              },
-              "balancer_url": "http://10.10.0.2/balancer-manager/",
-              "host": "10.10.0.20",
-              "management_url": "http://10.10.0.2/lb/?b=mywsbalancer&w=http://10.10.0.20:8080/ws&nonce=8925436c-79c6-4841-8936-e7d13b79239b",
-              "path": "/ws",
-              "port": 8080,
-              "protocol": "http",
-              "status": {
-                "disabled": false,
-                "drained": false,
-                "hot_standby": false,
-                "ignore_errors": false
-              }
-            },
-            {
-              "attributes": {
-                "Busy": "0",
-                "Elected": "42",
-                "Factor": "1",
-                "From": "136K",
-                "Load": "0",
-                "Route": null,
-                "RouteRedir": null,
-                "Set": "0",
-                "Status": "Init Ok ",
-                "To": " 47K",
-                "Worker URL": null
-              },
-              "balancer_url": "http://10.10.0.2/balancer-manager/",
-              "host": "10.10.0.21",
-              "management_url": "http://10.10.0.2/lb/?b=mywsbalancer&w=http://10.10.0.21:8080/ws&nonce=8925436c-79c6-4841-8936-e7d13b79239b",
-              "path": "/ws",
-              "port": 8080,
-              "protocol": "http",
-              "status": {
-                "disabled": false,
-                "drained": false,
-                "hot_standby": false,
-                "ignore_errors": false
-              }
-            }
-          ]
-
 - id: dict-description
   input:
     DOCUMENTATION: |
@@ -521,6 +289,286 @@ TEST_CASES_MOCK = load_test_cases(
           - name: Reboot
             ansible.builtin.reboot:
               boot_time_command: systemctl show -p ActiveEnterTimestamp init.scope
+
+- id: return-sample-json
+  input:
+    RETURN: |
+      ---
+      my_list:
+          description: A list of items
+          returned: always
+          type: list
+          sample: [{"id": 1, "name": "item1"}, {"id": 2, "name": "item2"}]
+      my_dict:
+          description: A dictionary of data
+          returned: always
+          type: dict
+          sample: {"key1": "value1", "key2": {"nested": "value2"}}
+  expected:
+    RETURN: |
+      my_list:
+        description: A list of items.
+        returned: always
+        type: list
+        sample:
+          [
+            {
+              "id": 1,
+              "name": "item1"
+            },
+            {
+              "id": 2,
+              "name": "item2"
+            }
+          ]
+      my_dict:
+        description: A dictionary of data.
+        returned: always
+        type: dict
+        sample:
+          {
+            "key1": "value1",
+            "key2": {
+              "nested": "value2"
+            }
+          }
+
+- id: return-sample-json-cg-apache2_mod_proxy
+  input:
+    RETURN: |
+      ---
+      member:
+        description: Specific balancer member information dictionary, returned when the module is invoked with O(member_host) parameter.
+        type: dict
+        returned: success
+        sample:
+          {"attributes":
+                {"Busy": "0",
+                "Elected": "42",
+                "Factor": "1",
+                "From": "136K",
+                "Load": "0",
+                "Route": null,
+                "RouteRedir": null,
+                "Set": "0",
+                "Status": "Init Ok ",
+                "To": " 47K",
+                "Worker URL": null
+            },
+            "balancer_url": "http://10.10.0.2/balancer-manager/",
+            "host": "10.10.0.20",
+            "management_url": "http://10.10.0.2/lb/?b=mywsbalancer&w=http://10.10.0.20:8080/ws&nonce=8925436c-79c6-4841-8936-e7d13b79239b",
+            "path": "/ws",
+            "port": 8080,
+            "protocol": "http",
+            "status": {
+                "disabled": false,
+                "drained": false,
+                "hot_standby": false,
+                "ignore_errors": false
+            }
+          }
+      members:
+        description: List of member (defined above) dictionaries, returned when the module is invoked with no O(member_host)
+          and O(state) args.
+        returned: success
+        type: list
+        sample:
+          [{"attributes": {
+                "Busy": "0",
+                "Elected": "42",
+                "Factor": "1",
+                "From": "136K",
+                "Load": "0",
+                "Route": null,
+                "RouteRedir": null,
+                "Set": "0",
+                "Status": "Init Ok ",
+                "To": " 47K",
+                "Worker URL": null
+            },
+            "balancer_url": "http://10.10.0.2/balancer-manager/",
+            "host": "10.10.0.20",
+            "management_url": "http://10.10.0.2/lb/?b=mywsbalancer&w=http://10.10.0.20:8080/ws&nonce=8925436c-79c6-4841-8936-e7d13b79239b",
+            "path": "/ws",
+            "port": 8080,
+            "protocol": "http",
+            "status": {
+                "disabled": false,
+                "drained": false,
+                "hot_standby": false,
+                "ignore_errors": false}
+            },
+            {"attributes": {
+                "Busy": "0",
+                "Elected": "42",
+                "Factor": "1",
+                "From": "136K",
+                "Load": "0",
+                "Route": null,
+                "RouteRedir": null,
+                "Set": "0",
+                "Status": "Init Ok ",
+                "To": " 47K",
+                "Worker URL": null
+            },
+            "balancer_url": "http://10.10.0.2/balancer-manager/",
+            "host": "10.10.0.21",
+            "management_url": "http://10.10.0.2/lb/?b=mywsbalancer&w=http://10.10.0.21:8080/ws&nonce=8925436c-79c6-4841-8936-e7d13b79239b",
+            "path": "/ws",
+            "port": 8080,
+            "protocol": "http",
+            "status": {
+                "disabled": false,
+                "drained": false,
+                "hot_standby": false,
+                "ignore_errors": false}
+            }
+          ]
+  expected:
+    RETURN: |
+      member:
+        description: Specific balancer member information dictionary, returned when the module is invoked with O(member_host) parameter.
+        type: dict
+        returned: success
+        sample:
+          {
+            "attributes": {
+              "Busy": "0",
+              "Elected": "42",
+              "Factor": "1",
+              "From": "136K",
+              "Load": "0",
+              "Route": null,
+              "RouteRedir": null,
+              "Set": "0",
+              "Status": "Init Ok ",
+              "To": " 47K",
+              "Worker URL": null
+            },
+            "balancer_url": "http://10.10.0.2/balancer-manager/",
+            "host": "10.10.0.20",
+            "management_url": "http://10.10.0.2/lb/?b=mywsbalancer&w=http://10.10.0.20:8080/ws&nonce=8925436c-79c6-4841-8936-e7d13b79239b",
+            "path": "/ws",
+            "port": 8080,
+            "protocol": "http",
+            "status": {
+              "disabled": false,
+              "drained": false,
+              "hot_standby": false,
+              "ignore_errors": false
+            }
+          }
+      members:
+        description: List of member (defined above) dictionaries, returned when the module is invoked with no O(member_host) and
+          O(state) args.
+        returned: success
+        type: list
+        sample:
+          [
+            {
+              "attributes": {
+                "Busy": "0",
+                "Elected": "42",
+                "Factor": "1",
+                "From": "136K",
+                "Load": "0",
+                "Route": null,
+                "RouteRedir": null,
+                "Set": "0",
+                "Status": "Init Ok ",
+                "To": " 47K",
+                "Worker URL": null
+              },
+              "balancer_url": "http://10.10.0.2/balancer-manager/",
+              "host": "10.10.0.20",
+              "management_url": "http://10.10.0.2/lb/?b=mywsbalancer&w=http://10.10.0.20:8080/ws&nonce=8925436c-79c6-4841-8936-e7d13b79239b",
+              "path": "/ws",
+              "port": 8080,
+              "protocol": "http",
+              "status": {
+                "disabled": false,
+                "drained": false,
+                "hot_standby": false,
+                "ignore_errors": false
+              }
+            },
+            {
+              "attributes": {
+                "Busy": "0",
+                "Elected": "42",
+                "Factor": "1",
+                "From": "136K",
+                "Load": "0",
+                "Route": null,
+                "RouteRedir": null,
+                "Set": "0",
+                "Status": "Init Ok ",
+                "To": " 47K",
+                "Worker URL": null
+              },
+              "balancer_url": "http://10.10.0.2/balancer-manager/",
+              "host": "10.10.0.21",
+              "management_url": "http://10.10.0.2/lb/?b=mywsbalancer&w=http://10.10.0.21:8080/ws&nonce=8925436c-79c6-4841-8936-e7d13b79239b",
+              "path": "/ws",
+              "port": 8080,
+              "protocol": "http",
+              "status": {
+                "disabled": false,
+                "drained": false,
+                "hot_standby": false,
+                "ignore_errors": false
+              }
+            }
+          ]
+
+- id: return-sample-json-pack-when-short
+  input:
+    RETURN: |
+      ---
+      my_list:
+        description: A list of items
+        returned: always
+        type: list
+        sample: [1, 2, 3]
+  expected:
+    RETURN: |
+      my_list:
+        description: A list of items.
+        returned: always
+        type: list
+        sample: [1, 2, 3]
+
+- id: return-sample-json-leading-quote
+  input:
+    RETURN: |
+      cloud_init_data_facts:
+        description: Facts of result and status.
+        returned: success
+        type: dict
+        sample: '{
+          "status": {
+              "v1": {
+                  "datasource": "DataSourceCloudStack",
+                  "errors": []
+              }
+          }
+        }'
+  expected:
+    RETURN: |
+      cloud_init_data_facts:
+        description: Facts of result and status.
+        returned: success
+        type: dict
+        sample:
+          {
+            "status": {
+              "v1": {
+                "datasource": "DataSourceCloudStack",
+                "errors": []
+              }
+            }
+          }
 
 
 """
