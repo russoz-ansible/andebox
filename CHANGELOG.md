@@ -1,6 +1,29 @@
 # CHANGELOG
 
 
+## v1.4.3 (2025-06-18)
+
+### Bug Fixes
+
+- Force patch release
+  ([`743814b`](https://github.com/russoz-ansible/andebox/commit/743814baa91da6e283b5396a0092e1ac66e70666))
+
+### Chores
+
+- **deps-dev**: Bump the python-dependencies group with 2 updates
+  ([`c410c87`](https://github.com/russoz-ansible/andebox/commit/c410c875425db7c2ecc06ea7e050d6e99d9fab04))
+
+### Documentation
+
+- Revamp the high-level doc page for actions
+  ([`9860942`](https://github.com/russoz-ansible/andebox/commit/986094258ba81abf56b270f99fd6e648509a0fa3))
+
+### Testing
+
+- Fix some edge cases when `sample` is JSON content
+  ([`a271a74`](https://github.com/russoz-ansible/andebox/commit/a271a74223b3ffdc3008209eba64850b1295f77a))
+
+
 ## v1.4.2 (2025-06-15)
 
 ### Bug Fixes
@@ -863,10 +886,10 @@
 - Make install_requirements command verbose
   ([`5e42fe9`](https://github.com/russoz-ansible/andebox/commit/5e42fe9d926dbfb70c60e3e8562651cc581e2e6d))
 
-- **ansible-test**: -r added to testcase
+- **ansible-test**: -R added to testcase
   ([`c6dae6e`](https://github.com/russoz-ansible/andebox/commit/c6dae6e69eeb69b111c63be2be0fa865d8813490))
 
-- **ansible-test**: -r now accepted for unit test as well
+- **ansible-test**: -R now accepted for unit test as well
   ([`529e7e9`](https://github.com/russoz-ansible/andebox/commit/529e7e9e629112efe628bb91e1c936c831607b70))
 
 
