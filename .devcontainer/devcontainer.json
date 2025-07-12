@@ -7,12 +7,6 @@
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
-  "mounts": [
-    "source=${localEnv:SSH_AUTH_SOCK},target=/ssh-agent,type=bind"
-  ],
-  "remoteEnv": {
-    "SSH_AUTH_SOCK": "/ssh-agent"
-  },
   "customizations": {
     "vscode": {
       "settings": {
