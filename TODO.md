@@ -24,8 +24,6 @@ TO-DO
 
 ## docs
 
-* add docs for actions
-
 ## style
 
 ## refactor
