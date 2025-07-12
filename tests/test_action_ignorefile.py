@@ -21,6 +21,7 @@ TEST_CASES = load_test_cases(
     repo: {GIT_REPO_CG}
     args:
       - ignores
+      - -H0
   expected:
     in_stdout: "tests/unit/plugins/modules/test_gio_mime.yaml no-smart-quotes"
 - id: specific-version
@@ -41,7 +42,7 @@ TEST_CASES = load_test_cases(
       - ignores
       - -s
       - "2.19"
-      - -H-5
+      - -H0
       - -ff
       - test_gio_mime
   expected:
