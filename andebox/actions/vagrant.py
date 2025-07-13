@@ -4,11 +4,17 @@
 # Licensed under the MIT License. See LICENSES/MIT.txt for details.
 # SPDX-FileCopyrightText: 2021-2023 Alexei Znamensky
 # SPDX-License-Identifier: MIT
+import logging
 from pathlib import Path
 
 try:
+    vagrant_logger = logging.getLogger("vagrant")
+    prev_level = vagrant_logger.level
+    vagrant_logger.setLevel(logging.ERROR)
     from fabric.connection import Connection
     import vagrant
+
+    vagrant_logger.setLevel(prev_level)
 
     IMPORT_ERROR = None
 except ImportError as e:
