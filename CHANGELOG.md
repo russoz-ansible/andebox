@@ -1,6 +1,44 @@
 # CHANGELOG
 
 
+## v1.5.0 (2025-07-13)
+
+### Chores
+
+- Adjust tox deps action to conventional commits
+  ([`23dec08`](https://github.com/russoz-ansible/andebox/commit/23dec08e79da847079a9cdd48ae49d74f82a2803))
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`8f77cb6`](https://github.com/russoz-ansible/andebox/commit/8f77cb64b44c8420d628258786f0b691ac9b6359))
+
+- **deps**: Bump urllib3 from 2.4.0 to 2.5.0 in the pip group
+  ([`79f096f`](https://github.com/russoz-ansible/andebox/commit/79f096fcaf42036f9cfc820be5093ad49e0129dc))
+
+- **deps**: Update project dependencies
+  ([`4c543ce`](https://github.com/russoz-ansible/andebox/commit/4c543ceeb0ad5bd3c97604888c51c0d04e1ccaf6))
+
+- **devcontainer**: Comment out settings for ssh-agent
+  ([`7181cf1`](https://github.com/russoz-ansible/andebox/commit/7181cf137695fec484ba1098b80c55f4d805a31f))
+
+### Documentation
+
+- **TODO**: Remove TODO entry for documenting actions
+  ([`3dd5bcc`](https://github.com/russoz-ansible/andebox/commit/3dd5bcc92fa1038d6793aa98b36bad436ac2e606))
+
+### Features
+
+- **action/vagrant**: Suppress warning message for missing vagrant binary
+  ([`72fbe46`](https://github.com/russoz-ansible/andebox/commit/72fbe46dc1fb250cec1c5bb26ca9e08318886e9d))
+
+- **action/yaml-doc**: Improve error handling for JSON parsing of samples
+  ([`5f92c7b`](https://github.com/russoz-ansible/andebox/commit/5f92c7bbbb6a940e42f812ca345a12bfd42f9f8d))
+
+### Testing
+
+- List all ignore lines in basic test
+  ([`a48ee29`](https://github.com/russoz-ansible/andebox/commit/a48ee29a4954d25ef07875283962b7899570bce8))
+
+
 ## v1.4.3 (2025-06-18)
 
 ### Bug Fixes
