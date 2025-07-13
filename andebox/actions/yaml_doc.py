@@ -233,6 +233,10 @@ class AnsibleDocProcessor:
                     sample = self.process_sample(option["sample"], option["type"])
                     option["sample"] = sample
             return opts
+        except json.decoder.JSONDecodeError as e:
+            raise YAMLDocException(
+                opts, suboptions_kw, f'SAMPLE={option["sample"]}'
+            ) from e
         except Exception as e:
             raise YAMLDocException(opts, suboptions_kw) from e
 
