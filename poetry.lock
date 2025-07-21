@@ -173,14 +173,14 @@ files = [
 
 [[package]]
 name = "ansible-core"
-version = "2.18.6"
+version = "2.18.7"
 description = "Radically simple IT automation"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
 files = [
-    {file = "ansible_core-2.18.6-py3-none-any.whl", hash = "sha256:12a34749a7b20f0f1536bd3e3b2e137341867e4642e351273e96647161f595c0"},
-    {file = "ansible_core-2.18.6.tar.gz", hash = "sha256:25bb20ce1516a1b7307831b263cef684043b3720711466bd9d4164e5fd576557"},
+    {file = "ansible_core-2.18.7-py3-none-any.whl", hash = "sha256:ac42ecb480fb98890d338072f7298cd462fb2117da6700d989c7ae688962ba69"},
+    {file = "ansible_core-2.18.7.tar.gz", hash = "sha256:1a129bf9fcd5dca2b17e83ce77147ee2fbc3c51a4958970152897cc5b6d0aae7"},
 ]
 
 [package.dependencies]
@@ -269,14 +269,14 @@ typing = ["mypy", "pyre-check (>=0.9.17,<0.9.23)", "types-aiofiles", "typing-ext
 
 [[package]]
 name = "antsibull-docs"
-version = "2.18.0"
+version = "2.19.1"
 description = "Tools for building Ansible documentation"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "antsibull_docs-2.18.0-py3-none-any.whl", hash = "sha256:b4e5b52aca9fdccd734ffee0b79dcccbb2ceaa7b1aa43e1c51a9b7d49c5c349a"},
-    {file = "antsibull_docs-2.18.0.tar.gz", hash = "sha256:dadc8a0cee1e6c8687ce0e07fdacd39a2aa887f4ca52318a438104bf3ba62743"},
+    {file = "antsibull_docs-2.19.1-py3-none-any.whl", hash = "sha256:6a049f6013e747deed11be7cea8b0ddaba4634a9cee4e8e5b3b385257f1beaab"},
+    {file = "antsibull_docs-2.19.1.tar.gz", hash = "sha256:a354cadc254220f4dfd7d3bcea66bacbd36043c550b0550a554702638e4eff0c"},
 ]
 
 [package.dependencies]
@@ -285,6 +285,7 @@ ansible-pygments = "*"
 antsibull-changelog = ">=0.24.0"
 antsibull-core = ">=3.4.0,<4.0.0"
 antsibull-docs-parser = ">=1.1.0,<2.0.0"
+antsibull-docutils = ">=1.3.0,<2.0.0"
 antsibull-fileutils = ">=1.3.0,<2.0.0"
 asyncio-pool = "*"
 docutils = "*"
@@ -327,14 +328,14 @@ typing = ["click (<8.2.0)", "mypy", "pyre-check (>=0.9.17)"]
 
 [[package]]
 name = "antsibull-docutils"
-version = "1.2.0"
+version = "1.3.0"
 description = "Antsibull docutils helpers"
 optional = false
 python-versions = ">=3.9.0"
 groups = ["main"]
 files = [
-    {file = "antsibull_docutils-1.2.0-py3-none-any.whl", hash = "sha256:dc8acda7acfd298ce7d144d56f8b9437c889fd2d5acf06c11a9635fba9503ff1"},
-    {file = "antsibull_docutils-1.2.0.tar.gz", hash = "sha256:70bd96652b20737399259c0810d838c5b1099096db531dff711d4b83ac31f5cc"},
+    {file = "antsibull_docutils-1.3.0-py3-none-any.whl", hash = "sha256:a753d2327300db4ce5ba9a8a9de1b839a0108b1d8ecfa1b02aa10e36729ffab1"},
+    {file = "antsibull_docutils-1.3.0.tar.gz", hash = "sha256:ec0349ce7e895751fa9924134b7f8ab2d340b658c9371ae520a1fa598083c065"},
 ]
 
 [package.dependencies]
@@ -2904,29 +2905,26 @@ files = [
 
 [[package]]
 name = "tox"
-version = "4.27.0"
+version = "4.28.0"
 description = "tox is a generic virtualenv management and test command line tool"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "tox-4.27.0-py3-none-any.whl", hash = "sha256:2b8a7fb986b82aa2c830c0615082a490d134e0626dbc9189986da46a313c4f20"},
-    {file = "tox-4.27.0.tar.gz", hash = "sha256:b97d5ecc0c0d5755bcc5348387fef793e1bfa68eb33746412f4c60881d7f5f57"},
+    {file = "tox-4.28.0-py3-none-any.whl", hash = "sha256:3e2f5c0a00523a58666690108b66820150f6435cb6e4dd95caf21bb52133c1d1"},
+    {file = "tox-4.28.0.tar.gz", hash = "sha256:442347b1a415733850f097e7e78b8c5f38b5e1719f8b7205aade5d055f08068c"},
 ]
 
 [package.dependencies]
-cachetools = ">=5.5.1"
+cachetools = ">=6.1"
 chardet = ">=5.2"
 colorama = ">=0.4.6"
-filelock = ">=3.16.1"
-packaging = ">=24.2"
-platformdirs = ">=4.3.6"
-pluggy = ">=1.5"
-pyproject-api = ">=1.8"
-virtualenv = ">=20.31"
-
-[package.extras]
-test = ["devpi-process (>=1.0.2)", "pytest (>=8.3.4)", "pytest-mock (>=3.14)"]
+filelock = ">=3.18"
+packaging = ">=25"
+platformdirs = ">=4.3.8"
+pluggy = ">=1.6"
+pyproject-api = ">=1.9.1"
+virtualenv = ">=20.31.2"
 
 [[package]]
 name = "twiggy"
