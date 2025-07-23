@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.5.1 (2025-07-23)
+
+### Bug Fixes
+
+- **action/yaml-doc**: Fix the rewrapping of long lines
+  ([`82cfc60`](https://github.com/russoz-ansible/andebox/commit/82cfc60069d24c32b1f3a00124e1c02de759e0a3))
+
+
 ## v1.5.0 (2025-07-13)
 
 ### Chores

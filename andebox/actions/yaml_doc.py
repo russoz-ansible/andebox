@@ -282,7 +282,7 @@ class AnsibleDocProcessor:
             return quoted_content
 
         data = processor(data)
-        yaml_content = self.dump_yaml(data).splitlines()
+        yaml_content = [s.rstrip() for s in self.dump_yaml(data).splitlines()]
 
         if isinstance(data, list):
             yaml_content = [

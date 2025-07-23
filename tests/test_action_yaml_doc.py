@@ -183,6 +183,27 @@ TEST_CASES_MOCK = load_test_cases(
           U(https://andebox.readthedocs.io/en/latest/actions.html).
       options: {}
 
+# copied from community.general.office_365_connector_card
+- id: word-wrapper-rewrap-trailing-space
+  input:
+    DOCUMENTATION: |
+      module: office_365_connector_card
+      short_description: Use webhooks to create Connector Card messages within an Office 365 group
+      description:
+        - Creates Connector Card messages through Office 365 Connectors.
+        - See
+          U(https://learn.microsoft.com/en-us/microsoftteams/platform/task-modules-and-cards/cards/cards-reference#connector-card-for-microsoft-365-groups).
+      options: {}
+  expected:
+    DOCUMENTATION: |
+      module: office_365_connector_card
+      short_description: Use webhooks to create Connector Card messages within an Office 365 group
+      description:
+        - Creates Connector Card messages through Office 365 Connectors.
+        - See
+          U(https://learn.microsoft.com/en-us/microsoftteams/platform/task-modules-and-cards/cards/cards-reference#connector-card-for-microsoft-365-groups).
+      options: {}
+
 # testcase copied from the EXAMPLES section of the connection plugin community.general.wsl
 - id: multiple-docs-in-examples
   input:
