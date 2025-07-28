@@ -192,22 +192,22 @@ files = [
 
 [[package]]
 name = "ansible-core"
-version = "2.18.7"
+version = "2.19.0"
 description = "Radically simple IT automation"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
 files = [
-    {file = "ansible_core-2.18.7-py3-none-any.whl", hash = "sha256:ac42ecb480fb98890d338072f7298cd462fb2117da6700d989c7ae688962ba69"},
-    {file = "ansible_core-2.18.7.tar.gz", hash = "sha256:1a129bf9fcd5dca2b17e83ce77147ee2fbc3c51a4958970152897cc5b6d0aae7"},
+    {file = "ansible_core-2.19.0-py3-none-any.whl", hash = "sha256:5914f1539f5da190bd9591112e20e339d699bda0c546992fc77c1e3ccc3928f2"},
+    {file = "ansible_core-2.19.0.tar.gz", hash = "sha256:ca4730837fdd50c8f8ab2fa17c04c448d74c5a27f3d5be7e602d9e3feb9430bc"},
 ]
 
 [package.dependencies]
 cryptography = "*"
-jinja2 = ">=3.0.0"
+jinja2 = ">=3.1.0"
 packaging = "*"
 PyYAML = ">=5.1"
-resolvelib = ">=0.5.3,<1.1.0"
+resolvelib = ">=0.5.3,<2.0.0"
 
 [[package]]
 name = "ansible-pygments"
@@ -288,14 +288,14 @@ typing = ["mypy", "pyre-check (>=0.9.17,<0.9.23)", "types-aiofiles", "typing-ext
 
 [[package]]
 name = "antsibull-docs"
-version = "2.19.1"
+version = "2.20.0"
 description = "Tools for building Ansible documentation"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "antsibull_docs-2.19.1-py3-none-any.whl", hash = "sha256:6a049f6013e747deed11be7cea8b0ddaba4634a9cee4e8e5b3b385257f1beaab"},
-    {file = "antsibull_docs-2.19.1.tar.gz", hash = "sha256:a354cadc254220f4dfd7d3bcea66bacbd36043c550b0550a554702638e4eff0c"},
+    {file = "antsibull_docs-2.20.0-py3-none-any.whl", hash = "sha256:a5e1c2fdcb34fe9e388b5e4102f9f0356cf5c8f77ef2b123d5a010e88f9404fa"},
+    {file = "antsibull_docs-2.20.0.tar.gz", hash = "sha256:4409733cc2ea348a7eed2d9587ee073da0af9caaccc66bd30c329be750904055"},
 ]
 
 [package.dependencies]
@@ -1300,14 +1300,14 @@ smmap = ">=3.0.1,<6"
 
 [[package]]
 name = "gitpython"
-version = "3.1.44"
+version = "3.1.45"
 description = "GitPython is a Python library used to interact with Git repositories"
 optional = false
 python-versions = ">=3.7"
 groups = ["dev"]
 files = [
-    {file = "GitPython-3.1.44-py3-none-any.whl", hash = "sha256:9e0e10cda9bed1ee64bc9a6de50e7e38a9c9943241cd7f585f6df3ed28011110"},
-    {file = "gitpython-3.1.44.tar.gz", hash = "sha256:c87e30b26253bf5418b01b0660f818967f3c503193838337fe5e573331249269"},
+    {file = "gitpython-3.1.45-py3-none-any.whl", hash = "sha256:8908cb2e02fb3b93b7eb0f2827125cb699869470432cc885f019b8fd0fccff77"},
+    {file = "gitpython-3.1.45.tar.gz", hash = "sha256:85b0ee964ceddf211c41b9f27a49086010a190fd8132a24e21f362a4b36a791c"},
 ]
 
 [package.dependencies]
@@ -2925,14 +2925,14 @@ files = [
 
 [[package]]
 name = "tox"
-version = "4.28.0"
+version = "4.28.3"
 description = "tox is a generic virtualenv management and test command line tool"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "tox-4.28.0-py3-none-any.whl", hash = "sha256:3e2f5c0a00523a58666690108b66820150f6435cb6e4dd95caf21bb52133c1d1"},
-    {file = "tox-4.28.0.tar.gz", hash = "sha256:442347b1a415733850f097e7e78b8c5f38b5e1719f8b7205aade5d055f08068c"},
+    {file = "tox-4.28.3-py3-none-any.whl", hash = "sha256:1debe9daf0b7e64d425ef99a17292b0792385686b1d541df34c7298211e99269"},
+    {file = "tox-4.28.3.tar.gz", hash = "sha256:b91db7219e5242002cf4040a299c8852026d6af35fcd21274d456fb62dafee7b"},
 ]
 
 [package.dependencies]
