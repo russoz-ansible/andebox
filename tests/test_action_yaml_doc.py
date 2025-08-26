@@ -164,8 +164,9 @@ TEST_CASES_MOCK = load_test_cases(
     DOCUMENTATION: |
       short_description: Test plugin
       description:
-        - Lorem ipsum dolor sit amet consectetur
-          adipiscing elit quisque faucibus.
+        - Lorem ipsum dolor sit amet
+          consectetur adipiscing elit quisque
+          faucibus.
       options: {}
 
 - id: word-wrapper-long-word
@@ -449,7 +450,8 @@ TEST_CASES_MOCK = load_test_cases(
   expected:
     RETURN: |
       member:
-        description: Specific balancer member information dictionary, returned when the module is invoked with O(member_host) parameter.
+        description: Specific balancer member information dictionary, returned when the module is invoked with O(member_host)
+          parameter.
         type: dict
         returned: success
         sample:
@@ -481,8 +483,8 @@ TEST_CASES_MOCK = load_test_cases(
             }
           }
       members:
-        description: List of member (defined above) dictionaries, returned when the module is invoked with no O(member_host) and
-          O(state) args.
+        description: List of member (defined above) dictionaries, returned when the module is invoked with no O(member_host)
+          and O(state) args.
         returned: success
         type: list
         sample:
