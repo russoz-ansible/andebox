@@ -1,6 +1,39 @@
 # CHANGELOG
 
 
+## v1.6.0 (2025-08-30)
+
+### Chores
+
+- Run tests when updating dependencies
+  ([`2b883a2`](https://github.com/russoz-ansible/andebox/commit/2b883a2157a65131e987c7044421306a98c12a00))
+
+- **deps**: Bump the python-dependencies group across 1 directory with 4 updates
+  ([`42d377b`](https://github.com/russoz-ansible/andebox/commit/42d377b96e9075bbd87b56a062b6a6f02ff55ac1))
+
+- **deps**: Bump the python-dependencies group with 3 updates
+  ([`f5f077b`](https://github.com/russoz-ansible/andebox/commit/f5f077be8476c2c7fd16e1afa0e84e3e945cb24d))
+
+- **deps**: Update project dependencies
+  ([`ed2d793`](https://github.com/russoz-ansible/andebox/commit/ed2d79340a9796707dbe0894472ae110a6098223))
+
+- **deps-dev**: Bump furo from 2024.8.6 to 2025.7.19
+  ([`c779ee6`](https://github.com/russoz-ansible/andebox/commit/c779ee6042cbea608151e67dcb56ebacc70293eb))
+
+### Features
+
+- **action/tox-test**: Update default tox ini up to ansible-core 2.19
+  ([`fbb8ef2`](https://github.com/russoz-ansible/andebox/commit/fbb8ef2b07d07f898c5125f300382522b22d90b0))
+
+### Testing
+
+- Adjust output for test of action/yaml-doc
+  ([`1e3f637`](https://github.com/russoz-ansible/andebox/commit/1e3f63787331056ba89bb468e2bc6f00fa53f314))
+
+- **action/test**: Skip Python 3.11 when using ansible-core's ansible-test
+  ([`a042008`](https://github.com/russoz-ansible/andebox/commit/a0420082bf6296eea7453bec8968e8a325c4ef99))
+
+
 ## v1.5.1 (2025-07-23)
 
 ### Bug Fixes
