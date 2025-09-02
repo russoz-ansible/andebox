@@ -25,7 +25,7 @@ Some examples of how you can use andebox:
 .. code-block:: shell
 
    # setup-less execution of test
-   cd community.general && andebox test -- sanity plugins/modules/*.py
+   cd community.general && andebox test -- sanity --docker default --python 3.13 plugins/modules/*.py
 
    # reformat YAML doc blocks
    andebox yaml-doc plugins/modules/xfconf.py
@@ -60,5 +60,5 @@ For the actions that require a specfic directory structure, ``andebox`` creates 
 Because the actual commands are executed against a copy, ``andebox`` is free to support features that would otherwise
 not be possible, modifying files temporarily.
 
-When debugging your collection, some of the actions, notabaly ``test``, can be run with the ``--keep`` option,
+When debugging your collection, some of the actions, notably ``test``, can be run with the ``--keep`` option,
 which will keep the temporary directory after execution.
