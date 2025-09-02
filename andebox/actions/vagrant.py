@@ -54,10 +54,13 @@ class VagrantAction(AndeboxAction):
     def make_parser(cls, subparser):
         action_parser = super(VagrantAction, cls).make_parser(subparser)
         action_parser.epilog = (
-            "Notice the use of '--' to delimit the vagrant command from the one running inside the VM\n"
-            "If VENV is not provided, it is assumed to be `/venv`."
+            "In the usage, the positional argument 'andebox_params' includes everything from '--' to the end of the line. "
+            "Notice the use of '--' twice: one mandatory to delimit 'andebox vagrant' from those 'andebox_params' "
+            "and one optional to separate the andebox command inside the VM from its test params. "
+            "By default, 'andebox vagrant' will use a VENV in '/venv' inside the VM but you may specify a custom one with '-V VENV'. "
+            "In either case, the virtual env MUST exist inside the VM."
         )
-        action_parser.usage = "%(prog)s [-hsd] [-n name] [-V VENV] -- <andebox-cmd> [andebox-cmd-opts [-- test-params]]"
+        action_parser.usage = "andebox [-V VENV] vagrant [-h] [--name NAME] [--sudo] [--destroy] -- <andebox-cmd> [andebox-cmd-opts [-- test-params]]"
 
     def run(self, context):
         if IMPORT_ERROR:
