@@ -40,32 +40,33 @@ class VagrantAction(AndeboxAction):
             ),
         ),
         dict(
-            names=("--sudo", "-s"),
-            specs=dict(action="store_true", help="""use sudo to run andebox"""),
-        ),
-        dict(
             names=("--destroy", "-d"),
             specs=dict(action="store_true", help="""destroy the VM after the test"""),
         ),
-        dict(names=("andebox_params",), specs=dict(nargs="+")),
+        dict(
+            names=("--sudo", "-s"),
+            specs=dict(
+                action="store_true", help="""use sudo to run andebox inside the VM"""
+            ),
+        ),
+        dict(names=("integration_test_params",), specs=dict(nargs="+")),
     ]
 
     @classmethod
     def make_parser(cls, subparser):
         action_parser = super(VagrantAction, cls).make_parser(subparser)
         action_parser.epilog = (
-            "In the usage, the positional argument 'andebox_params' includes everything from '--' to the end of the line. "
-            "Notice the use of '--' twice: one mandatory to delimit 'andebox vagrant' from those 'andebox_params' "
-            "and one optional to separate the andebox command inside the VM from its test params. "
-            "By default, 'andebox vagrant' will use a VENV in '/venv' inside the VM but you may specify a custom one with '-V VENV'. "
-            "In either case, the virtual env MUST exist inside the VM."
+            "This action runs 'andebox test -- integration' inside a Vagrant-managed VM, "
+            "with all arguments following '--' being passed to that integration test command. "
+            "The command runs inside a virtual environment in the VM (default: /venv), which MUST exist. "
+            "Use the global '-V /path/to/venv' option to specify a different path for the venv."
         )
-        action_parser.usage = "andebox [-V VENV] vagrant [-h] [--name NAME] [--sudo] [--destroy] -- <andebox-cmd> [andebox-cmd-opts [-- test-params]]"
+        action_parser.usage = "andebox [-V VENV] vagrant [-h] [--name NAME] [--sudo] [--destroy] -- <integration-test-params>"
 
     def run(self, context):
         if IMPORT_ERROR:
             raise AndeboxException(
-                "Missing dependency for action 'vagrant': "
+                f"Missing dependency for action 'vagrant': {IMPORT_ERROR}"
             ) from IMPORT_ERROR
 
         if not Path("Vagrantfile").exists():
@@ -95,7 +96,7 @@ class VagrantAction(AndeboxAction):
                 print(f"== BEGIN vagrant andebox: {machine_name} ".ljust(80, "="))
                 with c.cd("/vagrant"):
                     andebox_path = context.binary_path("andebox")
-                    cmd = f"{andebox_path} --venv {context.args.venv} test -- integration {' '.join(context.args.andebox_params)}"
+                    cmd = f"{andebox_path} --venv {context.args.venv} test -- integration {' '.join(context.args.integration_test_params)}"
                     if context.args.sudo:
                         cmd = "sudo -HE " + cmd
 
