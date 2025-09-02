@@ -20,7 +20,7 @@ Vagrantfile
 ^^^^^^^^^^^
 
 The ``Vagrantfile`` file is **not created automatically**.
-The **MUST** be present in the current directory for this action to work.
+The file **MUST** be present in the current directory for this action to work.
 
 The VMs defined in your ``Vagrantfile``:
 
