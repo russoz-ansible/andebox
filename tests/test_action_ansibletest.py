@@ -81,6 +81,22 @@ TEST_CASES = load_test_cases(
     rc: 1
     in_stdout: >
       ERROR: lib/ansible/modules/dnf5.py:0:0: parameter-invalid: Argument 'expire-cache' in argument_spec is not a valid python identifier
+
+- id: cg-sanity-exclude-ignore
+  input:
+    repo: https://github.com/ansible-collections/community.general.git
+    args:
+      - test
+      - --exclude-from-ignore
+      - --
+      - sanity
+      - --docker
+      - default
+      - plugins/modules/lxc_container.py
+  expected:
+    rc: 1
+    in_stdout: >
+      ERROR: plugins/modules/lxc_container.py:583:9: use-run-command-not-popen: subprocess.Popen call found. Should be module.run_command
 """
 )
 
