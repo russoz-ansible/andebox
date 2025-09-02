@@ -33,7 +33,3 @@ Usage Examples
     andebox runtime --plugin-type modules mymodule
     andebox runtime --plugin-type callback --regex '^osx_.*'
     andebox runtime --info-type d proxmox_disk
-
-Known Issues
-------------
-- No known issues at this time.

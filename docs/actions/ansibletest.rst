@@ -61,7 +61,3 @@ Integration test:
 
 .. image:: ../images/term/integration.gif
    :alt: integration test
-
-Known Issues
-------------
-- No known issues at this time.

@@ -47,7 +47,3 @@ Usage Examples
     andebox ignores --spec 2.16
     andebox ignores --filter-files test_module
     andebox ignores --head 5
-
-Known Issues
-------------
-- No known issues at this time.

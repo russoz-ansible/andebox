@@ -32,7 +32,3 @@ Usage Examples
 
    # Generate docsite and open it in the browser
    andebox docsite -d /tmp/mycollection_docsite -o
-
-Known Issues
-------------
-- No known issues at this time.
