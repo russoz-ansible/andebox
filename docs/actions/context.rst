@@ -46,7 +46,3 @@ Or, if the directory is not recognized by ``andebox``:
    Cannot determine context for: /home/user/Desktop
 
 In this last case, the command will return an exist staus of 1, indicating failure.
-
-Known Issues
-------------
-- No known issues at this time.
