@@ -49,6 +49,13 @@ class TestChangelogFragmentUtilities:
         # Mock collection context
         collection_context = Mock()
         collection_context.type = ContextType.COLLECTION
+        collection_context.get_plugin_paths.return_value = [
+            "plugins/modules/",
+            "plugins/module_utils/",
+            "plugins/lookup/",
+            "plugins/filter/",
+            "plugins/callback/",
+        ]
         
         # Plugin files
         assert action.is_plugin_file("plugins/modules/test_module.py", collection_context) is True
@@ -66,6 +73,10 @@ class TestChangelogFragmentUtilities:
         # Test ansible-core context
         ansible_core_context = Mock()
         ansible_core_context.type = ContextType.ANSIBLE_CORE
+        ansible_core_context.get_plugin_paths.return_value = [
+            "lib/ansible/modules/",
+            "lib/ansible/module_utils/",
+        ]
         
         assert action.is_plugin_file("lib/ansible/modules/test_module.py", ansible_core_context) is True
         assert action.is_plugin_file("lib/ansible/module_utils/helper.py", ansible_core_context) is True
@@ -78,6 +89,11 @@ class TestChangelogFragmentUtilities:
         # Mock collection context
         collection_context = Mock()
         collection_context.type = ContextType.COLLECTION
+        collection_context.get_plugin_paths.return_value = [
+            "plugins/modules/",
+            "plugins/module_utils/",
+            "plugins/lookup/",
+        ]
         
         changed_files = {
             "plugins/modules/test_module.py",
@@ -105,6 +121,11 @@ class TestChangelogFragmentUtilities:
         # Mock collection context
         collection_context = Mock()
         collection_context.type = ContextType.COLLECTION
+        collection_context.extract_plugin_type_from_path.side_effect = lambda path: {
+            "plugins/modules/test_module.py": "modules",
+            "plugins/module_utils/helper.py": "module_utils",
+            "plugins/lookup/test_lookup.py": "lookup"
+        }.get(path, "")
         
         plugin_changes = [
             "plugins/modules/test_module.py",

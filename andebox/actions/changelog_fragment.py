@@ -11,7 +11,7 @@ from typing import List, Set
 import yaml
 from git import Repo
 
-from ..context import ConcreteContext, ContextType
+from ..context import ConcreteContext
 from ..exceptions import AndeboxException
 from .base import AndeboxAction
 
@@ -58,7 +58,7 @@ class ChangelogFragmentAction(AndeboxAction):
     @staticmethod
     def get_current_branch() -> str:
         try:
-            repo = Repo(search_parent_directories=True)
+            repo = Repo()
             return repo.active_branch.name
         except Exception as e:
             raise AndeboxException(f"Failed to get current git branch: {e}")
@@ -66,7 +66,7 @@ class ChangelogFragmentAction(AndeboxAction):
     @staticmethod
     def get_changed_files(base_branch: str = None) -> Set[str]:
         try:
-            repo = Repo(search_parent_directories=True)
+            repo = Repo()
 
             # If no base branch specified, try to determine it
             if base_branch is None:
@@ -101,13 +101,28 @@ class ChangelogFragmentAction(AndeboxAction):
 
     @staticmethod
     def _get_base_branch(repo) -> str:
-        # Try common default branch names
-        for branch in ["main", "master"]:
+        # Check if we have remotes and can determine default branch
+        if repo.remotes:
             try:
-                repo.commit(branch)
-                return branch
+                # Try to get the default branch from remote HEAD
+                for remote in repo.remotes:
+                    try:
+                        remote_head = remote.refs.HEAD
+                        if remote_head.reference:
+                            return remote_head.reference.name.split('/')[-1]
+                    except Exception:
+                        continue
             except Exception:
-                continue
+                pass
+        
+        # Fallback: check which common branches exist locally
+        try:
+            for ref in repo.refs:
+                if ref.name in ('main', 'master'):
+                    return ref.name
+        except Exception:
+            pass
+            
         return "HEAD~1"
 
     @staticmethod
@@ -130,57 +145,8 @@ class ChangelogFragmentAction(AndeboxAction):
 
         return changed_files
 
-    @staticmethod
-    def get_plugin_paths(context: ConcreteContext) -> List[str]:
-        if context.type == ContextType.COLLECTION:
-            return [
-                "plugins/modules/",
-                "plugins/module_utils/",
-                "plugins/lookup/",
-                "plugins/filter/",
-                "plugins/test/",
-                "plugins/callback/",
-                "plugins/connection/",
-                "plugins/inventory/",
-                "plugins/action/",
-                "plugins/cache/",
-                "plugins/become/",
-                "plugins/cliconf/",
-                "plugins/doc_fragments/",
-                "plugins/httpapi/",
-                "plugins/netconf/",
-                "plugins/shell/",
-                "plugins/strategy/",
-                "plugins/terminal/",
-                "plugins/vars/",
-            ]
-        elif context.type == ContextType.ANSIBLE_CORE:
-            return [
-                "lib/ansible/modules/",
-                "lib/ansible/module_utils/",
-                "lib/ansible/plugins/lookup/",
-                "lib/ansible/plugins/filter/",
-                "lib/ansible/plugins/test/",
-                "lib/ansible/plugins/callback/",
-                "lib/ansible/plugins/connection/",
-                "lib/ansible/plugins/inventory/",
-                "lib/ansible/plugins/action/",
-                "lib/ansible/plugins/cache/",
-                "lib/ansible/plugins/become/",
-                "lib/ansible/plugins/cliconf/",
-                "lib/ansible/plugins/doc_fragments/",
-                "lib/ansible/plugins/httpapi/",
-                "lib/ansible/plugins/netconf/",
-                "lib/ansible/plugins/shell/",
-                "lib/ansible/plugins/strategy/",
-                "lib/ansible/plugins/terminal/",
-                "lib/ansible/plugins/vars/",
-            ]
-        else:
-            return []
-
     def is_plugin_file(self, file_path: str, context: ConcreteContext) -> bool:
-        plugin_paths = self.get_plugin_paths(context)
+        plugin_paths = context.get_plugin_paths()
         return any(file_path.startswith(plugin_path) for plugin_path in plugin_paths)
 
     def get_plugin_changes(
@@ -196,12 +162,9 @@ class ChangelogFragmentAction(AndeboxAction):
 
         # Group changes by plugin type
         changes_by_type = {}
-        plugin_paths = self.get_plugin_paths(context)
 
         for file_path in plugin_changes:
-            plugin_type = self._extract_plugin_type(
-                file_path, plugin_paths, context
-            )
+            plugin_type = context.extract_plugin_type_from_path(file_path)
 
             if plugin_type:
                 if plugin_type not in changes_by_type:
@@ -225,57 +188,12 @@ class ChangelogFragmentAction(AndeboxAction):
 
         return fragment
 
-    def _extract_plugin_type(
-        self,
-        file_path: str,
-        plugin_paths: List[str],
-        context: ConcreteContext
-    ) -> str:
-        # Find which plugin path this file matches
-        for path in plugin_paths:
-            if file_path.startswith(path):
-                # Extract plugin type from path
-                if context.type == ContextType.COLLECTION:
-                    # For collections: plugins/modules/ -> modules
-                    return path.split('/')[1]
-                elif context.type == ContextType.ANSIBLE_CORE:
-                    # For ansible-core: lib/ansible/modules/ -> modules
-                    # or lib/ansible/plugins/lookup/ -> lookup
-                    path_parts = path.split('/')
-                    if len(path_parts) >= 3:
-                        if path_parts[2] == "modules":
-                            return "modules"
-                        elif len(path_parts) >= 4:
-                            return path_parts[3]
-                break
-        return ""
-
-    @staticmethod
-    def get_default_branch() -> str:
-        try:
-            repo = Repo(search_parent_directories=True)
-            # Try common default branch names
-            for branch in ["main", "master"]:
-                try:
-                    repo.commit(branch)
-                    return branch
-                except Exception:
-                    continue
-            # If neither exists, return the first remote tracking branch
-            if repo.remotes:
-                for ref in repo.remotes.origin.refs:
-                    if ref.name in ['origin/main', 'origin/master']:
-                        return ref.name.split('/')[-1]
-            return "main"  # fallback
-        except Exception:
-            return "main"  # fallback
-
     def run(self, context: ConcreteContext) -> None:
         # Get current branch name
         branch_name = self.get_current_branch()
 
         # Skip if on default branch unless forced
-        default_branch = self.get_default_branch()
+        default_branch = context.get_default_branch()
         if branch_name == default_branch and not context.args.force:
             print(
                 f"Skipping changelog fragment creation on {branch_name} branch"
