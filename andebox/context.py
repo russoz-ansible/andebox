@@ -184,18 +184,25 @@ class AbstractContext(ABC):
                 except Exception:
                     pass
             
-            # Fallback: check which common branches exist locally
+            # Fallback: try to find the first available local branch
             try:
-                for ref in repo.refs:
-                    if ref.name in ('main', 'master'):
-                        return ref.name
+                if repo.refs:
+                    # Return the first available branch
+                    return repo.refs[0].name
             except Exception:
                 pass
                 
-            # Final fallback
-            return 'main'
+            # Final fallback - use HEAD if available
+            try:
+                return repo.head.reference.name
+            except Exception:
+                pass
+                
         except Exception:
-            return 'main'
+            pass
+            
+        # If all else fails, we can't determine the default branch
+        raise AndeboxException("Unable to determine default branch for repository")
 
 
 class AnsibleCoreContext(AbstractContext):
@@ -221,28 +228,27 @@ class AnsibleCoreContext(AbstractContext):
         return self.tests_subdir / "units"
 
     def get_plugin_paths(self) -> List[str]:
-        """Return plugin paths for ansible-core context."""
-        return [
-            "lib/ansible/modules/",
-            "lib/ansible/module_utils/",
-            "lib/ansible/plugins/lookup/",
-            "lib/ansible/plugins/filter/",
-            "lib/ansible/plugins/test/",
-            "lib/ansible/plugins/callback/",
-            "lib/ansible/plugins/connection/",
-            "lib/ansible/plugins/inventory/",
-            "lib/ansible/plugins/action/",
-            "lib/ansible/plugins/cache/",
-            "lib/ansible/plugins/become/",
-            "lib/ansible/plugins/cliconf/",
-            "lib/ansible/plugins/doc_fragments/",
-            "lib/ansible/plugins/httpapi/",
-            "lib/ansible/plugins/netconf/",
-            "lib/ansible/plugins/shell/",
-            "lib/ansible/plugins/strategy/",
-            "lib/ansible/plugins/terminal/",
-            "lib/ansible/plugins/vars/",
-        ]
+        """Return plugin paths for ansible-core context by discovering them."""
+        plugin_paths = []
+        
+        # Check for modules directory
+        modules_path = Path("lib/ansible/modules")
+        if modules_path.exists() and modules_path.is_dir():
+            plugin_paths.append("lib/ansible/modules/")
+        
+        # Check for module_utils directory  
+        module_utils_path = Path("lib/ansible/module_utils")
+        if module_utils_path.exists() and module_utils_path.is_dir():
+            plugin_paths.append("lib/ansible/module_utils/")
+            
+        # Check for plugins directory and discover plugin types
+        plugins_base = Path("lib/ansible/plugins")
+        if plugins_base.exists() and plugins_base.is_dir():
+            for plugin_dir in plugins_base.iterdir():
+                if plugin_dir.is_dir():
+                    plugin_paths.append(f"lib/ansible/plugins/{plugin_dir.name}/")
+        
+        return plugin_paths
 
     def extract_plugin_type_from_path(self, file_path: str) -> str:
         """Extract plugin type from file path for ansible-core context."""
@@ -339,28 +345,17 @@ class CollectionContext(AbstractContext):
                 time.sleep(delay)
 
     def get_plugin_paths(self) -> List[str]:
-        """Return plugin paths for collection context."""
-        return [
-            "plugins/modules/",
-            "plugins/module_utils/",
-            "plugins/lookup/",
-            "plugins/filter/",
-            "plugins/test/",
-            "plugins/callback/",
-            "plugins/connection/",
-            "plugins/inventory/",
-            "plugins/action/",
-            "plugins/cache/",
-            "plugins/become/",
-            "plugins/cliconf/",
-            "plugins/doc_fragments/",
-            "plugins/httpapi/",
-            "plugins/netconf/",
-            "plugins/shell/",
-            "plugins/strategy/",
-            "plugins/terminal/",
-            "plugins/vars/",
-        ]
+        """Return plugin paths for collection context by discovering them."""
+        plugin_paths = []
+        
+        # Check for plugins directory and discover plugin types
+        plugins_base = Path("plugins")
+        if plugins_base.exists() and plugins_base.is_dir():
+            for plugin_dir in plugins_base.iterdir():
+                if plugin_dir.is_dir():
+                    plugin_paths.append(f"plugins/{plugin_dir.name}/")
+        
+        return plugin_paths
 
     def extract_plugin_type_from_path(self, file_path: str) -> str:
         """Extract plugin type from file path for collection context."""

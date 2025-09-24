@@ -64,13 +64,17 @@ class ChangelogFragmentAction(AndeboxAction):
             raise AndeboxException(f"Failed to get current git branch: {e}")
 
     @staticmethod
-    def get_changed_files(base_branch: str = None) -> Set[str]:
+    def get_changed_files(base_branch: str = None, context: ConcreteContext = None) -> Set[str]:
         try:
             repo = Repo()
 
             # If no base branch specified, try to determine it
             if base_branch is None:
-                base_branch = ChangelogFragmentAction._get_base_branch(repo)
+                if context:
+                    base_branch = context.get_default_branch()
+                else:
+                    # Fallback if no context provided
+                    base_branch = ChangelogFragmentAction._get_base_branch(repo)
 
             # Get changes from base branch to current
             changed_files = set()
@@ -115,11 +119,11 @@ class ChangelogFragmentAction(AndeboxAction):
             except Exception:
                 pass
         
-        # Fallback: check which common branches exist locally
+        # Fallback: try to find the first available local branch
         try:
-            for ref in repo.refs:
-                if ref.name in ('main', 'master'):
-                    return ref.name
+            if repo.refs:
+                # Return the first available branch
+                return repo.refs[0].name
         except Exception:
             pass
             
@@ -209,7 +213,7 @@ class ChangelogFragmentAction(AndeboxAction):
             )
 
         # Get changed files
-        changed_files = self.get_changed_files()
+        changed_files = self.get_changed_files(context=context)
 
         # Filter to plugin files only
         plugin_changes = self.get_plugin_changes(changed_files, context)
