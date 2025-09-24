@@ -18,10 +18,7 @@ from .base import AndeboxAction
 
 class ChangelogFragmentAction(AndeboxAction):
     name = "changelog-fragment"
-    help = (
-        "generates changelog fragment from git branch name and changed "
-        "plugin files"
-    )
+    help = "generates changelog fragment based on changed plugin files"
     args = [
         dict(
             names=["--fragment-dir", "-d"],
@@ -33,17 +30,18 @@ class ChangelogFragmentAction(AndeboxAction):
                 ),
             ),
         ),
-        dict(
-            names=["--force", "-f"],
-            specs=dict(
-                action="store_true",
-                help=(
-                    "force creation of fragment even if no plugin files "
-                    "changed"
-                ),
-            ),
-        ),
     ]
+
+    def __init__(self):
+        self.repo = None
+
+    def _get_repo(self):
+        if self.repo is None:
+            try:
+                self.repo = Repo()
+            except Exception as e:
+                raise AndeboxException(f"Failed to initialize git repository: {e}")
+        return self.repo
 
     @staticmethod
     def sanitize_branch_name(branch_name: str) -> str:
@@ -55,18 +53,16 @@ class ChangelogFragmentAction(AndeboxAction):
         sanitized = sanitized.strip('-')
         return sanitized
 
-    @staticmethod
-    def get_current_branch() -> str:
+    def get_current_branch(self) -> str:
         try:
-            repo = Repo()
+            repo = self._get_repo()
             return repo.active_branch.name
         except Exception as e:
             raise AndeboxException(f"Failed to get current git branch: {e}")
 
-    @staticmethod
-    def get_changed_files(base_branch: str = None, context: ConcreteContext = None) -> Set[str]:
+    def get_changed_files(self, base_branch: str = None, context: ConcreteContext = None) -> Set[str]:
         try:
-            repo = Repo()
+            repo = self._get_repo()
 
             # If no base branch specified, try to determine it
             if base_branch is None:
@@ -74,16 +70,18 @@ class ChangelogFragmentAction(AndeboxAction):
                     base_branch = context.get_default_branch()
                 else:
                     # Fallback if no context provided
-                    base_branch = ChangelogFragmentAction._get_base_branch(repo)
+                    base_branch = self._get_base_branch(repo)
 
             # Get changes from base branch to current
             changed_files = set()
             try:
+                # Get the merge base to find the common ancestor
+                current_commit = repo.head.commit
                 base_commit = repo.commit(base_branch)
-                head_commit = repo.head.commit
+                merge_base = repo.merge_base(current_commit, base_commit)[0]
 
-                # Get files changed between base and HEAD
-                for item in base_commit.diff(head_commit):
+                # Get files changed between merge base and current HEAD
+                for item in merge_base.diff(current_commit):
                     if item.a_path:
                         changed_files.add(item.a_path)
                     if item.b_path:
@@ -95,7 +93,7 @@ class ChangelogFragmentAction(AndeboxAction):
 
             # Always include staged and unstaged changes
             changed_files.update(
-                ChangelogFragmentAction._get_staged_unstaged_files(repo)
+                self._get_staged_unstaged_files(repo)
             )
 
             return changed_files
@@ -103,8 +101,7 @@ class ChangelogFragmentAction(AndeboxAction):
         except Exception as e:
             raise AndeboxException(f"Failed to get changed files: {e}")
 
-    @staticmethod
-    def _get_base_branch(repo) -> str:
+    def _get_base_branch(self, repo) -> str:
         # Check if we have remotes and can determine default branch
         if repo.remotes:
             try:
@@ -127,10 +124,10 @@ class ChangelogFragmentAction(AndeboxAction):
         except Exception:
             pass
             
-        return "HEAD~1"
+        # If all else fails, raise an error
+        raise AndeboxException("Unable to determine base branch for comparison")
 
-    @staticmethod
-    def _get_staged_unstaged_files(repo) -> Set[str]:
+    def _get_staged_unstaged_files(self, repo) -> Set[str]:
         changed_files = set()
 
         # Get unstaged changes
@@ -196,9 +193,9 @@ class ChangelogFragmentAction(AndeboxAction):
         # Get current branch name
         branch_name = self.get_current_branch()
 
-        # Skip if on default branch unless forced
+        # Skip if on default branch
         default_branch = context.get_default_branch()
-        if branch_name == default_branch and not context.args.force:
+        if branch_name == default_branch:
             print(
                 f"Skipping changelog fragment creation on {branch_name} branch"
             )
@@ -218,14 +215,14 @@ class ChangelogFragmentAction(AndeboxAction):
         # Filter to plugin files only
         plugin_changes = self.get_plugin_changes(changed_files, context)
 
-        if not plugin_changes and not context.args.force:
+        if not plugin_changes:
             print("No plugin files changed, skipping changelog fragment creation")
             return
 
         # Generate fragment content
         fragment_content = self.generate_fragment_content(plugin_changes, context)
 
-        if not fragment_content and not context.args.force:
+        if not fragment_content:
             print("No changes to generate fragment content for")
             return
 
@@ -242,16 +239,8 @@ class ChangelogFragmentAction(AndeboxAction):
 
         # Write fragment content
         with fragment_file.open('w') as f:
-            if fragment_content:
-                yaml.dump(
-                    fragment_content, f, default_flow_style=False, sort_keys=True
-                )
-            else:
-                # Create minimal fragment for forced creation
-                yaml.dump(
-                    {"minor_changes": ["Changes from current branch"]},
-                    f,
-                    default_flow_style=False
-                )
+            yaml.dump(
+                fragment_content, f, default_flow_style=False, sort_keys=True
+            )
 
         print(f"Created changelog fragment: {fragment_file}")

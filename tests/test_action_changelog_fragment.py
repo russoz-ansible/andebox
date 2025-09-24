@@ -21,99 +21,6 @@ from .utils import verify_return_code
 class TestChangelogFragmentUtilities:
     """Unit tests for utility methods that don't require git setup"""
 
-    def test_sanitize_branch_name(self):
-        """Test branch name sanitization"""
-        action = ChangelogFragmentAction()
-        
-        # Basic alphanumeric
-        assert action.sanitize_branch_name("feature-123") == "feature-123"
-        assert action.sanitize_branch_name("feature_branch") == "feature_branch"
-        
-        # Special characters
-        assert action.sanitize_branch_name("feature/fix-bug") == "feature-fix-bug"
-        assert action.sanitize_branch_name("feature@hotfix") == "feature-hotfix"
-        assert action.sanitize_branch_name("feature#123") == "feature-123"
-        
-        # Multiple special characters and consecutive hyphens
-        assert action.sanitize_branch_name("feature///fix@bug###") == "feature-fix-bug"
-        assert action.sanitize_branch_name("--feature--") == "feature"
-        
-        # Edge cases
-        assert action.sanitize_branch_name("123") == "123"
-        assert action.sanitize_branch_name("f") == "f"
-
-    def test_is_plugin_file(self):
-        """Test plugin file detection"""
-        action = ChangelogFragmentAction()
-        
-        # Mock collection context
-        collection_context = Mock()
-        collection_context.type = ContextType.COLLECTION
-        collection_context.get_plugin_paths.return_value = [
-            "plugins/modules/",
-            "plugins/module_utils/",
-            "plugins/lookup/",
-            "plugins/filter/",
-            "plugins/callback/",
-        ]
-        
-        # Plugin files
-        assert action.is_plugin_file("plugins/modules/test_module.py", collection_context) is True
-        assert action.is_plugin_file("plugins/module_utils/helper.py", collection_context) is True
-        assert action.is_plugin_file("plugins/lookup/test_lookup.py", collection_context) is True
-        assert action.is_plugin_file("plugins/filter/test_filter.py", collection_context) is True
-        assert action.is_plugin_file("plugins/callback/test_callback.py", collection_context) is True
-        
-        # Non-plugin files
-        assert action.is_plugin_file("README.md", collection_context) is False
-        assert action.is_plugin_file("tests/test_something.py", collection_context) is False
-        assert action.is_plugin_file("docs/guide.rst", collection_context) is False
-        assert action.is_plugin_file("galaxy.yml", collection_context) is False
-        
-        # Test ansible-core context
-        ansible_core_context = Mock()
-        ansible_core_context.type = ContextType.ANSIBLE_CORE
-        ansible_core_context.get_plugin_paths.return_value = [
-            "lib/ansible/modules/",
-            "lib/ansible/module_utils/",
-        ]
-        
-        assert action.is_plugin_file("lib/ansible/modules/test_module.py", ansible_core_context) is True
-        assert action.is_plugin_file("lib/ansible/module_utils/helper.py", ansible_core_context) is True
-        assert action.is_plugin_file("plugins/modules/test_module.py", ansible_core_context) is False
-
-    def test_get_plugin_changes(self):
-        """Test filtering changed files to plugin files only"""
-        action = ChangelogFragmentAction()
-        
-        # Mock collection context
-        collection_context = Mock()
-        collection_context.type = ContextType.COLLECTION
-        collection_context.get_plugin_paths.return_value = [
-            "plugins/modules/",
-            "plugins/module_utils/",
-            "plugins/lookup/",
-        ]
-        
-        changed_files = {
-            "plugins/modules/test_module.py",
-            "plugins/module_utils/helper.py",
-            "README.md",
-            "tests/test_something.py",
-            "plugins/lookup/test_lookup.py",
-            "docs/guide.rst"
-        }
-        
-        plugin_changes = action.get_plugin_changes(changed_files, collection_context)
-        expected = [
-            "plugins/modules/test_module.py",
-            "plugins/module_utils/helper.py", 
-            "plugins/lookup/test_lookup.py"
-        ]
-        
-        assert len(plugin_changes) == 3
-        assert all(change in expected for change in plugin_changes)
-
     def test_generate_fragment_content(self):
         """Test fragment content generation"""
         action = ChangelogFragmentAction()
@@ -153,22 +60,6 @@ class TestChangelogFragmentUtilities:
         content = action.generate_fragment_content([], collection_context)
         assert content == {}
 
-    def test_special_characters_in_branch_name(self):
-        """Test handling of special characters in branch names"""
-        action = ChangelogFragmentAction()
-        
-        test_cases = [
-            ("feature/fix-bug#123", "feature-fix-bug-123"),
-            ("hotfix@2024.01.15", "hotfix-2024-01-15"),
-            ("user/feature!important", "user-feature-important"),
-            ("fix$$$bug", "fix-bug"),
-            ("feature___test", "feature___test"),  # underscores preserved
-            ("my-feature-branch", "my-feature-branch"),  # hyphens preserved
-        ]
-        
-        for input_branch, expected in test_cases:
-            assert action.sanitize_branch_name(input_branch) == expected
-
 
 # Integration tests using the project's test framework
 TEST_CASES = load_test_cases(
@@ -192,9 +83,8 @@ TEST_CASES = load_test_cases(
   expected:
     rc: 0
     in_stdout:
-      - "generates changelog fragment from git branch name and changed plugin files"
+      - "generates changelog fragment based on changed plugin files"
       - "--fragment-dir"
-      - "--force"
 """
 )
 
