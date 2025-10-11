@@ -25,14 +25,14 @@ class AnsibleTestAction(AndeboxAction):
             names=("--exclude-from-ignore", "-efi", "-ei"),
             specs=dict(
                 action="store_true",
-                help="matching lines in ignore files will be filtered out",
+                help="matching lines in ignore files will be filtered out (sanity tests)",
             ),
         ),
         dict(
             names=("--skip-requirements", "-R"),
             specs=dict(
                 action="store_true",
-                help="skip installation of test requirements.yml",
+                help="skip installation of test requirements.yml (unit/integration tests)",
             ),
         ),
         dict(
