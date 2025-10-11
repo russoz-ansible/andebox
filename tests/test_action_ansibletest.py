@@ -21,13 +21,28 @@ TEST_CASES = load_test_cases(
     repo: {GIT_REPO_CG}
     args:
       - test
-      - -R
       - --
       - sanity
       - --docker
       - default
       - plugins/module_utils/deps.py
   expected: {{}}
+
+- id: cg-sanity-with-requirements-arg
+  input:
+    repo: {GIT_REPO_CG}
+    args:
+      - test
+      - -R
+      - --
+      - sanity
+      - --docker
+      - default
+      - plugins/module_utils/deps.py
+  expected:
+    rc: 2
+    in_stderr: >-
+      andebox: error: --skip-requirements/-R cannot be used with 'sanity' test
 
 - id: cg-unit
   input:
@@ -42,6 +57,24 @@ TEST_CASES = load_test_cases(
       - "3.11"
       - tests/unit/plugins/module_utils/test_cmd_runner.py
   expected: {{}}
+
+- id: cg-unit-with-ei-arg
+  input:
+    repo: {GIT_REPO_CG}
+    args:
+      - test
+      - -ei
+      - --
+      - units
+      - --docker
+      - default
+      - --python
+      - "3.11"
+      - tests/unit/plugins/module_utils/test_cmd_runner.py
+  expected:
+    rc: 2
+    in_stderr: >-
+      andebox: error: --exclude-from-ignore/-ei can only be used with 'sanity' test
 
 - id: cg-unit-no-req
   input:
