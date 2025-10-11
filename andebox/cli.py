@@ -83,12 +83,13 @@ def _make_parser() -> argparse.ArgumentParser:
 
 
 class AndeBox:
-    def __init__(self, args: argparse.Namespace) -> None:
+    def __init__(self, parser: argparse.ArgumentParser) -> None:
         self.actions = {ac.name: ac() for ac in actions}
-        self.args = args
+        self.parser = parser
+        self.args = parser.parse_args()
 
     def run(self):
-        context = create_context(self.args)
+        context = create_context(self.parser, self.args)
         with set_dir(context.base_dir):
             action = self.actions[self.args.action]
             action.run(context)
@@ -97,11 +98,10 @@ class AndeBox:
 def run():
     parser = _make_parser()
     argcomplete.autocomplete(parser)
-    args = parser.parse_args()
 
     try:
         signal.signal(signal.SIGPIPE, signal.SIG_DFL)
-        box = AndeBox(args)
+        box = AndeBox(parser)
         box.run()
         return 0
     except KeyboardInterrupt:
