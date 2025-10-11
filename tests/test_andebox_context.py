@@ -31,14 +31,14 @@ def repo_dir(git_repo):
 def test_ansible_cg(repo_dir):
     with set_dir(repo_dir(GIT_REPO_CG)):
         parser = _make_parser()
-        context = create_context(parser.parse_args(args=["context"]))
+        context = create_context(parser, parser.parse_args(args=["context"]))
         assert context.type == ContextType.COLLECTION
 
 
 def test_ansible_core(repo_dir):
     with set_dir(repo_dir(GIT_REPO_AC)):
         parser = _make_parser()
-        context = create_context(parser.parse_args(args=["context"]))
+        context = create_context(parser, parser.parse_args(args=["context"]))
         assert context.type == ContextType.ANSIBLE_CORE
 
 
@@ -49,4 +49,4 @@ def test_invalid_dir(tmp_path):
     with set_dir(repo_dir):
         parser = _make_parser()
         with pytest.raises(AndeboxUnknownContext):
-            create_context(parser.parse_args(args=["context"]))
+            create_context(parser, parser.parse_args(args=["context"]))
