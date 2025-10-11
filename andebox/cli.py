@@ -106,7 +106,7 @@ def run():
         return 0
     except KeyboardInterrupt:
         print("Interrupted by user", file=sys.stderr)
-        return 2
+        return 100
     except (AndeboxException, BrokenPipeError) as e:
         print(str(e), file=sys.stderr)
         return 1
