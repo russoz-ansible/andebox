@@ -96,7 +96,7 @@ TEST_CASES = load_test_cases(
   expected:
     rc: 1
     in_stdout: >
-      ERROR: plugins/modules/lxc_container.py:583:9: use-run-command-not-popen: subprocess.Popen call found. Should be module.run_command
+      ERROR: plugins/modules/lxc_container.py:\\d+:9: use-run-command-not-popen: subprocess.Popen call found. Should be module.run_command
 """
 )
 
