@@ -110,3 +110,6 @@ def run():
     except (AndeboxException, BrokenPipeError) as e:
         print(str(e), file=sys.stderr)
         return 1
+    except SystemExit as e:
+        print(str(e), file=sys.stderr)
+        return e.code
