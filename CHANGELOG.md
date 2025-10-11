@@ -1,6 +1,74 @@
 # CHANGELOG
 
 
+## v1.7.0 (2025-10-11)
+
+### Chores
+
+- **action/vagrant**: Adjust usage and epilog for CLI help
+  ([`d6a8dda`](https://github.com/russoz-ansible/andebox/commit/d6a8dda60324e142acb5a532cd0f1d8218fb805c))
+
+- **action/vagrant**: Adjust usage and epilog for CLI help
+  ([`8c5dd35`](https://github.com/russoz-ansible/andebox/commit/8c5dd352bb5a0dcc63c84e28db06f4d51687a4e1))
+
+- **deps**: Bump the python-dependencies group across 1 directory with 3 updates
+  ([`4dfce4b`](https://github.com/russoz-ansible/andebox/commit/4dfce4b3f49d7d5064ea1cc3c406988427204c5f))
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`82fee57`](https://github.com/russoz-ansible/andebox/commit/82fee578dddd3ea33f09e0255adac14be8219c91))
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`8f152ce`](https://github.com/russoz-ansible/andebox/commit/8f152cea38ca7bbef3393d05002e33d27e38e08d))
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`710b775`](https://github.com/russoz-ansible/andebox/commit/710b7759120a8634ba1523df3f480297798acfe3))
+
+- **deps**: Bump the python-dependencies group with 5 updates
+  ([`9655c79`](https://github.com/russoz-ansible/andebox/commit/9655c79a3bec0d261de28619bc3cf13804c63c2c))
+
+- **deps-dev**: Bump pytest-cov from 6.3.0 to 7.0.0
+  ([`378c4b1`](https://github.com/russoz-ansible/andebox/commit/378c4b1edcbf3a1efa0a05a1bb55e29263c5c7cb))
+
+### Documentation
+
+- Improve example and fix typo
+  ([`f52d724`](https://github.com/russoz-ansible/andebox/commit/f52d72443dee05071848ed57730f5da00ecb885a))
+
+- **action/vagrant**: Fix typo
+  ([`aa515bb`](https://github.com/russoz-ansible/andebox/commit/aa515bb9e0623cf60b4a8a63825b1a509bd53055))
+
+- **action/vagrant**: Improve clarity of text
+  ([`507c66e`](https://github.com/russoz-ansible/andebox/commit/507c66e756fa43fb20b042ffe056f89bc4f3e70b))
+
+- **actions**: Remove redundant block
+  ([`ef1fe7f`](https://github.com/russoz-ansible/andebox/commit/ef1fe7fb6e98143932786899332ca6ceddc4d84c))
+
+### Features
+
+- Make CLI parser available to context
+  ([`0c5eb83`](https://github.com/russoz-ansible/andebox/commit/0c5eb83f0b75bfde2a8f1e349886aa713e39dacb))
+
+- **action/test**: Improve help message for validated args
+  ([`ca78820`](https://github.com/russoz-ansible/andebox/commit/ca78820fe9b45428a967ed6e29e6af0bdde2fe82))
+
+- **action/test**: Validate some args combination
+  ([`7b94f65`](https://github.com/russoz-ansible/andebox/commit/7b94f651f7f80b4342b4d6137ee5caacede6c9b0))
+
+- **cli**: Chance exit code for keyboard interrupt to 100
+  ([`a0a1b91`](https://github.com/russoz-ansible/andebox/commit/a0a1b91ec6a8d0013559874e8816bce92b61bf47))
+
+### Testing
+
+- Capture SystemExit in cli.run() to be able to test it
+  ([`ce14782`](https://github.com/russoz-ansible/andebox/commit/ce147824bc58ada79775817436495f3775c12540))
+
+- Match any line number in cg-sanity-exclude-ignore
+  ([`a0c06bf`](https://github.com/russoz-ansible/andebox/commit/a0c06bf0b929fc0de4e11391685ce77923c909c2))
+
+- **action/test**: Test using `--exclude-from-ignore`
+  ([`0f7bf5f`](https://github.com/russoz-ansible/andebox/commit/0f7bf5f13285bc960596bc68291dd0d4dfe97717))
+
+
 ## v1.6.0 (2025-08-30)
 
 ### Chores
