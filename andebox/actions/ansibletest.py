@@ -62,6 +62,15 @@ class AnsibleTestAction(AndeboxAction):
         action_parser.usage = "%(prog)s [-h] [--keep] -- [ansible_test_params ...]"
 
     def run(self, context):
+        if context.args.skip_requirements and context.args.test == "sanity":
+            context.parser.error(
+                "--skip-requirements/-R cannot be used with 'sanity' test"
+            )
+        if context.args.exclude_from_ignore and context.args.test != "sanity":
+            context.parser.error(
+                "--exclude-from-ignore/-ei can only be used with 'sanity' test"
+            )
+
         try:
             with context.temp_tree() as temp_dir:
                 if (

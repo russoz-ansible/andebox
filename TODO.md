@@ -4,9 +4,6 @@ TO-DO
 ## feat
 
 * add extra dependencies (vagrant, tox-test) and make actions with unfulfilled deps unavailable
-* add parameters validations to `test` action, for example:
-  * `test -ei` is only valid for `sanity`
-  * requirement params are only valid for `integration` and `units`
 * make action accept aliases (units, unit)
 
 ## fix
