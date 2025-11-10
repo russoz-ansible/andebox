@@ -12,6 +12,7 @@ import importlib
 import pkgutil
 import signal
 import sys
+from contextlib import chdir as set_dir
 from pathlib import Path
 
 import andebox.actions
@@ -21,7 +22,6 @@ from . import __version__
 from .actions.base import AndeboxAction
 from .context import create_context
 from .exceptions import AndeboxException
-from .util import set_dir
 
 
 #
