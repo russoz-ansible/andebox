@@ -193,14 +193,14 @@ files = [
 
 [[package]]
 name = "ansible-core"
-version = "2.19.3"
+version = "2.19.4"
 description = "Radically simple IT automation"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
 files = [
-    {file = "ansible_core-2.19.3-py3-none-any.whl", hash = "sha256:7d312c2b76a3cea19e6dc2648b4ca4eb13233e58a58539fd80ecbb3a77881e72"},
-    {file = "ansible_core-2.19.3.tar.gz", hash = "sha256:243a69669a007be0794360bc4477f70e0128ce0091dc3af4c5cb81c6a466f573"},
+    {file = "ansible_core-2.19.4-py3-none-any.whl", hash = "sha256:f218e2e8ce4cc95216c48c73badd9789f1dd6ea47e15667213491fb79589316c"},
+    {file = "ansible_core-2.19.4.tar.gz", hash = "sha256:888db6593f2fd42cd05bdbe546704d9c969dce99e3373a54498f6dbefcfa1917"},
 ]
 
 [package.dependencies]
@@ -258,14 +258,14 @@ typing = ["mypy", "types-docutils", "types-pyyaml", "types-toml"]
 
 [[package]]
 name = "antsibull-core"
-version = "3.4.0"
+version = "3.5.0"
 description = "Tools for building the Ansible Distribution"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "antsibull_core-3.4.0-py3-none-any.whl", hash = "sha256:7d3368d1821d002612feb0fde7401c4df547149e661ad8157f2bb36764c6da28"},
-    {file = "antsibull_core-3.4.0.tar.gz", hash = "sha256:7eebcccaac5446d3cc04de8be2908becc0a02bb2395b83791ff39ab211f54492"},
+    {file = "antsibull_core-3.5.0-py3-none-any.whl", hash = "sha256:08659b220b82a44cd965e8efaa55e387a2c4bd156b0916450ebea8d6ed7e1831"},
+    {file = "antsibull_core-3.5.0.tar.gz", hash = "sha256:ad0e26d2b3d2fa89d757a86de2d2770856b4b60f6240c61b5e0b1e608c3c4d4b"},
 ]
 
 [package.dependencies]
@@ -282,28 +282,28 @@ twiggy = ">=0.5.0"
 [package.extras]
 codeqa = ["antsibull-changelog", "flake8 (>=6.0.0)", "pylint (>=2.15.7)", "reuse"]
 coverage = ["coverage[toml]"]
-dev = ["antsibull-changelog", "asynctest", "black (>=24)", "coverage[toml]", "cryptography", "flake8 (>=6.0.0)", "isort", "mypy", "nox", "pylint (>=2.15.7)", "pyre-check (>=0.9.17,<0.9.23)", "pytest", "pytest-asyncio (>=0.20)", "pytest-cov", "pytest-error-for-skips", "reuse", "types-aiofiles", "typing-extensions"]
+dev = ["antsibull-changelog", "asynctest", "black (>=24)", "click (<8.2.0)", "coverage[toml]", "cryptography", "flake8 (>=6.0.0)", "isort", "mypy", "nox", "pylint (>=2.15.7)", "pyre-check (>=0.9.17,<0.9.23)", "pytest", "pytest-asyncio (>=0.20)", "pytest-cov", "pytest-error-for-skips", "reuse", "types-aiofiles", "typing-extensions"]
 formatters = ["black (>=24)", "isort"]
 test = ["asynctest", "cryptography", "pytest", "pytest-asyncio (>=0.20)", "pytest-cov", "pytest-error-for-skips"]
-typing = ["mypy", "pyre-check (>=0.9.17,<0.9.23)", "types-aiofiles", "typing-extensions"]
+typing = ["click (<8.2.0)", "mypy", "pyre-check (>=0.9.17,<0.9.23)", "types-aiofiles", "typing-extensions"]
 
 [[package]]
 name = "antsibull-docs"
-version = "2.21.0"
+version = "2.22.0"
 description = "Tools for building Ansible documentation"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "antsibull_docs-2.21.0-py3-none-any.whl", hash = "sha256:ccf5c654585e7d864c195afb169b6884e911d4b5b8744cbe579726e27df0c7e1"},
-    {file = "antsibull_docs-2.21.0.tar.gz", hash = "sha256:6bfeaf7f94b586fd55ae7f5da31129c62cba592afd64a62de41d38cc8baf1eac"},
+    {file = "antsibull_docs-2.22.0-py3-none-any.whl", hash = "sha256:2051ba036b5d52561149a729e3070637e26acf050d6b101370734caa10103a9b"},
+    {file = "antsibull_docs-2.22.0.tar.gz", hash = "sha256:af83fa25f4e0fcecb24bc6ad7859a25f612742797546336d121e634295d2b7f2"},
 ]
 
 [package.dependencies]
 aiohttp = ">=3.0.0"
 ansible-pygments = "*"
 antsibull-changelog = ">=0.24.0"
-antsibull-core = ">=3.4.0,<4.0.0"
+antsibull-core = ">=3.5.0,<4.0.0"
 antsibull-docs-parser = ">=1.1.0,<2.0.0"
 antsibull-docutils = ">=1.3.0,<2.0.0"
 antsibull-fileutils = ">=1.3.0,<2.0.0"
@@ -316,7 +316,6 @@ pyyaml = "*"
 rstcheck = ">=3.0.0,<7.0.0"
 semantic-version = "*"
 sphinx = "*"
-twiggy = "*"
 
 [package.extras]
 codeqa = ["flake8 (>=3.8.0)", "pylint (>=2.17.2)", "reuse"]
@@ -1860,14 +1859,14 @@ testing = ["coverage", "pytest", "pytest-benchmark"]
 
 [[package]]
 name = "pre-commit"
-version = "4.3.0"
+version = "4.4.0"
 description = "A framework for managing and maintaining multi-language pre-commit hooks."
 optional = false
-python-versions = ">=3.9"
+python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "pre_commit-4.3.0-py2.py3-none-any.whl", hash = "sha256:2b0747ad7e6e967169136edffee14c16e148a778a54e4f967921aa1ebf2308d8"},
-    {file = "pre_commit-4.3.0.tar.gz", hash = "sha256:499fe450cc9d42e9d58e606262795ecb64dd05438943c62b66f6a8673da30b16"},
+    {file = "pre_commit-4.4.0-py2.py3-none-any.whl", hash = "sha256:b35ea52957cbf83dcc5d8ee636cbead8624e3a15fbfa61a370e42158ac8a5813"},
+    {file = "pre_commit-4.4.0.tar.gz", hash = "sha256:f0233ebab440e9f17cabbb558706eb173d19ace965c68cdce2c081042b4fab15"},
 ]
 
 [package.dependencies]
@@ -2369,14 +2368,14 @@ yaml = ["PyYaml (>=6.0.1)"]
 
 [[package]]
 name = "python-semantic-release"
-version = "10.4.1"
+version = "10.5.1"
 description = "Automatic Semantic Versioning for Python projects"
 optional = false
 python-versions = "~=3.8"
 groups = ["dev"]
 files = [
-    {file = "python_semantic_release-10.4.1-py3-none-any.whl", hash = "sha256:18a73619ffc6f1aca8e1106b03e139686bfbbf0120d1a97c948fc9620ab6beb5"},
-    {file = "python_semantic_release-10.4.1.tar.gz", hash = "sha256:4bec21f7d3a419a2a62d16a9ff404481a90f011c762aef605caf48f8c11b3ed6"},
+    {file = "python_semantic_release-10.5.1-py3-none-any.whl", hash = "sha256:dda01c1f0b075023505cc06a0df3be41b31ead324e3183af3382fd0a0961e82c"},
+    {file = "python_semantic_release-10.5.1.tar.gz", hash = "sha256:a19835088a415cf2568665b60c84770925fca266c937813615f85e79deffda47"},
 ]
 
 [package.dependencies]
@@ -2392,14 +2391,14 @@ python-gitlab = ">=4.0.0,<7.0.0"
 requests = ">=2.25,<3.0"
 rich = ">=14.0,<15.0"
 shellingham = ">=1.5,<2.0"
-tomlkit = ">=0.11,<1.0"
+tomlkit = ">=0.13.0,<0.14.0"
 
 [package.extras]
-build = ["build (>=1.2,<2.0)"]
-dev = ["pre-commit (>=3.5,<4.0)", "ruff (==0.6.1)", "tox (>=4.11,<5.0)"]
-docs = ["Sphinx (>=6.0,<7.0)", "furo (>=2024.1,<2025.0)", "sphinx-autobuild (==2024.2.4)", "sphinxcontrib-apidoc (==0.5.0)"]
+build = ["build (>=1.2,<2.0)", "tomlkit (>=0.13.0,<0.14.0)"]
+dev = ["pre-commit (>=4.3,<5.0)", "ruff (==0.6.1)", "tox (>=4.11,<5.0)"]
+docs = ["Sphinx (>=7.4,<8.0)", "furo (>=2025.9,<2026.0)", "sphinx-autobuild (==2024.2.4)", "sphinxcontrib-apidoc (==0.6.0)"]
 mypy = ["mypy (==1.16.1)", "types-Deprecated (>=1.2,<2.0)", "types-pyyaml (>=6.0,<7.0)", "types-requests (>=2.32.0,<2.33.0)"]
-test = ["coverage[toml] (>=7.0,<8.0)", "filelock (>=3.15,<4.0)", "flatdict (>=4.0,<5.0)", "freezegun (>=1.5,<2.0)", "pytest (>=8.3,<9.0)", "pytest-clarity (>=1.0,<2.0)", "pytest-cov (>=5.0.0,<7.0.0)", "pytest-env (>=1.0,<2.0)", "pytest-lazy-fixtures (>=1.1.1,<1.2.0)", "pytest-mock (>=3.0,<4.0)", "pytest-order (>=1.3,<2.0)", "pytest-pretty (>=1.2,<2.0)", "pytest-xdist (>=3.0,<4.0)", "pyyaml (>=6.0,<7.0)", "requests-mock (>=1.10,<2.0)", "responses (>=0.25.0,<0.26.0)"]
+test = ["coverage[toml] (>=7.0,<8.0)", "filelock (>=3.15,<4.0)", "flatdict (>=4.0,<5.0)", "freezegun (>=1.5,<2.0)", "pytest (>=8.3,<9.0)", "pytest-clarity (>=1.0,<2.0)", "pytest-cov (>=5.0.0,<8.0.0)", "pytest-env (>=1.0,<2.0)", "pytest-lazy-fixtures (>=1.4,<2.0)", "pytest-mock (>=3.0,<4.0)", "pytest-order (>=1.3,<2.0)", "pytest-pretty (>=1.2,<2.0)", "pytest-xdist (>=3.0,<4.0)", "pyyaml (>=6.0,<7.0)", "requests-mock (>=1.10,<2.0)", "responses (>=0.25.0,<0.26.0)"]
 
 [[package]]
 name = "python-vagrant"
