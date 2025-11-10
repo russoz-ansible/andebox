@@ -4,32 +4,9 @@ Usage
 Basic usage
 -----------
 
-As of andebox 1.2.x, the general usage pattern obtained by running ``andebox --help`` is:
+The general usage pattern obtained by running ``andebox --help`` is:
 
-.. code-block:: text
-
-   usage: andebox [-h] [--version] [--collection COLLECTION] [--venv VENV]
-                  test context docsite ignores runtime tox-test vagrant yaml-doc ...
-
-   Ansible Developer (Tool)Box v1.2.2
-
-   positional arguments:
-     test context docsite ignores runtime tox-test vagrant yaml-doc
-       test                runs ansible-test in a temporary environment
-       context             returns information from running context
-       docsite             builds collection docsite
-       ignores             gathers stats on ignore*.txt file(s)
-       runtime             returns information from runtime.yml
-       tox-test            runs ansible-test within tox, for testing in multiple ansible versions
-       vagrant             runs 'andebox test -- integration' within a VM managed with vagrant
-       yaml-doc            analyze and/or reformat YAML documentation in plugins
-
-   options:
-     -h, --help            show this help message and exit
-     --version             show program's version number and exit
-     --collection COLLECTION, -c COLLECTION
-                           fully qualified collection name (not necessary if a proper galaxy.yml file is available)
-     --venv VENV, -V VENV  path to the virtual environment where andebox and ansible are installed
+.. include:: _generated/andebox_help.rst
 
 See :doc:`actions` for available actions.
 
