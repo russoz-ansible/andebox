@@ -1,7 +1,7 @@
 Usage
 =====
 
-Basic usage
+Basic Usage
 -----------
 
 The general usage pattern obtained by running ``andebox --help`` is:
