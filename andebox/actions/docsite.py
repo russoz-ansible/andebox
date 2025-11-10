@@ -7,12 +7,12 @@
 import os
 import subprocess
 import webbrowser
+from contextlib import chdir as set_dir
 from pathlib import Path
 
 from ..context import CollectionContext
 from ..context import ContextType
 from ..exceptions import AndeboxException
-from ..util import set_dir
 from .base import AndeboxAction
 
 

@@ -8,6 +8,7 @@
 #
 import re
 import sys
+from contextlib import chdir as set_dir
 from dataclasses import dataclass
 from dataclasses import field
 from pathlib import Path
@@ -21,7 +22,6 @@ from typing import Sequence
 
 import pytest
 import yaml
-from andebox.util import set_dir
 
 
 GIT_REPO_CG = "https://github.com/ansible-collections/community.general.git"

@@ -6,12 +6,13 @@
 # SPDX-FileCopyrightText: 2024 Alexei Znamensky
 # SPDX-License-Identifier: MIT
 #
+from contextlib import chdir as set_dir
+
 import pytest
 from andebox.cli import _make_parser
 from andebox.context import AndeboxUnknownContext
 from andebox.context import ContextType
 from andebox.context import create_context
-from andebox.util import set_dir
 
 from .utils import GenericTestCase
 from .utils import GIT_REPO_AC
