@@ -9,8 +9,8 @@ permissions: {}  # remove top-level permissions
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
+  schedule:
+    - cron: '0 19 * * 1'  # Runs every Monday at 19:00 UTC
 
 jobs:
   test:
