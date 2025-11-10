@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT
 
 # Use the official Microsoft Python devcontainer image from the Docker Hub
-FROM mcr.microsoft.com/devcontainers/python:3
+FROM mcr.microsoft.com/devcontainers/python:3.13-bookworm
 
 # Set the working directory in the container
 WORKDIR /workspace
