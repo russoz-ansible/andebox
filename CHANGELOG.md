@@ -1,6 +1,42 @@
 # CHANGELOG
 
 
+## v1.7.1 (2025-11-10)
+
+### Bug Fixes
+
+- Generate andebox --help dynamically for the usage docs
+  ([`a34712c`](https://github.com/russoz-ansible/andebox/commit/a34712cbef0382a22f38240eedb8cadd4c6031b0))
+
+### Chores
+
+- Gitignore everything `docs/_build*`
+  ([`c4b1f31`](https://github.com/russoz-ansible/andebox/commit/c4b1f313cc4711bd89184f0aa2468c928f9d3ffc))
+
+- **deps**: Bump the python-dependencies group across 1 directory with 4 updates
+  ([`2eef30b`](https://github.com/russoz-ansible/andebox/commit/2eef30b8d5c2944d44ba659b5eb64cfa384b8e44))
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`4287c50`](https://github.com/russoz-ansible/andebox/commit/4287c50ae5ade9d6d6673b0e47d68e463ff43261))
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`9a53188`](https://github.com/russoz-ansible/andebox/commit/9a5318880e4ed0de57e9834759f78d9c8ca46ac8))
+
+- **deps**: Bump the python-dependencies group with 3 updates
+  ([`b4eff45`](https://github.com/russoz-ansible/andebox/commit/b4eff4504c5b94a7b8f6cd160e7834033627caf9))
+
+- **deps-dev**: Bump pylint from 3.3.9 to 4.0.0
+  ([`af5882b`](https://github.com/russoz-ansible/andebox/commit/af5882b2b3ae9b63b032c8381223f357ecdb4212))
+
+- **devcontainer**: Pin base image to Python 3.13, Debian bookworm
+  ([`96eba87`](https://github.com/russoz-ansible/andebox/commit/96eba8732247fbe98cf2a58f6a5c549a9ea36d8a))
+
+### Refactoring
+
+- Use contextlib.chdir() instead of custom context manager
+  ([`d99f6c2`](https://github.com/russoz-ansible/andebox/commit/d99f6c2623e28f7078df169956080417d667eb47))
+
+
 ## v1.7.0 (2025-10-11)
 
 ### Chores

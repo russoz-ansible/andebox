@@ -6,4 +6,4 @@
 # SPDX-FileCopyrightText: 2021-2025 Alexei Znamensky
 # SPDX-License-Identifier: MIT
 
-__version__ = "1.7.0"
+__version__ = "1.7.1"
