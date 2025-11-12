@@ -26,7 +26,18 @@ import yaml
 
 from .exceptions import AndeboxException
 
-toplevel_exclusion = (".git", ".tox", ".venv", ".virtualvenv", "venv", "virtualenv")
+toplevel_exclusion = (
+    ".git",
+    ".nox",
+    ".tox",
+    ".venv",
+    ".virtualvenv",
+    "venv",
+    "virtualenv",
+    "__pycache__",
+    ".ansible",
+    ".ruff_cache",
+)
 
 
 class AndeboxUnknownContext(AndeboxException):
