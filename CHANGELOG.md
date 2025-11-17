@@ -1,6 +1,32 @@
 # CHANGELOG
 
 
+## v1.8.0 (2025-11-17)
+
+### Chores
+
+- Update versions of pre-commit hooks
+  ([`2d3a2b0`](https://github.com/russoz-ansible/andebox/commit/2d3a2b07686a54706f3eb2599d9242f6077d4bce))
+
+### Continuous Integration
+
+- Change release workflow from merge to schedule
+  ([`2e84a46`](https://github.com/russoz-ansible/andebox/commit/2e84a4602282b1c099d21fc4a4f35b57bc0297a5))
+
+### Documentation
+
+- Capitalise title in usage doc
+  ([`f27885c`](https://github.com/russoz-ansible/andebox/commit/f27885caebec9a58c7bed1bc1cae3b9a3772b370))
+
+### Features
+
+- **action/tox-test**: Drop support to ansible-core <2.17, add 2.20
+  ([`5c15547`](https://github.com/russoz-ansible/andebox/commit/5c15547b47580de51c61de16100f4ad46662bb12))
+
+- **context**: Add directories to top level exclusion when copying
+  ([`53ecc1f`](https://github.com/russoz-ansible/andebox/commit/53ecc1fa35cac1835775ad3baa42652b4478c7da))
+
+
 ## v1.7.1 (2025-11-10)
 
 ### Bug Fixes
