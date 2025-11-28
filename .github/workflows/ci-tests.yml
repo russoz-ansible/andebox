@@ -35,6 +35,8 @@ jobs:
 
       - name: Install all dependencies (including dev)
         run: poetry install --with dev
+        env:
+          PYO3_USE_ABI3_FORWARD_COMPATIBILITY: 1
 
       - name: Lint with flake8
         run: poetry run flake8 -v . --count --show-source --statistics
