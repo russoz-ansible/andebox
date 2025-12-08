@@ -1,6 +1,25 @@
 # CHANGELOG
 
 
+## v1.9.0 (2025-12-08)
+
+### Chores
+
+- **deps**: Bump the python-dependencies group with 4 updates
+  ([`97dc508`](https://github.com/russoz-ansible/andebox/commit/97dc5084ef2be7bfc844c93fb2575e1a2ce05795))
+
+- **deps**: Update project dependencies
+  ([`716f661`](https://github.com/russoz-ansible/andebox/commit/716f661b6f8dbfbbe3ade37763686793f10d466e))
+
+- **deps-dev**: Bump pytest from 8.4.2 to 9.0.1
+  ([`5f427a7`](https://github.com/russoz-ansible/andebox/commit/5f427a7e42c771109509163c50099eba625655cd))
+
+### Features
+
+- Support Python 3.14
+  ([`5a8b616`](https://github.com/russoz-ansible/andebox/commit/5a8b61681765b1d5e08d94b5bec59d5cbe1d0d61))
+
+
 ## v1.8.0 (2025-11-17)
 
 ### Chores
