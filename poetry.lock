@@ -227,15 +227,14 @@ files = [
 
 [[package]]
 name = "ansible-core"
-version = "2.19.4"
+version = "2.19.5"
 description = "Radically simple IT automation"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
-markers = "python_version == \"3.11\""
 files = [
-    {file = "ansible_core-2.19.4-py3-none-any.whl", hash = "sha256:f218e2e8ce4cc95216c48c73badd9789f1dd6ea47e15667213491fb79589316c"},
-    {file = "ansible_core-2.19.4.tar.gz", hash = "sha256:888db6593f2fd42cd05bdbe546704d9c969dce99e3373a54498f6dbefcfa1917"},
+    {file = "ansible_core-2.19.5-py3-none-any.whl", hash = "sha256:7fa6c052bad2c294284b960d240b4cd227060fd2e3836d381db44d2bcfcdf4b7"},
+    {file = "ansible_core-2.19.5.tar.gz", hash = "sha256:d03660ff32ba8a5ae40a82148cb24b38a35d26c0155621ddd9148b7562fd8be2"},
 ]
 
 [package.dependencies]
@@ -244,26 +243,6 @@ jinja2 = ">=3.1.0"
 packaging = "*"
 PyYAML = ">=5.1"
 resolvelib = ">=0.5.3,<2.0.0"
-
-[[package]]
-name = "ansible-core"
-version = "2.20.0"
-description = "Radically simple IT automation"
-optional = false
-python-versions = ">=3.12"
-groups = ["main"]
-markers = "python_version >= \"3.12\""
-files = [
-    {file = "ansible_core-2.20.0-py3-none-any.whl", hash = "sha256:665f9e46401509f1f799b0fc624ce162127765885d61607c5e31a0f77652d7b6"},
-    {file = "ansible_core-2.20.0.tar.gz", hash = "sha256:cd73faf28a056c933bc1eee8f66ab597e7ec7309d42c8a6e5d6e4294c4a78b54"},
-]
-
-[package.dependencies]
-cryptography = "*"
-jinja2 = ">=3.1.0"
-packaging = "*"
-PyYAML = ">=5.1"
-resolvelib = ">=0.8.0,<2.0.0"
 
 [[package]]
 name = "ansible-pygments"
@@ -2641,14 +2620,14 @@ yaml = ["PyYaml (>=6.0.1)"]
 
 [[package]]
 name = "python-semantic-release"
-version = "10.5.2"
+version = "10.5.3"
 description = "Automatic Semantic Versioning for Python projects"
 optional = false
 python-versions = "~=3.8"
 groups = ["dev"]
 files = [
-    {file = "python_semantic_release-10.5.2-py3-none-any.whl", hash = "sha256:efd01394cbb1d8d7f78a099023eb9dae4d19d5e36fe586245538b6dc2bbd26b6"},
-    {file = "python_semantic_release-10.5.2.tar.gz", hash = "sha256:ffe5bbf8390cde5dd9d86768d66f47430ca243d87ea59fb286f5fcb90494d146"},
+    {file = "python_semantic_release-10.5.3-py3-none-any.whl", hash = "sha256:1be0e07c36fa1f1ec9da4f438c1f6bbd7bc10eb0d6ac0089b0643103708c2823"},
+    {file = "python_semantic_release-10.5.3.tar.gz", hash = "sha256:de4da78635fa666e5774caaca2be32063cae72431eb75e2ac23b9f2dfd190785"},
 ]
 
 [package.dependencies]
