@@ -26,7 +26,7 @@ run the `ansible-test` command as:
 
 ```
 $ andebox test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
-$ andebox test -- unit --docker default test/units/plugins/modules/mymodule.py
+$ andebox test -- units --docker default test/units/plugins/modules/mymodule.py
 $ andebox test -- integration --docker default mymodule
 ```
 
