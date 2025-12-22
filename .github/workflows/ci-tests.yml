@@ -64,11 +64,11 @@ jobs:
           pip install poetry
           poetry lock
 
-      - name: Install ansible-core (${{ matrix.ansible }})
-        run: poetry install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
-
       - name: Install all dependencies (including dev)
         run: poetry install --with dev
+
+      - name: Install ansible-core (${{ matrix.ansible }})
+        run: poetry run pip install --force-reinstall https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Lint with flake8
         run: poetry run flake8 -v . --count --show-source --statistics
