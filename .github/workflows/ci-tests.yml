@@ -15,6 +15,7 @@ on:
 
 jobs:
   test:
+    name: CI (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     strategy:
       fail-fast: false
       matrix:
