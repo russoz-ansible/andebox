@@ -323,14 +323,14 @@ typing = ["click (<8.2.0)", "mypy", "pyre-check (>=0.9.17,<0.9.23)", "types-aiof
 
 [[package]]
 name = "antsibull-docs"
-version = "2.23.0"
+version = "2.24.0"
 description = "Tools for building Ansible documentation"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "antsibull_docs-2.23.0-py3-none-any.whl", hash = "sha256:1f7cf005061118660f66a0a416086d086490b9d958fca351b33da5e1008b44e5"},
-    {file = "antsibull_docs-2.23.0.tar.gz", hash = "sha256:bc0a33b00198dd040fcd7076d7d124a95cbf30f91a5e1ea4b78938d7a3bb4466"},
+    {file = "antsibull_docs-2.24.0-py3-none-any.whl", hash = "sha256:14a9b3633fb2cf962436ea8eda254bfc5cff80ce34b9d51ba0dd46c59b6afb3d"},
+    {file = "antsibull_docs-2.24.0.tar.gz", hash = "sha256:d011836a8644996ed5fcaf7bd03b8c5917d5caa68c4b9882fe70d50719121506"},
 ]
 
 [package.dependencies]
@@ -354,10 +354,10 @@ sphinx = "*"
 [package.extras]
 codeqa = ["flake8 (>=3.8.0)", "pylint (>=2.17.2)", "reuse"]
 coverage = ["coverage[toml]"]
-dev = ["ansible-core (>=2.14.0)", "asynctest", "black (>=24)", "cryptography", "flake8 (>=3.8.0)", "isort", "mypy", "nox", "pylint (>=2.17.2)", "pytest", "pytest-asyncio (>=0.12)", "pytest-cov", "pytest-error-for-skips", "reuse", "types-aiofiles", "types-docutils", "types-pyyaml"]
+dev = ["ansible-core (>=2.14.0)", "asynctest", "black (>=24)", "cryptography", "flake8 (>=3.8.0)", "isort", "mypy", "nox", "pylint (>=2.17.2)", "pytest", "pytest-asyncio (>=0.12)", "pytest-cov", "pytest-error-for-skips", "reuse", "types-aiofiles", "types-docutils", "types-html5lib", "types-pyyaml"]
 formatters = ["black (>=24)", "isort"]
 test = ["ansible-core (>=2.14.0)", "asynctest", "cryptography", "pytest", "pytest-asyncio (>=0.12)", "pytest-cov", "pytest-error-for-skips"]
-typing = ["mypy", "types-aiofiles", "types-docutils", "types-pyyaml"]
+typing = ["mypy", "pytest", "types-aiofiles", "types-docutils", "types-html5lib", "types-pyyaml"]
 
 [[package]]
 name = "antsibull-docs-parser"
