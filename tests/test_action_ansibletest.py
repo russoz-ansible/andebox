@@ -125,11 +125,12 @@ TEST_CASES = load_test_cases(
       - sanity
       - --docker
       - default
-      - plugins/modules/lxc_container.py
+      - plugins/modules/iptables_state.py
   expected:
     rc: 1
-    in_stdout: >
-      ERROR: plugins/modules/lxc_container.py:\\d+:9: use-run-command-not-popen: subprocess.Popen call found. Should be module.run_command
+    in_stdout: >-
+      ERROR: plugins/modules/iptables_state.py:0:0: undocumented-parameter:
+      Argument '_back' is listed in the argument_spec, but not documented in the module documentation
 """
 )
 
