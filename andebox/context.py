@@ -19,10 +19,12 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 from typing import Generator
+from typing import List
 from typing import Tuple
 from typing import Type
 
 import yaml
+from git import Repo
 
 from .exceptions import AndeboxException
 
@@ -168,6 +170,54 @@ class AbstractContext(ABC):
                             files,
                         )
 
+    @abstractmethod
+    def get_plugin_paths(self) -> List[str]:
+        """Return list of plugin paths for this context type."""
+        pass
+
+    @abstractmethod
+    def extract_plugin_type_from_path(self, file_path: str) -> str:
+        """Extract plugin type from file path for this context type."""
+        pass
+
+    def get_default_branch(self) -> str:
+        """Get the default branch for the current repository."""
+        try:
+            repo = Repo()
+            # Check if we have remotes and can determine default branch
+            if repo.remotes:
+                try:
+                    # Try to get the default branch from remote HEAD
+                    for remote in repo.remotes:
+                        try:
+                            remote_head = remote.refs.HEAD
+                            if remote_head.reference:
+                                return remote_head.reference.name.split('/')[-1]
+                        except Exception:
+                            continue
+                except Exception:
+                    pass
+            
+            # Fallback: try to find the first available local branch
+            try:
+                if repo.refs:
+                    # Return the first available branch
+                    return repo.refs[0].name
+            except Exception:
+                pass
+                
+            # Final fallback - use HEAD if available
+            try:
+                return repo.head.reference.name
+            except Exception:
+                pass
+                
+        except Exception:
+            pass
+            
+        # If all else fails, we can't determine the default branch
+        raise AndeboxException("Unable to determine default branch for repository")
+
 
 class AnsibleCoreContext(AbstractContext):
     _context_type = ContextType.ANSIBLE_CORE
@@ -190,6 +240,45 @@ class AnsibleCoreContext(AbstractContext):
     @property
     def unit_test_subdir(self) -> Path:
         return self.tests_subdir / "units"
+
+    def get_plugin_paths(self) -> List[str]:
+        """Return plugin paths for ansible-core context by discovering them."""
+        plugin_paths = []
+        
+        # Check for modules directory
+        modules_path = Path("lib/ansible/modules")
+        if modules_path.exists() and modules_path.is_dir():
+            plugin_paths.append("lib/ansible/modules/")
+        
+        # Check for module_utils directory  
+        module_utils_path = Path("lib/ansible/module_utils")
+        if module_utils_path.exists() and module_utils_path.is_dir():
+            plugin_paths.append("lib/ansible/module_utils/")
+            
+        # Check for plugins directory and discover plugin types
+        plugins_base = Path("lib/ansible/plugins")
+        if plugins_base.exists() and plugins_base.is_dir():
+            for plugin_dir in plugins_base.iterdir():
+                if plugin_dir.is_dir():
+                    plugin_paths.append(f"lib/ansible/plugins/{plugin_dir.name}/")
+        
+        return plugin_paths
+
+    def extract_plugin_type_from_path(self, file_path: str) -> str:
+        """Extract plugin type from file path for ansible-core context."""
+        plugin_paths = self.get_plugin_paths()
+        for path in plugin_paths:
+            if file_path.startswith(path):
+                # For ansible-core: lib/ansible/modules/ -> modules
+                # or lib/ansible/plugins/lookup/ -> lookup
+                path_parts = path.split('/')
+                if len(path_parts) >= 3:
+                    if path_parts[2] == "modules":
+                        return "modules"
+                    elif len(path_parts) >= 4:
+                        return path_parts[3]
+                break
+        return ""
 
 
 class CollectionContext(AbstractContext):
@@ -268,6 +357,28 @@ class CollectionContext(AbstractContext):
                     f"Install requirements failed (attempt {attempt}/{retries}), retrying in {delay}s..."
                 )
                 time.sleep(delay)
+
+    def get_plugin_paths(self) -> List[str]:
+        """Return plugin paths for collection context by discovering them."""
+        plugin_paths = []
+        
+        # Check for plugins directory and discover plugin types
+        plugins_base = Path("plugins")
+        if plugins_base.exists() and plugins_base.is_dir():
+            for plugin_dir in plugins_base.iterdir():
+                if plugin_dir.is_dir():
+                    plugin_paths.append(f"plugins/{plugin_dir.name}/")
+        
+        return plugin_paths
+
+    def extract_plugin_type_from_path(self, file_path: str) -> str:
+        """Extract plugin type from file path for collection context."""
+        plugin_paths = self.get_plugin_paths()
+        for path in plugin_paths:
+            if file_path.startswith(path):
+                # For collections: plugins/modules/ -> modules
+                return path.split('/')[1]
+        return ""
 
 
 ConcreteContextType = Type[AnsibleCoreContext] | Type[CollectionContext]
