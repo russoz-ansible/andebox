@@ -1,6 +1,121 @@
 # CHANGELOG
 
 
+## v1.10.0 (2026-04-07)
+
+### Chores
+
+- **deps**: Bump aiohttp from 3.13.2 to 3.13.3
+  ([`ac29854`](https://github.com/russoz-ansible/andebox/commit/ac29854d5e5de2520db463ebe144b3de86c05123))
+
+- **deps**: Bump aiohttp from 3.13.3 to 3.13.4
+  ([`d5dbca7`](https://github.com/russoz-ansible/andebox/commit/d5dbca779e674fa24626175bd4083f57c64f8384))
+
+- **deps**: Bump ansible-core in the python-dependencies group
+  ([`ef7fee9`](https://github.com/russoz-ansible/andebox/commit/ef7fee92984cbbe32a679495d070adebddbe9a0a))
+
+- **deps**: Bump antsibull-docs in the python-dependencies group
+  ([`8b05ea3`](https://github.com/russoz-ansible/andebox/commit/8b05ea37bd119b686e67081b3edf2ba6edbc6664))
+
+- **deps**: Bump cryptography from 46.0.3 to 46.0.5
+  ([`20391d0`](https://github.com/russoz-ansible/andebox/commit/20391d017092ed3c1dd117769fe2fce84f80b177))
+
+- **deps**: Bump cryptography from 46.0.5 to 46.0.6
+  ([`987379f`](https://github.com/russoz-ansible/andebox/commit/987379f0dbe796ce0ff57a5a803f14d80d7b7ddf))
+
+- **deps**: Bump filelock from 3.20.0 to 3.20.1
+  ([`4792ba7`](https://github.com/russoz-ansible/andebox/commit/4792ba713951288a8e1cf587e35713d7ee250016))
+
+- **deps**: Bump filelock from 3.20.2 to 3.20.3
+  ([`a45c455`](https://github.com/russoz-ansible/andebox/commit/a45c455ec336d788fffa13385255b75d87dfb74f))
+
+- **deps**: Bump pygments from 2.19.2 to 2.20.0
+  ([`0b43af0`](https://github.com/russoz-ansible/andebox/commit/0b43af003e101a4a526c84061fca45b0b2593afd))
+
+- **deps**: Bump pynacl from 1.6.1 to 1.6.2
+  ([`201aae4`](https://github.com/russoz-ansible/andebox/commit/201aae453ae99901d0174c9a786e0d34ae8bf8c7))
+
+- **deps**: Bump requests from 2.32.5 to 2.33.0
+  ([`ffb6b47`](https://github.com/russoz-ansible/andebox/commit/ffb6b47dabc25f54bea609d6b7c2892dbedbc8c1))
+
+- **deps**: Bump the python-dependencies group across 1 directory with 5 updates
+  ([`d7c79e5`](https://github.com/russoz-ansible/andebox/commit/d7c79e5d11320bd5dce320fc6c73d84dfefc4652))
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`a23a08a`](https://github.com/russoz-ansible/andebox/commit/a23a08ac7caad3b7a5b0b68807952ff5c546ee76))
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`39e9fe4`](https://github.com/russoz-ansible/andebox/commit/39e9fe4ab454bc70c677725be9b6cf0ef026ec56))
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`469c0e8`](https://github.com/russoz-ansible/andebox/commit/469c0e8012ac3b505bdba9e5061a91ad0e33a9ae))
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`2f1ccc6`](https://github.com/russoz-ansible/andebox/commit/2f1ccc6237b5448e52e210dda08831baf9726dd0))
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`125cec8`](https://github.com/russoz-ansible/andebox/commit/125cec8a0e2d646bceafc4ab55191e39f8d35485))
+
+- **deps**: Bump the python-dependencies group with 3 updates
+  ([`5811b69`](https://github.com/russoz-ansible/andebox/commit/5811b69c71369b850b0bd8e37f22502213c5b21d))
+
+- **deps**: Bump tox in the python-dependencies group
+  ([`89faf30`](https://github.com/russoz-ansible/andebox/commit/89faf30a57d0e144335befb2f72b85c313685bd2))
+
+- **deps**: Bump tox in the python-dependencies group
+  ([`f18bcc1`](https://github.com/russoz-ansible/andebox/commit/f18bcc13547abb9831b0419f0c85b1c6a7c99cba))
+
+- **deps**: Bump tox in the python-dependencies group
+  ([`9bdcc73`](https://github.com/russoz-ansible/andebox/commit/9bdcc73bd4aa9c8c50923b8588f41fc83986de08))
+
+- **deps**: Bump tox in the python-dependencies group
+  ([`9aed892`](https://github.com/russoz-ansible/andebox/commit/9aed892faab349421eb90339d8d5b8329de24f94))
+
+- **deps**: Bump urllib3 from 2.6.1 to 2.6.3
+  ([`384c7c8`](https://github.com/russoz-ansible/andebox/commit/384c7c82b83b08ef8d87591e61a354e084b599f3))
+
+- **deps**: Bump virtualenv from 20.35.4 to 20.36.1
+  ([`045a31a`](https://github.com/russoz-ansible/andebox/commit/045a31a02043e18890b90146fab2c1875e39e227))
+
+- **deps-dev**: Bump myst-parser from 4.0.1 to 5.0.0
+  ([`230a3b7`](https://github.com/russoz-ansible/andebox/commit/230a3b740642ae38c0060b954e0e1c98c0ebea8f))
+
+- **deps-dev**: Bump sphinx from 8.2.3 to 9.0.4
+  ([`b3d5b05`](https://github.com/russoz-ansible/andebox/commit/b3d5b0517ca0ed37792ce51dbd0fd3ef485630b0))
+
+### Continuous Integration
+
+- Add `name` to the job
+  ([`134f221`](https://github.com/russoz-ansible/andebox/commit/134f221a19cb133837196676c4c054f1bfc52be3))
+
+- Add ansible version as variable in the test matrix
+  ([`f7b9204`](https://github.com/russoz-ansible/andebox/commit/f7b9204aab96edcab65e8add31b8c6be4c3ce573))
+
+- Install specific ansible-core within poetry venv
+  ([`e5c9d89`](https://github.com/russoz-ansible/andebox/commit/e5c9d89de60c090dfc17ea446331c2c4169d02ee))
+
+- Stop generating coverage for normal (fast) runs
+  ([`91871ab`](https://github.com/russoz-ansible/andebox/commit/91871ab5c5e1c38f5abfc51d53cdbba6d88460d0))
+
+- **ansible-core**: Use pip inside poetry
+  ([`a4dbd3a`](https://github.com/russoz-ansible/andebox/commit/a4dbd3af027091051160900afc659665d528a9d5))
+
+### Documentation
+
+- **README**: Fix typo in command example
+  ([`f4453ef`](https://github.com/russoz-ansible/andebox/commit/f4453ef0520edc2bee1b15534078c6059bc622cb))
+
+### Features
+
+- **action/tox-test**: Add support to ansible-core 2.21
+  ([`0c0f9b4`](https://github.com/russoz-ansible/andebox/commit/0c0f9b480902e6bb26022f11f70ae5983ead3e7a))
+
+### Testing
+
+- **action/test**: Change example in community.general
+  ([`2d3707b`](https://github.com/russoz-ansible/andebox/commit/2d3707ba5f95fb7413b5eea93eacc0ebcfe8f5b9))
+
+
 ## v1.9.0 (2025-12-08)
 
 ### Chores
