@@ -8,12 +8,16 @@ import argparse
 import re
 from functools import partial
 from pathlib import Path
+from typing import List
+from typing import Optional
 
+import typer
 import yaml
 
 from ..context import CollectionContext
 from ..context import ContextType
 from ..exceptions import AndeboxException
+from .base import andebox_context
 from .base import AndeboxAction
 
 
@@ -119,3 +123,40 @@ class RuntimeAction(AndeboxAction):
         self.name_tests = [partial(test_func, n) for n in context.args.plugin_names]
 
         self.runtime_process_plugin(runtime["plugin_routing"], plugin_types)
+
+
+app = typer.Typer(name=RuntimeAction.name, help=RuntimeAction.help)
+
+
+@app.callback(invoke_without_command=True)
+def runtime_cmd(
+    ctx: typer.Context,
+    plugin_type: Optional[str] = typer.Option(
+        None, "--plugin-type", "-pt", help="specify the plugin type to be searched"
+    ),
+    regex: bool = typer.Option(
+        False,
+        "--regex",
+        "--regexp",
+        "-r",
+        help="treat plugin names as regular expressions",
+    ),
+    info_type: Optional[str] = typer.Option(
+        None,
+        "--info-type",
+        "-it",
+        help=f"restrict type of response elements. Must be one of {RUNTIME_TYPES}, and it may be shortened down to one letter.",
+    ),
+    plugin_names: List[str] = typer.Argument(...),
+) -> None:
+    parsed_info_type = (
+        partial(info_type_param, RUNTIME_TYPES)(info_type) if info_type else None
+    )
+    with andebox_context(
+        ctx,
+        plugin_type=plugin_type,
+        regex=regex,
+        info_type=parsed_info_type,
+        plugin_names=plugin_names,
+    ) as context:
+        RuntimeAction().run(context)

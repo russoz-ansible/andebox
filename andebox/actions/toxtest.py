@@ -6,8 +6,13 @@
 # SPDX-License-Identifier: MIT
 import os
 import subprocess
+from typing import List
+from typing import Optional
+
+import typer
 
 from ..exceptions import AndeboxException
+from .base import andebox_context
 from .base import AndeboxAction
 
 
@@ -117,3 +122,33 @@ class ToxTestAction(AndeboxAction):
 
         if rc != 0:
             raise ToxTestError(f"Error running tox (rc={rc})")
+
+
+app = typer.Typer(name=ToxTestAction.name, help=ToxTestAction.help)
+
+
+@app.callback(invoke_without_command=True)
+def tox_test_cmd(
+    ctx: typer.Context,
+    env: Optional[str] = typer.Option(
+        None, "--env", "-e", help="tox environments to run the test in"
+    ),
+    list_: bool = typer.Option(
+        False, "--list", "-l", help="list all tox environments (tox -a)"
+    ),
+    recreate: bool = typer.Option(
+        False,
+        "--recreate",
+        "-r",
+        help="force recreation of virtual environments (tox -r)",
+    ),
+    ansible_test_params: Optional[List[str]] = typer.Argument(None),
+) -> None:
+    with andebox_context(
+        ctx,
+        env=env,
+        list=list_,
+        recreate=recreate,
+        ansible_test_params=ansible_test_params or [],
+    ) as context:
+        ToxTestAction().run(context)

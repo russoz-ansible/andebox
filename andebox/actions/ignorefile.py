@@ -11,7 +11,11 @@ from dataclasses import dataclass
 from functools import reduce
 from functools import total_ordering
 from pathlib import Path
+from typing import Optional
 
+import typer
+
+from .base import andebox_context
 from .base import AndeboxAction
 
 
@@ -243,3 +247,59 @@ class IgnoreLinesAction(AndeboxAction):
 
         lines = [str(s) for s in sorted(count_map.values(), reverse=True)]
         print("\n".join(self.filter_lines(lines, context.args.head)))
+
+
+app = typer.Typer(name=IgnoreLinesAction.name, help=IgnoreLinesAction.help)
+
+
+@app.callback(invoke_without_command=True)
+def ignores_cmd(
+    ctx: typer.Context,
+    spec: Optional[str] = typer.Option(
+        None, "--spec", "-s", help="use ignore-SPEC.txt, or pass '-' to read from stdin"
+    ),
+    depth: Optional[int] = typer.Option(
+        None, "--depth", "-d", help="path depth for grouping files"
+    ),
+    filter_files: Optional[str] = typer.Option(
+        None,
+        "--filter-files",
+        "-ff",
+        help="regular expression matching file names to be included",
+    ),
+    filter_checks: Optional[str] = typer.Option(
+        None,
+        "--filter-checks",
+        "-fc",
+        help="regular expression matching checks in ignore files to be included",
+    ),
+    suppress_files: bool = typer.Option(
+        False,
+        "--suppress-files",
+        "-sf",
+        help="supress file names from the output, consolidating the results",
+    ),
+    suppress_checks: bool = typer.Option(
+        False,
+        "--suppress-checks",
+        "-sc",
+        help="suppress the checks from the output, consolidating the results",
+    ),
+    head: int = typer.Option(
+        10,
+        "--head",
+        "-H",
+        help="number of lines to display in the output: leading lines if positive, trailing lines if negative, all lines if zero.",
+    ),
+) -> None:
+    with andebox_context(
+        ctx,
+        spec=spec,
+        depth=depth,
+        filter_files=re.compile(filter_files) if filter_files else None,
+        filter_checks=re.compile(filter_checks) if filter_checks else None,
+        suppress_files=suppress_files,
+        suppress_checks=suppress_checks,
+        head=head,
+    ) as context:
+        IgnoreLinesAction().run(context)

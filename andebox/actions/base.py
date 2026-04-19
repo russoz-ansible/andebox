@@ -4,7 +4,14 @@
 # Licensed under the MIT License. See LICENSES/MIT.txt for details.
 # SPDX-FileCopyrightText: 2021 Alexei Znamensky
 # SPDX-License-Identifier: MIT
+from contextlib import chdir as set_dir
+from contextlib import contextmanager
+from types import SimpleNamespace
+
+import typer
+
 from ..context import ConcreteContext
+from ..context import create_context
 
 
 class AndeboxAction:
@@ -24,3 +31,16 @@ class AndeboxAction:
 
     def __str__(self):
         return f"<AndeboxAction: {self.name}>"
+
+
+@contextmanager
+def andebox_context(ctx: typer.Context, **kwargs):
+    opts = ctx.obj or {}
+    args = SimpleNamespace(
+        collection=opts.get("collection"),
+        venv=opts.get("venv"),
+        **kwargs,
+    )
+    context = create_context(args)
+    with set_dir(context.base_dir):
+        yield context

@@ -5,9 +5,14 @@
 # SPDX-FileCopyrightText: 2021 Alexei Znamensky
 # SPDX-License-Identifier: MIT
 import subprocess
+from typing import List
+from typing import Optional
+
+import typer
 
 from ..context import ContextType
 from ..exceptions import AndeboxException
+from .base import andebox_context
 from .base import AndeboxAction
 
 
@@ -101,3 +106,47 @@ class AnsibleTestAction(AndeboxAction):
                 )
         except Exception as e:
             raise AndeboxException(f"Error running ansible-test: {e}") from e
+
+
+app = typer.Typer(name=AnsibleTestAction.name, help=AnsibleTestAction.help)
+
+
+@app.callback(invoke_without_command=True)
+def ansible_test_cmd(
+    ctx: typer.Context,
+    keep: bool = typer.Option(
+        False, "--keep", "-k", help="keep temporary directory after execution"
+    ),
+    exclude_from_ignore: bool = typer.Option(
+        False,
+        "--exclude-from-ignore",
+        "-efi",
+        "-ei",
+        help="matching lines in ignore files will be filtered out (sanity tests)",
+    ),
+    skip_requirements: bool = typer.Option(
+        False,
+        "--skip-requirements",
+        "-R",
+        help="skip installation of test requirements.yml (unit/integration tests)",
+    ),
+    galaxy_retry: int = typer.Option(
+        3,
+        "--galaxy-retry",
+        help="Number of times to retry requirements installation on failure (default: 3)",
+    ),
+    test: str = typer.Argument(
+        ..., help="test type", metavar="[sanity|units|integration]"
+    ),
+    ansible_test_params: Optional[List[str]] = typer.Argument(None),
+) -> None:
+    with andebox_context(
+        ctx,
+        keep=keep,
+        exclude_from_ignore=exclude_from_ignore,
+        skip_requirements=skip_requirements,
+        galaxy_retry=galaxy_retry,
+        test=test,
+        ansible_test_params=ansible_test_params or [],
+    ) as context:
+        AnsibleTestAction().run(context)
