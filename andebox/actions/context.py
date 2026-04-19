@@ -6,8 +6,11 @@
 # SPDX-FileCopyrightText: 2021 Alexei Znamensky
 # SPDX-License-Identifier: MIT
 #
+import typer
+
 from ..context import ConcreteContext
 from ..context import ContextType
+from .base import andebox_context
 from .base import AndeboxAction
 
 
@@ -33,3 +36,12 @@ class ContextAction(AndeboxAction):
         if context.type == ContextType.COLLECTION:
             ns, name, version = context.read_coll_meta()  # type: ignore
             printline("Collection", f"{ns}.{name} {version}")
+
+
+app = typer.Typer(name=ContextAction.name, help=ContextAction.help)
+
+
+@app.callback(invoke_without_command=True)
+def context_cmd(ctx: typer.Context) -> None:
+    with andebox_context(ctx) as context:
+        ContextAction().run(context)

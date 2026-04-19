@@ -20,8 +20,14 @@ try:
 except ImportError as e:
     IMPORT_ERROR = e
 
+from typing import List
+from typing import Optional
+
+import typer
+
 from ..exceptions import AndeboxException
 from .base import AndeboxAction
+from .base import andebox_context
 
 
 class VagrantError(AndeboxException):
@@ -107,3 +113,33 @@ class VagrantAction(AndeboxAction):
             if context.args.destroy:
                 v.destroy()
             print(f"== END   vagrant andebox: {machine_name} ".ljust(80, "="))
+
+
+app = typer.Typer(name=VagrantAction.name, help=VagrantAction.help)
+
+
+@app.callback(invoke_without_command=True)
+def vagrant_cmd(
+    ctx: typer.Context,
+    name: str = typer.Option(
+        "default",
+        "--name",
+        "-n",
+        help="""name of the vagrant VM (default: "default")""",
+    ),
+    destroy: bool = typer.Option(
+        False, "--destroy", "-d", help="destroy the VM after the test"
+    ),
+    sudo: bool = typer.Option(
+        False, "--sudo", "-s", help="use sudo to run andebox inside the VM"
+    ),
+    integration_test_params: Optional[List[str]] = typer.Argument(None),
+) -> None:
+    with andebox_context(
+        ctx,
+        name=name,
+        destroy=destroy,
+        sudo=sudo,
+        integration_test_params=integration_test_params or [],
+    ) as context:
+        VagrantAction().run(context)

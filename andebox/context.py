@@ -12,8 +12,6 @@ import tempfile
 import time
 from abc import ABC
 from abc import abstractmethod
-from argparse import ArgumentParser
-from argparse import Namespace
 from contextlib import contextmanager
 from enum import Enum
 from pathlib import Path
@@ -49,12 +47,18 @@ class ContextType(Enum):
     COLLECTION = 2
 
 
+class _ErrorReporter:
+    def error(self, message):
+        print(f"andebox: error: {message}", file=sys.stderr)
+        raise SystemExit(2)
+
+
 class AbstractContext(ABC):
     _context_type: ContextType = None  # type: ignore
 
-    def __init__(self, base_dir: Path, parser: ArgumentParser, args: Namespace) -> None:
+    def __init__(self, base_dir: Path, args) -> None:
         self.base_dir = base_dir
-        self.parser = parser
+        self.parser = _ErrorReporter()
 
         self.args = args
         self.venv = self.args.venv
@@ -195,8 +199,8 @@ class AnsibleCoreContext(AbstractContext):
 class CollectionContext(AbstractContext):
     _context_type = ContextType.COLLECTION
 
-    def __init__(self, base_dir: Path, parser: ArgumentParser, args: Namespace) -> None:
-        super().__init__(base_dir, parser, args)
+    def __init__(self, base_dir: Path, args) -> None:
+        super().__init__(base_dir, args)
         self.name = self.version = ""
         self.namespace, self.collection = self.determine_collection(
             self.args.collection
@@ -303,6 +307,6 @@ def _determine_base_dir() -> Tuple[Path, ConcreteContextType]:
         raise AndeboxUnknownContext(f"Cannot determine context for: {cur_dir}") from e
 
 
-def create_context(parser: ArgumentParser, args: Namespace) -> ConcreteContext:
+def create_context(args) -> ConcreteContext:
     base_dir, basedir_type = _determine_base_dir()
-    return basedir_type(base_dir, parser, args)
+    return basedir_type(base_dir, args)

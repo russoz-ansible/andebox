@@ -24,8 +24,13 @@ try:
 except ImportError as e:
     IMPORT_ERROR = e
 
+from typing import List as _List
+
+import typer
+
 from ..exceptions import AndeboxException
 from .base import AndeboxAction
+from .base import andebox_context
 
 
 FIXME_TAG = "__FIXME__"
@@ -523,3 +528,44 @@ class YAMLDocAction(AndeboxAction):
 
         for file_path in context.args.files:
             processor.process_file(file_path)
+
+
+app = typer.Typer(name=YAMLDocAction.name, help=YAMLDocAction.help)
+
+
+@app.callback(invoke_without_command=True)
+def yaml_doc_cmd(
+    ctx: typer.Context,
+    offenders: bool = typer.Option(
+        False,
+        "--offenders",
+        "-o",
+        help="report potential style-related offending constructs",
+    ),
+    fix_offenders: bool = typer.Option(
+        False,
+        "--fix-offenders",
+        "-O",
+        help="fix potential style-related offending constructs, implies (--offenders)",
+    ),
+    dry_run: bool = typer.Option(False, "--dry_run", "-n", help="do not modify files"),
+    width: int = typer.Option(
+        120, "--width", "-w", help="width for the YAML output (default: 120)"
+    ),
+    indent: int = typer.Option(
+        2, "--indent", "-i", help="indentation for the YAML output (default: 2)"
+    ),
+    files: _List[Path] = typer.Argument(
+        ..., help="Files where to search for YAML content"
+    ),
+) -> None:
+    with andebox_context(
+        ctx,
+        offenders=offenders,
+        fix_offenders=fix_offenders,
+        dry_run=dry_run,
+        width=width,
+        indent=indent,
+        files=files,
+    ) as context:
+        YAMLDocAction().run(context)

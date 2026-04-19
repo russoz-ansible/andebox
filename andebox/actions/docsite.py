@@ -9,10 +9,14 @@ import subprocess
 import webbrowser
 from contextlib import chdir as set_dir
 from pathlib import Path
+from pathlib import Path as _Path
+
+import typer
 
 from ..context import CollectionContext
 from ..context import ContextType
 from ..exceptions import AndeboxException
+from .base import andebox_context
 from .base import AndeboxAction
 
 
@@ -87,3 +91,26 @@ class DocsiteAction(AndeboxAction):
             webbrowser.open(
                 f"{context.args.dest_dir / 'build' / 'html' / 'index.html'}"
             )
+
+
+app = typer.Typer(name=DocsiteAction.name, help=DocsiteAction.help)
+
+
+@app.callback(invoke_without_command=True)
+def docsite_cmd(
+    ctx: typer.Context,
+    keep: bool = typer.Option(
+        False,
+        "--keep",
+        "-k",
+        help="keep temporary collection directory after execution",
+    ),
+    open_: bool = typer.Option(
+        False, "--open", "-o", help="open browser pointing to main page after build"
+    ),
+    dest_dir: _Path = typer.Option(
+        ..., "--dest-dir", "-d", help="directory where docsite is generated"
+    ),
+) -> None:
+    with andebox_context(ctx, keep=keep, open=open_, dest_dir=dest_dir) as context:
+        DocsiteAction().run(context)

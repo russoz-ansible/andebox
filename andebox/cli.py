@@ -5,23 +5,59 @@
 # Licensed under the MIT License. See LICENSES/MIT.txt for details.
 # SPDX-FileCopyrightText: 2021-2022 Alexei Znamensky
 # SPDX-License-Identifier: MIT
-#
-# PYTHON_ARGCOMPLETE_OK
-import argparse
 import importlib
 import pkgutil
 import signal
 import sys
-from contextlib import chdir as set_dir
 from pathlib import Path
+from typing import Optional
 
 import andebox.actions
-import argcomplete
+import typer
 
 from . import __version__
-from .actions.base import AndeboxAction
-from .context import create_context
 from .exceptions import AndeboxException
+
+
+app = typer.Typer(
+    name="andebox",
+    help=f"Ansible Developer (Tool)Box v{__version__}",
+    no_args_is_help=True,
+)
+
+
+def _version_callback(value: bool) -> None:
+    if value:
+        typer.echo(f"andebox {__version__}")
+        raise typer.Exit()
+
+
+@app.callback()
+def main(
+    ctx: typer.Context,
+    version: bool = typer.Option(
+        False,
+        "--version",
+        callback=_version_callback,
+        is_eager=True,
+        help="Show version and exit.",
+    ),
+    collection: Optional[str] = typer.Option(
+        None,
+        "--collection",
+        "-c",
+        help="fully qualified collection name (not necessary if a proper galaxy.yml file is available)",
+    ),
+    venv: Optional[Path] = typer.Option(
+        None,
+        "--venv",
+        "-V",
+        help="path to the virtual environment where andebox and ansible are installed",
+    ),
+) -> None:
+    ctx.ensure_object(dict)
+    ctx.obj["collection"] = collection
+    ctx.obj["venv"] = venv
 
 
 #
@@ -29,81 +65,24 @@ from .exceptions import AndeboxException
 # https://packaging.python.org/en/latest/guides/creating-and-discovering-plugins/
 #
 def iter_namespace(ns_pkg):
-    # Specifying the second argument (prefix) to iter_modules makes the
-    # returned name an absolute name instead of a relative one. This allows
-    # import_module to work without having to do additional modification to
-    # the name.
     return pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + ".")
 
 
 def load_actions():
-    results = []
-
     for finder, name, ispkg in iter_namespace(andebox.actions):
-        for attr in dir(module := importlib.import_module(name)):
-            try:
-                action = getattr(module, attr)
-                if issubclass(action, AndeboxAction) and action != AndeboxAction:
-                    results.append(action)
-            except TypeError:
-                pass
-
-    return results
+        module = importlib.import_module(name)
+        if hasattr(module, "app") and isinstance(module.app, typer.Typer):
+            app.add_typer(module.app)
 
 
-actions = load_actions()
-
-
-def _make_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        prog="andebox", description=f"Ansible Developer (Tool)Box v{__version__}"
-    )
-    parser.add_argument(
-        "--version", action="version", version=f"%(prog)s {__version__}"
-    )
-    parser.add_argument(
-        "--collection",
-        "-c",
-        help="fully qualified collection name (not necessary if a proper galaxy.yml file is available)",
-    )
-    parser.add_argument(
-        "--venv",
-        "-V",
-        help="path to the virtual environment where andebox and ansible are installed",
-        type=Path,
-    )
-    subparser = parser.add_subparsers(
-        dest="action", required=True, metavar=" ".join([a.name for a in actions])
-    )
-
-    for action in actions:
-        action.make_parser(subparser)
-
-    return parser
-
-
-class AndeBox:
-    def __init__(self, parser: argparse.ArgumentParser) -> None:
-        self.actions = {ac.name: ac() for ac in actions}
-        self.parser = parser
-        self.args = parser.parse_args()
-
-    def run(self):
-        context = create_context(self.parser, self.args)
-        with set_dir(context.base_dir):
-            action = self.actions[self.args.action]
-            action.run(context)
+load_actions()
 
 
 def run():
-    parser = _make_parser()
-    argcomplete.autocomplete(parser)
-
     try:
         signal.signal(signal.SIGPIPE, signal.SIG_DFL)
-        box = AndeBox(parser)
-        box.run()
-        return 0
+        result = app(standalone_mode=False)
+        return result or 0
     except KeyboardInterrupt:
         print("Interrupted by user", file=sys.stderr)
         return 100
