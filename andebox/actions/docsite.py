@@ -13,8 +13,6 @@ from pathlib import Path
 import typer
 
 from ..context import andebox_context
-from ..context import ContextType
-from ..exceptions import AndeboxException
 
 
 app = typer.Typer(name="docsite", help="builds collection docsite")
@@ -36,44 +34,38 @@ def docsite_cmd(
         ..., "--dest-dir", "-d", help="directory where docsite is generated"
     ),
 ) -> None:
-    with andebox_context(ctx) as context:
-        if context.type != ContextType.COLLECTION:
-            raise AndeboxException(
-                "Action 'docsite' must be executed in a collection context!"
+    with andebox_context(
+        ctx, require_collection=True, make_temp_tree=True, keep=keep
+    ) as context:
+        os.makedirs(dest_dir, mode=0o755, exist_ok=True)
+        if not (dest_dir / "build.sh").exists():
+            subprocess.run(
+                [
+                    context.binary_path("antsibull-docs"),
+                    "sphinx-init",
+                    "--use-current",
+                    "--lenient",
+                    f"{context.namespace}.{context.name}",
+                    "--dest-dir",
+                    f"{dest_dir}",
+                ],
+                cwd=context.full_dir,
+                check=True,
             )
-        try:
-            with context.temp_tree(keep=keep) as collection_dir:
-                os.makedirs(dest_dir, mode=0o755, exist_ok=True)
-                if not (dest_dir / "build.sh").exists():
-                    subprocess.run(
-                        [
-                            context.binary_path("antsibull-docs"),
-                            "sphinx-init",
-                            "--use-current",
-                            "--lenient",
-                            f"{context.namespace}.{context.name}",
-                            "--dest-dir",
-                            f"{dest_dir}",
-                        ],
-                        cwd=collection_dir,
-                        check=True,
-                    )
 
-                with set_dir(dest_dir):
-                    subprocess.run(
-                        [
-                            context.binary_path("python"),
-                            "-m",
-                            "pip",
-                            "install",
-                            "-qr",
-                            "requirements.txt",
-                        ],
-                        check=True,
-                    )
-                    subprocess.run(["./build.sh"], check=True)
-        except Exception as e:
-            raise AndeboxException(f"Error running when building docsite: {e}") from e
+        with set_dir(dest_dir):
+            subprocess.run(
+                [
+                    context.binary_path("python"),
+                    "-m",
+                    "pip",
+                    "install",
+                    "-qr",
+                    "requirements.txt",
+                ],
+                check=True,
+            )
+            subprocess.run(["./build.sh"], check=True)
 
         if open_:
             webbrowser.open(f"{dest_dir / 'build' / 'html' / 'index.html'}")

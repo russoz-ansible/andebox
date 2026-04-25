@@ -14,6 +14,7 @@ from abc import ABC
 from abc import abstractmethod
 from contextlib import chdir as set_dir
 from contextlib import contextmanager
+from contextlib import nullcontext
 from enum import Enum
 from pathlib import Path
 from typing import Any
@@ -316,11 +317,24 @@ def create_context(
 
 
 @contextmanager
-def andebox_context(ctx: typer.Context):
+def andebox_context(
+    ctx: typer.Context,
+    require_collection: bool = False,
+    make_temp_tree: bool = False,
+    keep: bool = False,
+):
     opts = ctx.obj or {}
     context = create_context(
         collection=opts.get("collection"),
         venv=opts.get("venv"),
     )
+    if require_collection and context.type != ContextType.COLLECTION:
+        raise AndeboxException(
+            f"Action '{ctx.info_name}' must be executed in a collection context!"
+        )
     with set_dir(context.base_dir):
-        yield context
+        try:
+            with context.temp_tree(keep=keep) if make_temp_tree else nullcontext():
+                yield context
+        except Exception as e:
+            raise AndeboxException(f"Error in action '{ctx.info_name}': {e}") from e
