@@ -14,8 +14,6 @@ import typer
 import yaml
 
 from ..context import andebox_context
-from ..context import ContextType
-from ..exceptions import AndeboxException
 
 
 PLUGIN_TYPES = (
@@ -101,11 +99,7 @@ def runtime_cmd(
         partial(info_type_param, RUNTIME_TYPES)(info_type) if info_type else None
     )
 
-    with andebox_context(ctx) as context:
-        if context.type != ContextType.COLLECTION:
-            raise AndeboxException(
-                "Action 'runtime' must be executed in a collection context!"
-            )
+    with andebox_context(ctx, require_collection=True) as context:
         with open(Path("meta") / "runtime.yml") as runtime_yml:
             runtime = yaml.safe_load(runtime_yml)
 

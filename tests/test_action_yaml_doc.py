@@ -14,6 +14,7 @@ import pytest
 from .utils import GenericTestCase
 from .utils import load_test_cases
 from .utils import verify_patterns
+from .utils import verify_return_code
 
 
 TEST_CASES_MOCK = load_test_cases(
@@ -96,9 +97,8 @@ TEST_CASES_MOCK = load_test_cases(
         foo:
           description: foo option
           type: wrong_type
-  expected: {}
-  exception:
-    class: YAMLDocException
+  expected:
+    rc: 1
 
 - id: description-offender
   input:
@@ -689,6 +689,9 @@ def validate_yaml_doc(testcase: GenericTestCase) -> None:
 def test_action_yaml_doc(make_helper, yaml_doc_executor, mock_plugin, testcase):
 
     test = make_helper(
-        testcase, mock_plugin, yaml_doc_executor, [validate_yaml_doc, verify_patterns]
+        testcase,
+        mock_plugin,
+        yaml_doc_executor,
+        [validate_yaml_doc, verify_patterns, verify_return_code],
     )
     test.run()

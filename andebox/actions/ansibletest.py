@@ -12,7 +12,6 @@ import typer
 
 from ..context import andebox_context
 from ..context import ContextType
-from ..exceptions import AndeboxException
 
 
 app = typer.Typer(
@@ -65,28 +64,23 @@ def ansible_test_cmd(
 
     params = ansible_test_params or []
 
-    with andebox_context(ctx) as context:
-        try:
-            with context.temp_tree(keep=keep) as temp_dir:
-                if context.type == ContextType.COLLECTION and not skip_requirements:
-                    if test in ["units", "integration"]:
-                        req_path = dict(
-                            units=context.unit_test_subdir / "requirements.yml",
-                            integration=context.integration_test_subdir
-                            / "requirements.yml",
-                        )
-                        context.install_requirements(
-                            reqs=req_path[test],
-                            path=context.top_dir,
-                            retries=galaxy_retry,
-                        )
-                if exclude_from_ignore:
-                    context.exclude_from_ignore(params)
-                print(f"Running: {[context.ansible_test, test] + params}")
-                subprocess.run(
-                    [context.ansible_test, test] + params,
-                    cwd=temp_dir,
-                    check=True,
+    with andebox_context(ctx, make_temp_tree=True, keep=keep) as context:
+        if context.type == ContextType.COLLECTION and not skip_requirements:
+            if test in ["units", "integration"]:
+                req_path = dict(
+                    units=context.unit_test_subdir / "requirements.yml",
+                    integration=context.integration_test_subdir / "requirements.yml",
                 )
-        except Exception as e:
-            raise AndeboxException(f"Error running ansible-test: {e}") from e
+                context.install_requirements(
+                    reqs=req_path[test],
+                    path=context.top_dir,
+                    retries=galaxy_retry,
+                )
+        if exclude_from_ignore:
+            context.exclude_from_ignore(params)
+        print(f"Running: {[context.ansible_test, test] + params}")
+        subprocess.run(
+            [context.ansible_test, test] + params,
+            cwd=context.full_dir,
+            check=True,
+        )
