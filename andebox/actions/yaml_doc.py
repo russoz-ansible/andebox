@@ -24,13 +24,10 @@ try:
 except ImportError as e:
     IMPORT_ERROR = e
 
-from typing import List as _List
-
 import typer
 
 from ..exceptions import AndeboxException
-from .base import AndeboxAction
-from .base import andebox_context
+from ..context import andebox_context
 
 
 FIXME_TAG = "__FIXME__"
@@ -466,71 +463,9 @@ class AnsibleDocProcessor:
                 file.writelines([f"{x}\n" for x in updated_lines])
 
 
-class YAMLDocAction(AndeboxAction):
-    name = "yaml-doc"
-    help = "analyze and/or reformat YAML documentation in plugins"
-    args = [
-        dict(
-            names=("--offenders", "-o"),
-            specs=dict(
-                action="store_true",
-                help="report potential style-related offending constructs",
-            ),
-        ),
-        dict(
-            names=("--fix-offenders", "-O"),
-            specs=dict(
-                action="store_true",
-                help="fix potential style-related offending constructs, implies (--offenders)",
-            ),
-        ),
-        dict(
-            names=("--dry_run", "-n"),
-            specs=dict(
-                action="store_true",
-                help="do not modify files",
-            ),
-        ),
-        dict(
-            names=("--width", "-w"),
-            specs=dict(
-                type=int,
-                default=120,
-                help="width for the YAML output (default: 120)",
-            ),
-        ),
-        dict(
-            names=("--indent", "-i"),
-            specs=dict(
-                type=int,
-                default=2,
-                help="indentation for the YAML output (default: 2)",
-            ),
-        ),
-        dict(
-            names=("files",),
-            specs=dict(
-                help="Files where to search for YAML content",
-                type=Path,
-                nargs="+",
-            ),
-        ),
-    ]
-
-    def run(self, context):
-        processor = AnsibleDocProcessor(
-            indent=context.args.indent,
-            width=context.args.width,
-            offenders=context.args.offenders or context.args.fix_offenders,
-            fix_offenders=context.args.fix_offenders,
-            dry_run=context.args.dry_run,
-        )
-
-        for file_path in context.args.files:
-            processor.process_file(file_path)
-
-
-app = typer.Typer(name=YAMLDocAction.name, help=YAMLDocAction.help)
+app = typer.Typer(
+    name="yaml-doc", help="analyze and/or reformat YAML documentation in plugins"
+)
 
 
 @app.callback(invoke_without_command=True)
@@ -555,17 +490,18 @@ def yaml_doc_cmd(
     indent: int = typer.Option(
         2, "--indent", "-i", help="indentation for the YAML output (default: 2)"
     ),
-    files: _List[Path] = typer.Argument(
+    files: List[Path] = typer.Argument(
         ..., help="Files where to search for YAML content"
     ),
 ) -> None:
-    with andebox_context(
-        ctx,
-        offenders=offenders,
-        fix_offenders=fix_offenders,
-        dry_run=dry_run,
-        width=width,
-        indent=indent,
-        files=files,
-    ) as context:
-        YAMLDocAction().run(context)
+    with andebox_context(ctx):
+        processor = AnsibleDocProcessor(
+            indent=indent,
+            width=width,
+            offenders=offenders or fix_offenders,
+            fix_offenders=fix_offenders,
+            dry_run=dry_run,
+        )
+
+        for file_path in files:
+            processor.process_file(file_path)

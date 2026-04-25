@@ -12,14 +12,17 @@ import tempfile
 import time
 from abc import ABC
 from abc import abstractmethod
+from contextlib import chdir as set_dir
 from contextlib import contextmanager
 from enum import Enum
 from pathlib import Path
 from typing import Any
 from typing import Generator
+from typing import Optional
 from typing import Tuple
 from typing import Type
 
+import typer
 import yaml
 
 from .exceptions import AndeboxException
@@ -47,21 +50,17 @@ class ContextType(Enum):
     COLLECTION = 2
 
 
-class _ErrorReporter:
-    def error(self, message):
-        print(f"andebox: error: {message}", file=sys.stderr)
-        raise SystemExit(2)
-
-
 class AbstractContext(ABC):
     _context_type: ContextType = None  # type: ignore
 
-    def __init__(self, base_dir: Path, args) -> None:
+    def __init__(
+        self,
+        base_dir: Path,
+        collection: Optional[str] = None,
+        venv: Optional[Path] = None,
+    ) -> None:
         self.base_dir = base_dir
-        self.parser = _ErrorReporter()
-
-        self.args = args
-        self.venv = self.args.venv
+        self.venv = venv
         self.top_dir = Path(tempfile.mkdtemp(prefix="andebox."))
 
     @property
@@ -126,7 +125,7 @@ class AbstractContext(ABC):
                     )
 
     @contextmanager
-    def temp_tree(self) -> Generator[Path, Any, Any]:
+    def temp_tree(self, keep: bool = False) -> Generator[Path, Any, Any]:
         self.full_dir.mkdir(parents=True, exist_ok=True)
         print(f"directory  = {self.full_dir}", file=sys.stderr)
         self.copy_tree()
@@ -135,7 +134,7 @@ class AbstractContext(ABC):
 
         yield self.full_dir
 
-        if self.args.keep:
+        if keep:
             print(f"Keeping temporary directory: {self.full_dir}")
         else:
             print(f"Removing temporary directory: {self.full_dir}")
@@ -150,27 +149,26 @@ class AbstractContext(ABC):
                     dest_file.write(line)
 
     def binary_path(self, binary: str) -> str:
-        if self.args.venv:
-            return str(Path(self.args.venv) / "bin" / binary)
+        if self.venv:
+            return str(Path(self.venv) / "bin" / binary)
 
         return str(Path(binary))
 
-    def exclude_from_ignore(self) -> None:
-        files = [f for f in self.args.ansible_test_params if Path(f).is_file()]
+    def exclude_from_ignore(self, ansible_test_params: list[str]) -> None:
+        files = [f for f in ansible_test_params if Path(f).is_file()]
         print(f"Excluding from ignore files: {files}")
-        if self.args.exclude_from_ignore:
-            src_dir = Path.cwd() / self.sanity_test_subdir
-            dest_dir = self.full_dir / self.sanity_test_subdir
-            with os.scandir(src_dir) as ts_dir:
-                for ts_entry in ts_dir:
-                    if ts_entry.name.startswith("ignore") and ts_entry.name.endswith(
-                        ".txt"
-                    ):
-                        self.copy_exclude_lines(
-                            src_dir / ts_entry.name,
-                            dest_dir / ts_entry.name,
-                            files,
-                        )
+        src_dir = Path.cwd() / self.sanity_test_subdir
+        dest_dir = self.full_dir / self.sanity_test_subdir
+        with os.scandir(src_dir) as ts_dir:
+            for ts_entry in ts_dir:
+                if ts_entry.name.startswith("ignore") and ts_entry.name.endswith(
+                    ".txt"
+                ):
+                    self.copy_exclude_lines(
+                        src_dir / ts_entry.name,
+                        dest_dir / ts_entry.name,
+                        files,
+                    )
 
 
 class AnsibleCoreContext(AbstractContext):
@@ -199,12 +197,15 @@ class AnsibleCoreContext(AbstractContext):
 class CollectionContext(AbstractContext):
     _context_type = ContextType.COLLECTION
 
-    def __init__(self, base_dir: Path, args) -> None:
-        super().__init__(base_dir, args)
+    def __init__(
+        self,
+        base_dir: Path,
+        collection: Optional[str] = None,
+        venv: Optional[Path] = None,
+    ) -> None:
+        super().__init__(base_dir, collection, venv)
         self.name = self.version = ""
-        self.namespace, self.collection = self.determine_collection(
-            self.args.collection
-        )
+        self.namespace, self.collection = self.determine_collection(collection)
 
     @property
     def ansible_test(self) -> str:
@@ -235,7 +236,7 @@ class CollectionContext(AbstractContext):
         )
         return meta["namespace"], meta["name"], meta["version"]
 
-    def determine_collection(self, coll_arg: str) -> tuple[str, str]:
+    def determine_collection(self, coll_arg: Optional[str]) -> tuple[str, str]:
         if coll_arg:
             coll_split = coll_arg.split(".")
             return ".".join(coll_split[:-1]), coll_split[-1]
@@ -307,6 +308,19 @@ def _determine_base_dir() -> Tuple[Path, ConcreteContextType]:
         raise AndeboxUnknownContext(f"Cannot determine context for: {cur_dir}") from e
 
 
-def create_context(args) -> ConcreteContext:
+def create_context(
+    collection: Optional[str] = None, venv: Optional[Path] = None
+) -> ConcreteContext:
     base_dir, basedir_type = _determine_base_dir()
-    return basedir_type(base_dir, args)
+    return basedir_type(base_dir, collection=collection, venv=venv)
+
+
+@contextmanager
+def andebox_context(ctx: typer.Context):
+    opts = ctx.obj or {}
+    context = create_context(
+        collection=opts.get("collection"),
+        venv=opts.get("venv"),
+    )
+    with set_dir(context.base_dir):
+        yield context
