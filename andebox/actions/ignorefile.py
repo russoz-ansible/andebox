@@ -15,8 +15,7 @@ from typing import Optional
 
 import typer
 
-from .base import andebox_context
-from .base import AndeboxAction
+from ..context import andebox_context
 
 
 class IgnoreFileEntry:
@@ -122,134 +121,48 @@ class ResultLine:
         return "".join(r)
 
 
-class IgnoreLinesAction(AndeboxAction):
-    name = "ignores"
-    help = "gathers stats on ignore*.txt file(s)"
-    args = [
-        dict(
-            names=["--spec", "-s"],
-            specs=dict(
-                type=str,
-                help=("use ignore-SPEC.txt, or pass '-' to read from stdin"),
-            ),
-        ),
-        dict(
-            names=["--depth", "-d"],
-            specs=dict(type=int, help="path depth for grouping files"),
-        ),
-        dict(
-            names=["--filter-files", "-ff"],
-            specs=dict(
-                type=re.compile,
-                help="regular expression matching file names to be included",
-            ),
-        ),
-        dict(
-            names=["--filter-checks", "-fc"],
-            specs=dict(
-                type=re.compile,
-                help="regular expression matching checks in ignore files to be included",
-            ),
-        ),
-        dict(
-            names=["--suppress-files", "-sf"],
-            specs=dict(
-                action="store_true",
-                help="supress file names from the output, consolidating the results",
-            ),
-        ),
-        dict(
-            names=["--suppress-checks", "-sc"],
-            specs=dict(
-                action="store_true",
-                help="suppress the checks from the output, consolidating the results",
-            ),
-        ),
-        dict(
-            names=["--head", "-H"],
-            specs=dict(
-                type=int,
-                default=10,
-                help=(
-                    "number of lines to display in the output: leading lines if "
-                    "positive, trailing lines if negative, all lines if zero."
-                ),
-            ),
-        ),
-    ]
+# pylint: disable=consider-using-with
+def _make_fh_list_for_version(sanity_test_path, ignore_file_spec):
+    if ignore_file_spec == "-":
+        return [sys.stdin]
+    if ignore_file_spec:
+        return [open(sanity_test_path / f"ignore-{ignore_file_spec}.txt")]
 
-    # pylint: disable=consider-using-with
-    def make_fh_list_for_version(self, sanity_test_path, ignore_file_spec):
-        if ignore_file_spec == "-":
-            return [sys.stdin]
-        if ignore_file_spec:
-            return [open(sanity_test_path / f"ignore-{ignore_file_spec}.txt")]
-
-        with os.scandir(sanity_test_path) as it:
-            return [
-                open(sanity_test_path / entry.name)
-                for entry in it
-                if entry.name.startswith("ignore-") and entry.name.endswith(".txt")
-            ]
-
-    @staticmethod
-    def read_ignore_file(fh):
-        result = []
-        with fh:
-            for line in fh.readlines():
-                entry = IgnoreFileEntry.parse(line)
-                if entry:
-                    result.append(entry)
-        return result
-
-    def retrieve_ignore_entries(self, sanity_test_path, ignore_file_spec):
-        return reduce(
-            lambda a, b: a + b,
-            [
-                self.read_ignore_file(fh)
-                for fh in self.make_fh_list_for_version(
-                    sanity_test_path, ignore_file_spec
-                )
-            ],
-        )
-
-    @staticmethod
-    def filter_lines(lines, num):
-        if num == 0:
-            return lines
-        return lines[num:] if num < 0 else lines[:num]
-
-    def run(self, context):
-        if context.args.filter_files:
-            IgnoreFileEntry.filter_files = context.args.filter_files
-        if context.args.filter_checks:
-            IgnoreFileEntry.filter_checks = context.args.filter_checks
-        if context.args.depth:
-            IgnoreFileEntry.file_parts_depth = context.args.depth
-
-        try:
-            ignore_entries = self.retrieve_ignore_entries(
-                context.sanity_test_subdir, context.args.spec
-            )
-        except Exception as e:
-            print(
-                f"Error reading ignore file {context.args.spec}: {e}",
-                file=sys.stderr,
-            )
-            raise e
-
-        count_map = {}
-        for entry in ignore_entries:
-            fp = entry.file_parts if not context.args.suppress_files else ""
-            ic = entry.ignore_check if not context.args.suppress_checks else ""
-            key = fp + "|" + ic
-            count_map[key] = count_map.get(key, ResultLine(fp, ic, 0)).increase()
-
-        lines = [str(s) for s in sorted(count_map.values(), reverse=True)]
-        print("\n".join(self.filter_lines(lines, context.args.head)))
+    with os.scandir(sanity_test_path) as it:
+        return [
+            open(sanity_test_path / entry.name)
+            for entry in it
+            if entry.name.startswith("ignore-") and entry.name.endswith(".txt")
+        ]
 
 
-app = typer.Typer(name=IgnoreLinesAction.name, help=IgnoreLinesAction.help)
+def _read_ignore_file(fh):
+    result = []
+    with fh:
+        for line in fh.readlines():
+            entry = IgnoreFileEntry.parse(line)
+            if entry:
+                result.append(entry)
+    return result
+
+
+def _retrieve_ignore_entries(sanity_test_path, ignore_file_spec):
+    return reduce(
+        lambda a, b: a + b,
+        [
+            _read_ignore_file(fh)
+            for fh in _make_fh_list_for_version(sanity_test_path, ignore_file_spec)
+        ],
+    )
+
+
+def _filter_lines(lines, num):
+    if num == 0:
+        return lines
+    return lines[num:] if num < 0 else lines[:num]
+
+
+app = typer.Typer(name="ignores", help="gathers stats on ignore*.txt file(s)")
 
 
 @app.callback(invoke_without_command=True)
@@ -292,14 +205,29 @@ def ignores_cmd(
         help="number of lines to display in the output: leading lines if positive, trailing lines if negative, all lines if zero.",
     ),
 ) -> None:
-    with andebox_context(
-        ctx,
-        spec=spec,
-        depth=depth,
-        filter_files=re.compile(filter_files) if filter_files else None,
-        filter_checks=re.compile(filter_checks) if filter_checks else None,
-        suppress_files=suppress_files,
-        suppress_checks=suppress_checks,
-        head=head,
-    ) as context:
-        IgnoreLinesAction().run(context)
+    if filter_files:
+        IgnoreFileEntry.filter_files = re.compile(filter_files)
+    if filter_checks:
+        IgnoreFileEntry.filter_checks = re.compile(filter_checks)
+    if depth:
+        IgnoreFileEntry.file_parts_depth = depth
+
+    with andebox_context(ctx) as context:
+        try:
+            ignore_entries = _retrieve_ignore_entries(context.sanity_test_subdir, spec)
+        except Exception as e:
+            print(
+                f"Error reading ignore file {spec}: {e}",
+                file=sys.stderr,
+            )
+            raise e
+
+        count_map = {}
+        for entry in ignore_entries:
+            fp = entry.file_parts if not suppress_files else ""
+            ic = entry.ignore_check if not suppress_checks else ""
+            key = fp + "|" + ic
+            count_map[key] = count_map.get(key, ResultLine(fp, ic, 0)).increase()
+
+        lines = [str(s) for s in sorted(count_map.values(), reverse=True)]
+        print("\n".join(_filter_lines(lines, head)))

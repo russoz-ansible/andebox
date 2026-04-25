@@ -9,54 +9,42 @@ import subprocess
 import webbrowser
 from contextlib import chdir as set_dir
 from pathlib import Path
-from pathlib import Path as _Path
 
 import typer
 
-from ..context import CollectionContext
+from ..context import andebox_context
 from ..context import ContextType
 from ..exceptions import AndeboxException
-from .base import andebox_context
-from .base import AndeboxAction
 
 
-class DocsiteAction(AndeboxAction):
-    name = "docsite"
-    help = "builds collection docsite"
-    args = [
-        dict(
-            names=("--keep", "-k"),
-            specs=dict(
-                help="keep temporary collection directory after execution",
-                action="store_true",
-            ),
-        ),
-        dict(
-            names=("--open", "-o"),
-            specs=dict(
-                help="open browser pointing to main page after build",
-                action="store_true",
-            ),
-        ),
-        dict(
-            names=("--dest-dir", "-d"),
-            specs=dict(
-                help="directory where docsite is generated",
-                required=True,
-                type=Path,
-            ),
-        ),
-    ]
+app = typer.Typer(name="docsite", help="builds collection docsite")
 
-    def run(self, context: CollectionContext):
+
+@app.callback(invoke_without_command=True)
+def docsite_cmd(
+    ctx: typer.Context,
+    keep: bool = typer.Option(
+        False,
+        "--keep",
+        "-k",
+        help="keep temporary collection directory after execution",
+    ),
+    open_: bool = typer.Option(
+        False, "--open", "-o", help="open browser pointing to main page after build"
+    ),
+    dest_dir: Path = typer.Option(
+        ..., "--dest-dir", "-d", help="directory where docsite is generated"
+    ),
+) -> None:
+    with andebox_context(ctx) as context:
         if context.type != ContextType.COLLECTION:
             raise AndeboxException(
                 "Action 'docsite' must be executed in a collection context!"
             )
         try:
-            with context.temp_tree() as collection_dir:
-                os.makedirs(context.args.dest_dir, mode=0o755, exist_ok=True)
-                if not (context.args.dest_dir / "build.sh").exists():
+            with context.temp_tree(keep=keep) as collection_dir:
+                os.makedirs(dest_dir, mode=0o755, exist_ok=True)
+                if not (dest_dir / "build.sh").exists():
                     subprocess.run(
                         [
                             context.binary_path("antsibull-docs"),
@@ -65,13 +53,13 @@ class DocsiteAction(AndeboxAction):
                             "--lenient",
                             f"{context.namespace}.{context.name}",
                             "--dest-dir",
-                            f"{context.args.dest_dir}",
+                            f"{dest_dir}",
                         ],
                         cwd=collection_dir,
                         check=True,
                     )
 
-                with set_dir(context.args.dest_dir):
+                with set_dir(dest_dir):
                     subprocess.run(
                         [
                             context.binary_path("python"),
@@ -87,30 +75,5 @@ class DocsiteAction(AndeboxAction):
         except Exception as e:
             raise AndeboxException(f"Error running when building docsite: {e}") from e
 
-        if context.args.open:
-            webbrowser.open(
-                f"{context.args.dest_dir / 'build' / 'html' / 'index.html'}"
-            )
-
-
-app = typer.Typer(name=DocsiteAction.name, help=DocsiteAction.help)
-
-
-@app.callback(invoke_without_command=True)
-def docsite_cmd(
-    ctx: typer.Context,
-    keep: bool = typer.Option(
-        False,
-        "--keep",
-        "-k",
-        help="keep temporary collection directory after execution",
-    ),
-    open_: bool = typer.Option(
-        False, "--open", "-o", help="open browser pointing to main page after build"
-    ),
-    dest_dir: _Path = typer.Option(
-        ..., "--dest-dir", "-d", help="directory where docsite is generated"
-    ),
-) -> None:
-    with andebox_context(ctx, keep=keep, open=open_, dest_dir=dest_dir) as context:
-        DocsiteAction().run(context)
+        if open_:
+            webbrowser.open(f"{dest_dir / 'build' / 'html' / 'index.html'}")

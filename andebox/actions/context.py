@@ -8,22 +8,20 @@
 #
 import typer
 
-from ..context import ConcreteContext
+from ..context import andebox_context
 from ..context import ContextType
-from .base import andebox_context
-from .base import AndeboxAction
 
 
 def printline(title, content):
     print(f"{title:>20}: {content}")
 
 
-class ContextAction(AndeboxAction):
-    name = "context"
-    help = "returns information from running context"
-    args = []
+app = typer.Typer(name="context", help="returns information from running context")
 
-    def run(self, context: ConcreteContext):
+
+@app.callback(invoke_without_command=True)
+def context_cmd(ctx: typer.Context) -> None:
+    with andebox_context(ctx) as context:
         printline("Base dir", context.base_dir)
         if context.venv:
             printline("Venv", context.venv)
@@ -36,12 +34,3 @@ class ContextAction(AndeboxAction):
         if context.type == ContextType.COLLECTION:
             ns, name, version = context.read_coll_meta()  # type: ignore
             printline("Collection", f"{ns}.{name} {version}")
-
-
-app = typer.Typer(name=ContextAction.name, help=ContextAction.help)
-
-
-@app.callback(invoke_without_command=True)
-def context_cmd(ctx: typer.Context) -> None:
-    with andebox_context(ctx) as context:
-        ContextAction().run(context)

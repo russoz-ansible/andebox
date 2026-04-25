@@ -7,7 +7,6 @@
 # SPDX-License-Identifier: MIT
 #
 from contextlib import chdir as set_dir
-from types import SimpleNamespace
 
 import pytest
 from andebox.context import AndeboxUnknownContext
@@ -31,13 +30,13 @@ def repo_dir(git_repo):
 
 def test_ansible_cg(repo_dir):
     with set_dir(repo_dir(GIT_REPO_CG)):
-        context = create_context(SimpleNamespace(collection=None, venv=None))
+        context = create_context()
         assert context.type == ContextType.COLLECTION
 
 
 def test_ansible_core(repo_dir):
     with set_dir(repo_dir(GIT_REPO_AC)):
-        context = create_context(SimpleNamespace(collection=None, venv=None))
+        context = create_context()
         assert context.type == ContextType.ANSIBLE_CORE
 
 
@@ -47,4 +46,4 @@ def test_invalid_dir(tmp_path):
 
     with set_dir(repo_dir):
         with pytest.raises(AndeboxUnknownContext):
-            create_context(SimpleNamespace(collection=None, venv=None))
+            create_context()
