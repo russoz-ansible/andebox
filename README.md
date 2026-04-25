@@ -25,9 +25,9 @@ No need to clone in specific locations or keep track of env variables. Simply cl
 run the `ansible-test` command as:
 
 ```
-$ andebox test -- sanity --docker default --test validate-modules plugins/modules/mymodule.py
-$ andebox test -- units --docker default test/units/plugins/modules/mymodule.py
-$ andebox test -- integration --docker default mymodule
+$ andebox test sanity -- --docker default --test validate-modules plugins/modules/mymodule.py
+$ andebox test units -- --docker default test/units/plugins/modules/mymodule.py
+$ andebox test integration -- --docker default mymodule
 ```
 
 If you want to test your code against multiple versions of `ansible-core` or other component, you
