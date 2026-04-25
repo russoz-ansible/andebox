@@ -43,7 +43,7 @@ Usage Examples
 --------------
 .. code-block:: shell
 
-    andebox tox-test --e ac216,ac217 -- sanity --docker default plugins/modules/mymodule.py
+    andebox tox-test --env ac217,ac218 -- sanity --docker default plugins/modules/mymodule.py
     andebox tox-test --list
     andebox tox-test --recreate -- units --docker default
 
