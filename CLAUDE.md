@@ -37,14 +37,11 @@ Tox environments: `py311`, `py312`, `py313`, `py314` (each runs flake8 + pytest)
 
 ### Plugin System
 
-`cli.py` dynamically discovers all `AndeboxAction` subclasses from `actions/` and builds the argument parser from them. Each action is a standalone plugin implementing:
+`cli.py` dynamically discovers action modules from `actions/` and registers any module that exposes `app = typer.Typer(...)`. Each action is a standalone module that:
 
-- `name` — subcommand name
-- `help` — description
-- `args` — argument spec (used to build argparse subparser)
-- `run(context)` — execution logic
-
-The base class lives in [andebox/actions/base.py](andebox/actions/base.py).
+- Creates a `typer.Typer` app with `name` and `help`
+- Defines command functions decorated with `@app.callback(invoke_without_command=True)`
+- Receives context via `typer.Context` (global options like `--collection` and `--venv` in `ctx.obj`)
 
 ### Context Abstraction
 
@@ -71,7 +68,7 @@ All actions receive a context object — they never manage directory structure t
 
 ### Entry Point
 
-`python -m andebox` → `__main__.py` → `cli.py:main()` → creates context → dispatches to action's `run()`.
+`python -m andebox` → `__main__.py` → `cli.py:run()` → typer `app()` → dispatches to registered action sub-app.
 
 ## Testing
 
