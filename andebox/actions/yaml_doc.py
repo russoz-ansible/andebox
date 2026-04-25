@@ -483,7 +483,7 @@ def yaml_doc_cmd(
         "-O",
         help="fix potential style-related offending constructs, implies (--offenders)",
     ),
-    dry_run: bool = typer.Option(False, "--dry_run", "-n", help="do not modify files"),
+    dry_run: bool = typer.Option(False, "--dry-run", "-n", help="do not modify files"),
     width: int = typer.Option(
         120, "--width", "-w", help="width for the YAML output (default: 120)"
     ),

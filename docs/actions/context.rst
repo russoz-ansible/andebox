@@ -45,4 +45,4 @@ Or, if the directory is not recognized by ``andebox``:
    $ andebox context
    Cannot determine context for: /home/user/Desktop
 
-In this last case, the command will return an exist staus of 1, indicating failure.
+In this last case, the command will return an exit status of 1, indicating failure.
