@@ -4,7 +4,6 @@
 # Licensed under the MIT License. See LICENSES/MIT.txt for details.
 # SPDX-FileCopyrightText: 2024 Alexei Znamensky
 # SPDX-License-Identifier: MIT
-import os
 import subprocess
 import webbrowser
 from contextlib import chdir as set_dir
@@ -37,7 +36,7 @@ def docsite_cmd(
     with andebox_context(
         ctx, require_collection=True, make_temp_tree=True, keep=keep
     ) as context:
-        os.makedirs(dest_dir, mode=0o755, exist_ok=True)
+        dest_dir.mkdir(mode=0o755, parents=True, exist_ok=True)
         if not (dest_dir / "build.sh").exists():
             subprocess.run(
                 [
