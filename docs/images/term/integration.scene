@@ -16,6 +16,6 @@ EXPECT($ )
  ENTER()
 EXPECT($ )
 
-  SEND(andebox test -R -- integration --docker default --python 3.13 pipx_info)
+  SEND(andebox test -R integration -- --docker default --python 3.13 pipx_info)
  ENTER()
 EXPECT($ )
