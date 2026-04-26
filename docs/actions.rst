@@ -10,6 +10,7 @@ Actions
    actions/runtime
    actions/ansibletest
    actions/toxtest
+   actions/noxtest
    actions/vagrant
    actions/yaml_doc
 
@@ -33,6 +34,11 @@ Actions
 :doc:`actions/toxtest`
    This action allows you to run ``ansible-test``, just like the ``test`` action, but testing in different ``tox`` environments.
    By using this action you can run your test in multiple versions of Ansible, with just one command.
+
+:doc:`actions/noxtest`
+   Similar to the ``tox-test`` action but uses ``nox`` instead. No ``noxfile.py`` needed —
+   all session definitions are encapsulated inside ``andebox``.
+   Supports filtering by ``ansible-core`` version and Python version.
 
 :doc:`actions/vagrant`
    Some integration tests require more complicated and sometimes heavier setups, making them more suitable to be executed in virtual machines.
