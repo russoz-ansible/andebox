@@ -90,7 +90,10 @@ def vagrant_cmd(
                         if context.venv
                         else str(venv / "bin" / "andebox")
                     )
-                    cmd = f"{andebox_path} --venv {venv} test -- integration {' '.join(integration_test_params or [])}"
+                    vparams = list(integration_test_params or [])
+                    if vparams[:1] == ["--"]:
+                        vparams = vparams[1:]
+                    cmd = f"{andebox_path} --venv {venv} test -- integration {' '.join(vparams)}"
                     if sudo:
                         cmd = "sudo -HE " + cmd
 
