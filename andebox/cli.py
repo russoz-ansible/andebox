@@ -31,6 +31,7 @@ app = typer.Typer(
     name="andebox",
     help=f"Ansible Developer (Tool)Box v{__version__}",
     no_args_is_help=True,
+    context_settings={"help_option_names": ["-h", "--help"]},
 )
 
 
