@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Optional
 
 import andebox.actions
+import click
 import typer
 
 from . import __version__
@@ -83,6 +84,8 @@ def run():
         signal.signal(signal.SIGPIPE, signal.SIG_DFL)
         result = app(standalone_mode=False)
         return result or 0
+    except click.exceptions.NoArgsIsHelpError:
+        return 0
     except KeyboardInterrupt:
         print("Interrupted by user", file=sys.stderr)
         return 100
