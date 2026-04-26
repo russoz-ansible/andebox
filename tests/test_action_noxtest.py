@@ -49,7 +49,7 @@ TEST_CASES_SELECT = load_test_cases(
     ansible_cores: ["2.17"]
     pythons: null
   expected:
-    sessions: ["ac2.17-p3.11", "ac2.17-p3.12"]
+    sessions: ["ac2.17-p3.10", "ac2.17-p3.11", "ac2.17-p3.12"]
 
 - id: python-only
   input:
@@ -61,6 +61,7 @@ TEST_CASES_SELECT = load_test_cases(
       - ac2.18-p3.12
       - ac2.19-p3.12
       - ac2.20-p3.12
+      - ac2.21-p3.12
 
 - id: valid-combination
   input:
@@ -100,7 +101,7 @@ TEST_CASES_SELECT = load_test_cases(
 - id: devel-invalid-python
   input:
     ansible_cores: ["devel"]
-    pythons: ["3.11"]
+    pythons: ["3.9"]
   expected:
     sessions: null
 
@@ -116,7 +117,7 @@ TEST_CASES_SELECT = load_test_cases(
     ansible_cores: ["2.18"]
     pythons: ["3.11", "3.12", "3.13"]
   expected:
-    sessions: ["ac2.18-p3.12", "ac2.18-p3.13"]
+    sessions: ["ac2.18-p3.11", "ac2.18-p3.12", "ac2.18-p3.13"]
 """
 )
 TEST_CASES_SELECT_IDS = [tc.id for tc in TEST_CASES_SELECT]

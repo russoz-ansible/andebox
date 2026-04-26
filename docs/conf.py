@@ -42,3 +42,34 @@ indented = textwrap.indent(proc.stdout.rstrip("\n"), "   ")
 content = ".. code-block:: text\n\n" + indented + "\n"
 with open(out_file, "w", encoding="utf-8") as fh:
     fh.write(content)
+
+from andebox.actions.noxtest import VERSION_MATRIX  # noqa: E402
+
+all_pythons = sorted(
+    set(py for _, _, pys in VERSION_MATRIX for py in pys),
+    key=lambda v: tuple(int(x) for x in v.split(".")),
+)
+
+rows = [
+    ".. list-table::",
+    "   :header-rows: 1",
+    "   :stub-columns: 1",
+    "   :widths: auto",
+    "",
+]
+rows.append("   * - ac \\\\ py")
+for py in all_pythons:
+    rows.append(f"     - {py}")
+for ac_ver, default_py, supported_pys in VERSION_MATRIX:
+    rows.append(f"   * - {ac_ver}")
+    for py in all_pythons:
+        if py == default_py:
+            rows.append("     - default")
+        elif py in supported_pys:
+            rows.append("     - ✓")
+        else:
+            rows.append("     -")
+
+matrix_content = "\n".join(rows) + "\n"
+with open(gen_dir / "noxtest_matrix.rst", "w", encoding="utf-8") as fh:
+    fh.write(matrix_content)
