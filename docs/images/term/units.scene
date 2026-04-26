@@ -16,6 +16,6 @@ EXPECT($ )
  ENTER()
 EXPECT($ )
 
-  SEND(andebox test -- units --docker default --python 3.11 tests/unit/plugins/modules/test_xfconf*.py -v)
+  SEND(andebox test units -- --docker default --python 3.11 tests/unit/plugins/modules/test_xfconf*.py -v)
  ENTER()
 EXPECT($ )

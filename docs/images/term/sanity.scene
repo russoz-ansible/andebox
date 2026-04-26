@@ -16,6 +16,6 @@ EXPECT($ )
  ENTER()
 EXPECT($ )
 
-  SEND(andebox test -- sanity --docker default --python 3.13 plugins/modules/ansible_galaxy_install.py)
+  SEND(andebox test sanity -- --docker default --python 3.13 plugins/modules/ansible_galaxy_install.py)
  ENTER()
 EXPECT($ )
