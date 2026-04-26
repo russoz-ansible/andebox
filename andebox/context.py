@@ -107,23 +107,22 @@ class AbstractContext(ABC):
 
     def copy_tree(self) -> None:
         # copy files to tmp ansible coll dir
-        with os.scandir() as it:
-            for entry in it:
-                if any(entry.name.startswith(x) for x in toplevel_exclusion):
-                    continue
-                if entry.is_dir():
-                    shutil.copytree(
-                        entry.name,
-                        self.full_dir / entry.name,
-                        symlinks=True,
-                        ignore_dangling_symlinks=True,
-                    )
-                else:
-                    shutil.copy(
-                        entry.name,
-                        self.full_dir / entry.name,
-                        follow_symlinks=False,
-                    )
+        for entry in Path.cwd().iterdir():
+            if any(entry.name.startswith(x) for x in toplevel_exclusion):
+                continue
+            if entry.is_dir():
+                shutil.copytree(
+                    entry,
+                    self.full_dir / entry.name,
+                    symlinks=True,
+                    ignore_dangling_symlinks=True,
+                )
+            else:
+                shutil.copy(
+                    entry,
+                    self.full_dir / entry.name,
+                    follow_symlinks=False,
+                )
 
     @contextmanager
     def temp_tree(self, keep: bool = False) -> Generator[Path, Any, Any]:
@@ -160,16 +159,13 @@ class AbstractContext(ABC):
         print(f"Excluding from ignore files: {files}")
         src_dir = Path.cwd() / self.sanity_test_subdir
         dest_dir = self.full_dir / self.sanity_test_subdir
-        with os.scandir(src_dir) as ts_dir:
-            for ts_entry in ts_dir:
-                if ts_entry.name.startswith("ignore") and ts_entry.name.endswith(
-                    ".txt"
-                ):
-                    self.copy_exclude_lines(
-                        src_dir / ts_entry.name,
-                        dest_dir / ts_entry.name,
-                        files,
-                    )
+        for ts_entry in src_dir.iterdir():
+            if ts_entry.name.startswith("ignore") and ts_entry.name.endswith(".txt"):
+                self.copy_exclude_lines(
+                    ts_entry,
+                    dest_dir / ts_entry.name,
+                    files,
+                )
 
 
 class AnsibleCoreContext(AbstractContext):

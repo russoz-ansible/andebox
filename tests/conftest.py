@@ -6,9 +6,9 @@
 # SPDX-FileCopyrightText: 2024 Alexei Znamensky
 # SPDX-License-Identifier: MIT
 #
-import os
 import subprocess
 import sys
+from pathlib import Path
 from typing import Any
 from typing import Callable
 from typing import Dict
@@ -49,7 +49,7 @@ def git_repo(tmp_path_factory) -> Callable[[Any], dict]:
 #
 @pytest.fixture(scope="session", autouse=True)
 def install_andebox() -> Generator[None, None, None]:
-    proj_dir = os.getcwd()
+    proj_dir = Path.cwd()
 
     print(f"{proj_dir=}")
 
@@ -62,7 +62,7 @@ def install_andebox() -> Generator[None, None, None]:
     )
     print("Installing andebox")
     subprocess.run(
-        [sys.executable, "-m", "pip", "install", "-e", proj_dir],
+        [sys.executable, "-m", "pip", "install", "-e", str(proj_dir)],
         check=True,
         encoding="utf-8",
         capture_output=True,

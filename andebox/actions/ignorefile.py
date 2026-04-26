@@ -4,7 +4,6 @@
 # Licensed under the MIT License. See LICENSES/MIT.txt for details.
 # SPDX-FileCopyrightText: 2021 Alexei Znamensky
 # SPDX-License-Identifier: MIT
-import os
 import re
 import sys
 from dataclasses import dataclass
@@ -128,12 +127,11 @@ def _make_fh_list_for_version(sanity_test_path, ignore_file_spec):
     if ignore_file_spec:
         return [open(sanity_test_path / f"ignore-{ignore_file_spec}.txt")]
 
-    with os.scandir(sanity_test_path) as it:
-        return [
-            open(sanity_test_path / entry.name)
-            for entry in it
-            if entry.name.startswith("ignore-") and entry.name.endswith(".txt")
-        ]
+    return [
+        p.open()
+        for p in sanity_test_path.iterdir()
+        if p.name.startswith("ignore-") and p.name.endswith(".txt")
+    ]
 
 
 def _read_ignore_file(fh):

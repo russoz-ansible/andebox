@@ -4,8 +4,8 @@
 # Licensed under the MIT License. See LICENSES/MIT.txt for details.
 # SPDX-FileCopyrightText: 2021 Alexei Znamensky
 # SPDX-License-Identifier: MIT
-import os
 import subprocess
+from pathlib import Path
 from typing import List
 from typing import Optional
 
@@ -98,9 +98,9 @@ def tox_test_cmd(
     ansible_test_params: Optional[List[str]] = typer.Argument(None),
 ) -> None:
     with andebox_context(ctx):
-        if not os.path.exists(TOX_INI_FILENAME):
-            with open(TOX_INI_FILENAME, "w") as tox_ini:
-                tox_ini.write(_make_default_tox_ini())
+        tox_ini_path = Path(TOX_INI_FILENAME)
+        if not tox_ini_path.exists():
+            tox_ini_path.write_text(_make_default_tox_ini())
 
         cmd_args = ["tox", "-c", TOX_INI_FILENAME]
         if list_:
