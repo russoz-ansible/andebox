@@ -109,8 +109,11 @@ def tox_test_cmd(
             cmd_args.append("-r")
         if env:
             cmd_args.extend(["-e", env])
+        params = list(ansible_test_params or [])
+        if params[:1] == ["--"]:
+            params = params[1:]
         cmd_args.append("--")
-        cmd_args.extend(ansible_test_params or [])
+        cmd_args.extend(params)
         rc = subprocess.call(cmd_args)
 
         if rc != 0:

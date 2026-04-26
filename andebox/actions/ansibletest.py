@@ -62,7 +62,9 @@ def ansible_test_cmd(
         )
         raise typer.Exit(2)
 
-    params = ansible_test_params or []
+    params = list(ansible_test_params or [])
+    if params[:1] == ["--"]:
+        params = params[1:]
 
     with andebox_context(ctx, make_temp_tree=True, keep=keep) as context:
         if context.type == ContextType.COLLECTION and not skip_requirements:
