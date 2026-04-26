@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # code: language=python tabSize=4
-# (C) 2021 Alexei Znamensky
+# (C) 2026 Alexei Znamensky
 # Licensed under the MIT License. See LICENSES/MIT.txt for details.
-# SPDX-FileCopyrightText: 2021 Alexei Znamensky
+# SPDX-FileCopyrightText: 2026 Alexei Znamensky
 # SPDX-License-Identifier: MIT
 from pathlib import Path
 from typing import List
