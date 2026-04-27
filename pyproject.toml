@@ -127,3 +127,9 @@ sequence = [
   {cmd = "poetry update"},
   {cmd = "poetry lock"},
 ]
+
+[tool.poe.tasks.release]
+sequence = [
+  {cmd = "semantic-release --verbose version"},
+  {cmd = "semantic-release --verbose publish"},
+]

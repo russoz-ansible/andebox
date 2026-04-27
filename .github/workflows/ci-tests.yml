@@ -58,10 +58,10 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: Install poetry
+      - name: Install poetry and poe
         run: |
           python -m pip install --upgrade pip
-          pip install poetry
+          pip install poetry poethepoet
           poetry lock
 
       - name: Install all dependencies (including dev)
@@ -70,8 +70,8 @@ jobs:
       - name: Install ansible-core (${{ matrix.ansible }})
         run: poetry run pip install --force-reinstall https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
-      - name: Lint with ruff
-        run: poetry run ruff check .
+      - name: Lint
+        run: poe lint
 
       - name: Run tests
-        run: poetry run pytest -v --cov --cov-branch
+        run: poe test
