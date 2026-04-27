@@ -70,8 +70,8 @@ jobs:
       - name: Install ansible-core (${{ matrix.ansible }})
         run: poetry run pip install --force-reinstall https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
-      - name: Lint with flake8
-        run: poetry run flake8 -v . --count --show-source --statistics
+      - name: Lint with ruff
+        run: poetry run ruff check .
 
       - name: Run tests
         run: poetry run pytest -v --cov --cov-branch

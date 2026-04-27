@@ -9,14 +9,20 @@ It also provides other tools supporting develoment of Ansible collections.
 
 ## Commands
 
-All commands use Poetry:
+All commands use Poetry or poe (poethepoet):
 
 ```bash
 # Install dependencies
 poetry install --with dev
 
 # Lint
-poetry run flake8 -v . --count --show-source --statistics
+poetry run ruff check .
+
+# Format
+poetry run ruff format .
+
+# Run all QA checks (lint + format check + tests)
+poe qa
 
 # Run all tests with coverage
 poetry run pytest -v --cov --cov-branch
@@ -28,10 +34,10 @@ poetry run pytest tests/test_action_ignorefile.py -v
 poetry run pytest tests/test_action_ignorefile.py::TestClassName::test_method -v
 
 # Build docs
-poetry run sphinx-build -b html docs docs/_build/html
+poe docs
 ```
 
-Tox environments: `py311`, `py312`, `py313`, `py314` (each runs flake8 + pytest), `docs`.
+Poe tasks: `test`, `lint`, `fmt`, `check` (lint+format check), `qa` (check+test), `docs`, `deps`.
 
 ## Architecture
 
@@ -78,7 +84,5 @@ Coverage artifacts go to `htmlcov/` (HTML) and `junit.xml`.
 
 ## Code Style
 
-- Formatter: **black**
-- Linter: **flake8**
-- Import sorter: **reorder-python-imports**
+- Formatter + Linter + Import sorter: **ruff**
 - Pre-commit hooks are configured — run `pre-commit install` after cloning.

@@ -37,7 +37,7 @@ jobs:
         env:
           PYTHONPATH: .
         run: |
-          poetry run flake8 -v . --count --show-source --statistics
+          poetry run ruff check .
           poetry run pytest -v --cov
 
       - name: Upload coverage reports to Codecov
