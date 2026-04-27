@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # code: language=python tabSize=4
 # (C) 2023 Alexei Znamensky
 # Licensed under the MIT License. See LICENSES/MIT.txt for details.
