@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # code: language=python tabSize=4
 import subprocess
 import sys
