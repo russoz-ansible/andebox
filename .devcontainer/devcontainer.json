@@ -1,9 +1,6 @@
 {
   "name": "Andebox Dev Container",
-  "build": {
-    "dockerfile": "Dockerfile",
-    "context": ".."
-  },
+  "image": "mcr.microsoft.com/devcontainers/python:3.14-bookworm",
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
@@ -11,7 +8,12 @@
     "vscode": {
       "settings": {
         "terminal.integrated.shell.linux": "/bin/bash",
-        "python.pythonPath": "/usr/local/bin/python"
+        "python.pythonPath": "/usr/local/bin/python",
+        "files.autoSave": "afterDelay",
+        "files.eol": "\n",
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true,
+        "files.trimTrailingWhitespace": true
       },
       "extensions": [
         "ms-python.python",
@@ -27,5 +29,5 @@
     }
   },
   "remoteUser": "vscode",
-  "postCreateCommand": "poetry install --no-interaction --with dev,docs && pre-commit install --install-hooks && mkdir -p ~/.ssh && chmod 700 ~/.ssh"
+  "postCreateCommand": ".devcontainer/post-create.sh"
 }
