@@ -1,6 +1,303 @@
 # CHANGELOG
 
 
+## v2.0.0 (2026-04-27)
+
+### Bug Fixes
+
+- Add support for -- in CLI
+  ([`0a3997f`](https://github.com/russoz-ansible/andebox/commit/0a3997f99d808094c5311afc371fab5bc50c2ed9))
+
+With the adoption of typer it was no longer interpreted as a separator of arguments but rather
+  passed literally to the underlying command, causing error.
+
+- Configure typer to accept `-h` as an alias for `--help`
+  ([`66d928a`](https://github.com/russoz-ansible/andebox/commit/66d928aaa9c4eda62cbde6ad0bb26aa379e1c95e))
+
+- Correct CLI flag name and stale doc examples
+  ([`5f804b5`](https://github.com/russoz-ansible/andebox/commit/5f804b5508a7fa9a4ec54a4bedb4ca18bcbe6703))
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- Guard against click<8.2.0 missing NoArgsIsHelpError
+  ([`121be1a`](https://github.com/russoz-ansible/andebox/commit/121be1a033484bbc7c70097087312f39d11e13df))
+
+NoArgsIsHelpError was introduced in click 8.2.0; CI environments with click 8.1.x raised
+  AttributeError when evaluating the except clause. Import it at module load time with a harmless
+  fallback for older click.
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+### Chores
+
+- Add CLAUDE.md file
+  ([`5818f77`](https://github.com/russoz-ansible/andebox/commit/5818f77861dabeb88f5013efaaf6fb0042d5bae2))
+
+- Adjust wording
+  ([`8b04040`](https://github.com/russoz-ansible/andebox/commit/8b040409b475e660c165c24f0474dd440a645eed))
+
+- Adjust year of copyright
+  ([`2ff645b`](https://github.com/russoz-ansible/andebox/commit/2ff645b6607d6a7f7289e7fed2ae875121122f03))
+
+- Remove TODO.md, replaced by GitHub issues
+  ([`5680f74`](https://github.com/russoz-ansible/andebox/commit/5680f747c0572e9495b5f308a73de65b8244d748))
+
+Items tracked in GH issues #212, #213, #214, #215, #216.
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- **deps**: Bump cryptography from 46.0.6 to 46.0.7
+  ([`5668528`](https://github.com/russoz-ansible/andebox/commit/56685283e25b7bacdb03bd564d7aced5ab71c5c4))
+
+Bumps [cryptography](https://github.com/pyca/cryptography) from 46.0.6 to 46.0.7. -
+  [Changelog](https://github.com/pyca/cryptography/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pyca/cryptography/compare/46.0.6...46.0.7)
+
+--- updated-dependencies: - dependency-name: cryptography dependency-version: 46.0.7
+
+dependency-type: indirect ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+- **deps**: Bump the python-dependencies group across 1 directory with 2 updates
+  ([`77fa9b1`](https://github.com/russoz-ansible/andebox/commit/77fa9b15ee42b4281ab8767b1250f3355f8264cd))
+
+Bumps the python-dependencies group with 1 update in the / directory:
+  [typer](https://github.com/fastapi/typer).
+
+Updates `typer` from 0.23.1 to 0.25.0 - [Release notes](https://github.com/fastapi/typer/releases) -
+  [Changelog](https://github.com/fastapi/typer/blob/master/docs/release-notes.md) -
+  [Commits](https://github.com/fastapi/typer/compare/0.23.1...0.25.0)
+
+Updates `python-semantic-release` from 10.5.3 to 9.21.1 - [Release
+  notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
+  [Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
+  -
+  [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v10.5.3...v9.21.1)
+
+--- updated-dependencies: - dependency-name: typer dependency-version: 0.25.0
+
+dependency-type: direct:production
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies
+
+- dependency-name: python-semantic-release dependency-version: 9.21.1
+
+dependency-type: direct:development
+
+update-type: version-update:semver-major
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`e56c9a0`](https://github.com/russoz-ansible/andebox/commit/e56c9a0944952bde55a9c7d16fe4c8e779386ec3))
+
+Bumps the python-dependencies group with 2 updates: [tox](https://github.com/tox-dev/tox) and
+  [pytest](https://github.com/pytest-dev/pytest).
+
+Updates `tox` from 4.52.0 to 4.52.1 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.52.0...4.52.1)
+
+Updates `pytest` from 9.0.2 to 9.0.3 - [Release
+  notes](https://github.com/pytest-dev/pytest/releases) -
+  [Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest/compare/9.0.2...9.0.3)
+
+--- updated-dependencies: - dependency-name: tox dependency-version: 4.52.1
+
+dependency-type: direct:production
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies
+
+- dependency-name: pytest dependency-version: 9.0.3
+
+dependency-type: direct:development
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+- **deps**: Bump tox in the python-dependencies group
+  ([`cfeb2a8`](https://github.com/russoz-ansible/andebox/commit/cfeb2a8fc71d2e005793d682194869fecec36b4c))
+
+Bumps the python-dependencies group with 1 update: [tox](https://github.com/tox-dev/tox).
+
+Updates `tox` from 4.52.1 to 4.53.0 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.52.1...4.53.0)
+
+--- updated-dependencies: - dependency-name: tox dependency-version: 4.53.0
+
+dependency-type: direct:production
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+- **deps-dev**: Bump gitpython from 3.1.46 to 3.1.47
+  ([`2669745`](https://github.com/russoz-ansible/andebox/commit/26697459ec630865c25d488ba28109af48fa71c1))
+
+Bumps [gitpython](https://github.com/gitpython-developers/GitPython) from 3.1.46 to 3.1.47. -
+  [Release notes](https://github.com/gitpython-developers/GitPython/releases) -
+  [Changelog](https://github.com/gitpython-developers/GitPython/blob/main/CHANGES) -
+  [Commits](https://github.com/gitpython-developers/GitPython/compare/3.1.46...3.1.47)
+
+--- updated-dependencies: - dependency-name: gitpython dependency-version: 3.1.47
+
+dependency-type: direct:development ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+- **devcontainer**: Replace Dockerfile with post-create.sh script
+  ([`fe8ba50`](https://github.com/russoz-ansible/andebox/commit/fe8ba50fafcb99ee65a6a4839781d9b8cd48c8c7))
+
+Move pip installs from Dockerfile and postCreateCommand into a single post-create.sh script; switch
+  devcontainer.json to use the base image directly. Also replaces tox with poethepoet in the
+  bootstrap installs.
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- **tooling**: Enforce poetry.lock freshness in CI and pre-commit
+  ([`e7e76e3`](https://github.com/russoz-ansible/andebox/commit/e7e76e3beec8181660fea86baa1fe5ebdb562c91))
+
+Add poetry lock --check to all CI workflows and a local pre-commit hook so stale lock files are
+  caught before commit and in CI rather than silently regenerated.
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- **tooling**: Replace tox/flake8/black/pylint with ruff and poethepoet
+  ([`6736c20`](https://github.com/russoz-ansible/andebox/commit/6736c206f3dfcd04d9b735a8ea0a09921c960abf))
+
+- Delete tox.ini, .flake8, .pylintrc - Add ruff.toml with settings ported from .flake8 (line-length,
+  E203, complexity, isort) - Add ruff and poethepoet as dev dependencies; remove flake8 and pylint -
+  Define poe tasks: test, lint, fmt, check, qa, docs, deps - Replace
+  black+flake8+reorder-python-imports pre-commit hooks with ruff-pre-commit - Update CI workflows to
+  use ruff check instead of flake8 - Update CLAUDE.md to document new workflow
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- **tooling**: Use poe tasks in GitHub Actions workflows
+  ([`c53b484`](https://github.com/russoz-ansible/andebox/commit/c53b484d036c2b9b92e7297879e5ad88ff9a6904))
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+### Code Style
+
+- Reformat code
+  ([`ad82722`](https://github.com/russoz-ansible/andebox/commit/ad8272269f49ebb271efb83aed9305c226ccde07))
+
+- Remove utf-8 coding declarations from all Python files
+  ([`db8ba7e`](https://github.com/russoz-ansible/andebox/commit/db8ba7eca3d133b630262203f555bc3f4d65bca2))
+
+Redundant since Python 3 defaults to utf-8.
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+### Continuous Integration
+
+- Remove ai-slop
+  ([`6796fdb`](https://github.com/russoz-ansible/andebox/commit/6796fdbd397e97f967492aaf83e9f79eb539b9d4))
+
+### Documentation
+
+- Generate nox-test version matrix table dynamically from VERSION_MATRIX
+  ([`922265b`](https://github.com/russoz-ansible/andebox/commit/922265b6bd42bc0f4784a4a413ebda193dcfd4b6))
+
+Adds a list-table (ansible-core × Python) to docs/actions/noxtest.rst, built at Sphinx time from the
+  VERSION_MATRIX in noxtest.py so the docs stay in sync automatically. Also expands VERSION_MATRIX
+  with the full set of supported Python versions per ansible-core release.
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- Update asciiciname gifs
+  ([`1de70dd`](https://github.com/russoz-ansible/andebox/commit/1de70dded596219d8bc4aaa49cadc563622fb83d))
+
+- Update CLAUDE.md to reflect typer migration
+  ([`58e083a`](https://github.com/russoz-ansible/andebox/commit/58e083a1ab5b90a6f08ab5c0833fddfe4932afda))
+
+Replace stale argparse/AndeboxAction plugin system description with the current typer-based
+  architecture (modules exposing app = typer.Typer()).
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- Update test subcommand examples for typer idiom
+  ([`000c192`](https://github.com/russoz-ansible/andebox/commit/000c1920fe69152719a3d25df8c62cd810771c29))
+
+Move the test type argument before '--' to match the typer/Click convention, e.g. `andebox test
+  sanity -- --docker ...`.
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+### Features
+
+- Add nox-test action for multi-version ansible testing
+  ([`4537f86`](https://github.com/russoz-ansible/andebox/commit/4537f86511fb14d022b6c77fdde2def9d8f171de))
+
+Adds a new `nox-test` action that runs ansible-test within nox across multiple ansible-core and
+  Python version combinations. All session definitions are encapsulated inside andebox — no
+  noxfile.py required. Sessions are registered programmatically via nox's registry API and executed
+  through nox.workflow.execute.
+
+Supports --ansible-core/-a and --python/-p flags to filter the version matrix, plus --session/-s for
+  direct session selection. Default run uses one Python per ansible-core version.
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- New release
+  ([`04eb625`](https://github.com/russoz-ansible/andebox/commit/04eb625cfd4382abc4e5ba3187002ab3d381a7c7))
+
+- Replace argparse/argcomplete with typer
+  ([`a18d2f0`](https://github.com/russoz-ansible/andebox/commit/a18d2f0eaebbbe0fdcb4a3870c9f8e5f1d26ee58))
+
+Migrate CLI and all actions from argparse+argcomplete to Typer. Move andebox_context to context.py
+  and remove the now-empty actions/base module. Update docs and pyproject.toml accordingly.
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- Replace argparse/argcomplete with typer
+  ([`5b691bf`](https://github.com/russoz-ansible/andebox/commit/5b691bf23fd659fe3df011a4a3261541a05b9e99))
+
+- pyproject.toml: swap argcomplete for typer - context.py: drop argparse Namespace/ArgumentParser;
+  add _ErrorReporter that preserves the "andebox: error:" format; create_context(args) now takes a
+  SimpleNamespace - actions/base.py: keep AndeboxAction intact; add andebox_context() helper that
+  builds the SimpleNamespace from typer ctx.obj + per-action kwargs and chdirs into base_dir -
+  cli.py: replace argparse/_make_parser/AndeboxAction discovery with a typer app; discover action
+  sub-apps by looking for app: typer.Typer on each action module - actions/*: each module keeps its
+  class body unchanged; a thin typer callback and app are appended at the bottom -
+  tests/test_andebox_context.py: drop _make_parser dependency; pass SimpleNamespace directly to
+  create_context
+
+Co-Authored-By: Claude Sonnet 4.6 (1M context) <noreply@anthropic.com>
+
+### Refactoring
+
+- Consolidate features in andebox_context
+  ([`41a9248`](https://github.com/russoz-ansible/andebox/commit/41a9248577ad59a3f699b901d76e3dc83d13f6b8))
+
+- temp_tree - collection checks - exception handling
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- Use pathlib instead of os.*
+  ([`9ed0dca`](https://github.com/russoz-ansible/andebox/commit/9ed0dca2e0519b2a00a013728666b8893b9a02ee))
+
+### Testing
+
+- Remove ansible-core 2.17, add 2.21 + devel
+  ([`c203687`](https://github.com/russoz-ansible/andebox/commit/c20368759cd5346a04ea2756a212e55205de7978))
+
+Update project dependencies and lock.
+
+
 ## v1.10.0 (2026-04-07)
 
 ### Chores
@@ -8,80 +305,537 @@
 - **deps**: Bump aiohttp from 3.13.2 to 3.13.3
   ([`ac29854`](https://github.com/russoz-ansible/andebox/commit/ac29854d5e5de2520db463ebe144b3de86c05123))
 
+--- updated-dependencies: - dependency-name: aiohttp dependency-version: 3.13.3
+
+dependency-type: indirect ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump aiohttp from 3.13.3 to 3.13.4
   ([`d5dbca7`](https://github.com/russoz-ansible/andebox/commit/d5dbca779e674fa24626175bd4083f57c64f8384))
+
+--- updated-dependencies: - dependency-name: aiohttp dependency-version: 3.13.4
+
+dependency-type: indirect ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **deps**: Bump ansible-core in the python-dependencies group
   ([`ef7fee9`](https://github.com/russoz-ansible/andebox/commit/ef7fee92984cbbe32a679495d070adebddbe9a0a))
 
+Bumps the python-dependencies group with 1 update:
+  [ansible-core](https://github.com/ansible/ansible).
+
+Updates `ansible-core` from 2.19.5 to 2.19.6 - [Release
+  notes](https://github.com/ansible/ansible/releases) -
+  [Commits](https://github.com/ansible/ansible/compare/v2.19.5...v2.19.6)
+
+--- updated-dependencies: - dependency-name: ansible-core dependency-version: 2.19.6
+
+dependency-type: direct:production
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump antsibull-docs in the python-dependencies group
   ([`8b05ea3`](https://github.com/russoz-ansible/andebox/commit/8b05ea37bd119b686e67081b3edf2ba6edbc6664))
+
+Bumps the python-dependencies group with 1 update:
+  [antsibull-docs](https://github.com/ansible-community/antsibull-docs).
+
+Updates `antsibull-docs` from 2.23.0 to 2.24.0 - [Release
+  notes](https://github.com/ansible-community/antsibull-docs/releases) -
+  [Changelog](https://github.com/ansible-community/antsibull-docs/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/ansible-community/antsibull-docs/compare/2.23.0...2.24.0)
+
+--- updated-dependencies: - dependency-name: antsibull-docs dependency-version: 2.24.0
+
+dependency-type: direct:production
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **deps**: Bump cryptography from 46.0.3 to 46.0.5
   ([`20391d0`](https://github.com/russoz-ansible/andebox/commit/20391d017092ed3c1dd117769fe2fce84f80b177))
 
+Bumps [cryptography](https://github.com/pyca/cryptography) from 46.0.3 to 46.0.5. -
+  [Changelog](https://github.com/pyca/cryptography/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pyca/cryptography/compare/46.0.3...46.0.5)
+
+--- updated-dependencies: - dependency-name: cryptography dependency-version: 46.0.5
+
+dependency-type: indirect ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump cryptography from 46.0.5 to 46.0.6
   ([`987379f`](https://github.com/russoz-ansible/andebox/commit/987379f0dbe796ce0ff57a5a803f14d80d7b7ddf))
+
+Bumps [cryptography](https://github.com/pyca/cryptography) from 46.0.5 to 46.0.6. -
+  [Changelog](https://github.com/pyca/cryptography/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pyca/cryptography/compare/46.0.5...46.0.6)
+
+--- updated-dependencies: - dependency-name: cryptography dependency-version: 46.0.6
+
+dependency-type: indirect ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **deps**: Bump filelock from 3.20.0 to 3.20.1
   ([`4792ba7`](https://github.com/russoz-ansible/andebox/commit/4792ba713951288a8e1cf587e35713d7ee250016))
 
+Bumps [filelock](https://github.com/tox-dev/py-filelock) from 3.20.0 to 3.20.1. - [Release
+  notes](https://github.com/tox-dev/py-filelock/releases) -
+  [Changelog](https://github.com/tox-dev/filelock/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/py-filelock/compare/3.20.0...3.20.1)
+
+--- updated-dependencies: - dependency-name: filelock dependency-version: 3.20.1
+
+dependency-type: indirect ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump filelock from 3.20.2 to 3.20.3
   ([`a45c455`](https://github.com/russoz-ansible/andebox/commit/a45c455ec336d788fffa13385255b75d87dfb74f))
+
+Bumps [filelock](https://github.com/tox-dev/py-filelock) from 3.20.2 to 3.20.3. - [Release
+  notes](https://github.com/tox-dev/py-filelock/releases) -
+  [Changelog](https://github.com/tox-dev/filelock/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/py-filelock/compare/3.20.2...3.20.3)
+
+--- updated-dependencies: - dependency-name: filelock dependency-version: 3.20.3
+
+dependency-type: indirect ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **deps**: Bump pygments from 2.19.2 to 2.20.0
   ([`0b43af0`](https://github.com/russoz-ansible/andebox/commit/0b43af003e101a4a526c84061fca45b0b2593afd))
 
+Bumps [pygments](https://github.com/pygments/pygments) from 2.19.2 to 2.20.0. - [Release
+  notes](https://github.com/pygments/pygments/releases) -
+  [Changelog](https://github.com/pygments/pygments/blob/master/CHANGES) -
+  [Commits](https://github.com/pygments/pygments/compare/2.19.2...2.20.0)
+
+--- updated-dependencies: - dependency-name: pygments dependency-version: 2.20.0
+
+dependency-type: indirect ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump pynacl from 1.6.1 to 1.6.2
   ([`201aae4`](https://github.com/russoz-ansible/andebox/commit/201aae453ae99901d0174c9a786e0d34ae8bf8c7))
+
+Bumps [pynacl](https://github.com/pyca/pynacl) from 1.6.1 to 1.6.2. -
+  [Changelog](https://github.com/pyca/pynacl/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pyca/pynacl/compare/1.6.1...1.6.2)
+
+--- updated-dependencies: - dependency-name: pynacl dependency-version: 1.6.2
+
+dependency-type: indirect ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **deps**: Bump requests from 2.32.5 to 2.33.0
   ([`ffb6b47`](https://github.com/russoz-ansible/andebox/commit/ffb6b47dabc25f54bea609d6b7c2892dbedbc8c1))
 
+Bumps [requests](https://github.com/psf/requests) from 2.32.5 to 2.33.0. - [Release
+  notes](https://github.com/psf/requests/releases) -
+  [Changelog](https://github.com/psf/requests/blob/main/HISTORY.md) -
+  [Commits](https://github.com/psf/requests/compare/v2.32.5...v2.33.0)
+
+--- updated-dependencies: - dependency-name: requests dependency-version: 2.33.0
+
+dependency-type: indirect ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump the python-dependencies group across 1 directory with 5 updates
   ([`d7c79e5`](https://github.com/russoz-ansible/andebox/commit/d7c79e5d11320bd5dce320fc6c73d84dfefc4652))
+
+Bumps the python-dependencies group with 5 updates in the / directory:
+
+| Package | From | To | | --- | --- | --- | | [ansible-core](https://github.com/ansible/ansible) |
+  `2.19.4` | `2.19.5` | | ruamel-yaml | `0.18.16` | `0.18.17` | |
+  [pre-commit](https://github.com/pre-commit/pre-commit) | `4.5.0` | `4.5.1` | |
+  [python-semantic-release](https://github.com/python-semantic-release/python-semantic-release) |
+  `10.5.2` | `10.5.3` | | [furo](https://github.com/pradyunsg/furo) | `2025.9.25` | `2025.12.19` |
+
+Updates `ansible-core` from 2.19.4 to 2.19.5 - [Release
+  notes](https://github.com/ansible/ansible/releases) -
+  [Commits](https://github.com/ansible/ansible/compare/v2.19.4...v2.19.5)
+
+Updates `ruamel-yaml` from 0.18.16 to 0.18.17
+
+Updates `pre-commit` from 4.5.0 to 4.5.1 - [Release
+  notes](https://github.com/pre-commit/pre-commit/releases) -
+  [Changelog](https://github.com/pre-commit/pre-commit/blob/main/CHANGELOG.md) -
+  [Commits](https://github.com/pre-commit/pre-commit/compare/v4.5.0...v4.5.1)
+
+Updates `python-semantic-release` from 10.5.2 to 10.5.3 - [Release
+  notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
+  [Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
+  -
+  [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v10.5.2...v10.5.3)
+
+Updates `furo` from 2025.9.25 to 2025.12.19 - [Release
+  notes](https://github.com/pradyunsg/furo/releases) -
+  [Changelog](https://github.com/pradyunsg/furo/blob/main/docs/changelog.md) -
+  [Commits](https://github.com/pradyunsg/furo/compare/2025.09.25...2025.12.19)
+
+--- updated-dependencies: - dependency-name: ansible-core dependency-version: 2.19.5
+
+dependency-type: direct:production
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies
+
+- dependency-name: ruamel-yaml dependency-version: 0.18.17
+
+- dependency-name: pre-commit dependency-version: 4.5.1
+
+dependency-type: direct:development
+
+- dependency-name: python-semantic-release dependency-version: 10.5.3
+
+- dependency-name: furo dependency-version: 2025.12.19
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **deps**: Bump the python-dependencies group with 2 updates
   ([`a23a08a`](https://github.com/russoz-ansible/andebox/commit/a23a08ac7caad3b7a5b0b68807952ff5c546ee76))
 
+Bumps the python-dependencies group with 2 updates: [fabric](https://github.com/fabric/fabric) and
+  [tox](https://github.com/tox-dev/tox).
+
+Updates `fabric` from 3.2.2 to 3.2.3 -
+  [Commits](https://github.com/fabric/fabric/compare/3.2.2...3.2.3)
+
+Updates `tox` from 4.51.0 to 4.52.0 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.51.0...4.52.0)
+
+--- updated-dependencies: - dependency-name: fabric dependency-version: 3.2.3
+
+dependency-type: direct:production
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies
+
+- dependency-name: tox dependency-version: 4.52.0
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump the python-dependencies group with 2 updates
   ([`39e9fe4`](https://github.com/russoz-ansible/andebox/commit/39e9fe4ab454bc70c677725be9b6cf0ef026ec56))
+
+Bumps the python-dependencies group with 2 updates:
+  [ansible-core](https://github.com/ansible/ansible) and [tox](https://github.com/tox-dev/tox).
+
+Updates `ansible-core` from 2.19.7 to 2.19.8 - [Release
+  notes](https://github.com/ansible/ansible/releases) -
+  [Commits](https://github.com/ansible/ansible/compare/v2.19.7...v2.19.8)
+
+Updates `tox` from 4.50.3 to 4.51.0 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.50.3...4.51.0)
+
+--- updated-dependencies: - dependency-name: ansible-core dependency-version: 2.19.8
+
+dependency-type: direct:production
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies
+
+- dependency-name: tox dependency-version: 4.51.0
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **deps**: Bump the python-dependencies group with 2 updates
   ([`469c0e8`](https://github.com/russoz-ansible/andebox/commit/469c0e8012ac3b505bdba9e5061a91ad0e33a9ae))
 
+Bumps the python-dependencies group with 2 updates: [tox](https://github.com/tox-dev/tox) and
+  [pytest-cov](https://github.com/pytest-dev/pytest-cov).
+
+Updates `tox` from 4.49.1 to 4.50.3 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.49.1...4.50.3)
+
+Updates `pytest-cov` from 7.0.0 to 7.1.0 -
+  [Changelog](https://github.com/pytest-dev/pytest-cov/blob/master/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest-cov/compare/v7.0.0...v7.1.0)
+
+--- updated-dependencies: - dependency-name: tox dependency-version: 4.50.3
+
+dependency-type: direct:production
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies
+
+- dependency-name: pytest-cov dependency-version: 7.1.0
+
+dependency-type: direct:development
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump the python-dependencies group with 2 updates
   ([`2f1ccc6`](https://github.com/russoz-ansible/andebox/commit/2f1ccc6237b5448e52e210dda08831baf9726dd0))
+
+Bumps the python-dependencies group with 2 updates:
+  [ansible-core](https://github.com/ansible/ansible) and [tox](https://github.com/tox-dev/tox).
+
+Updates `ansible-core` from 2.19.6 to 2.19.7 - [Release
+  notes](https://github.com/ansible/ansible/releases) -
+  [Commits](https://github.com/ansible/ansible/compare/v2.19.6...v2.19.7)
+
+Updates `tox` from 4.44.0 to 4.47.0 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.44.0...4.47.0)
+
+--- updated-dependencies: - dependency-name: ansible-core dependency-version: 2.19.7
+
+dependency-type: direct:production
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies
+
+- dependency-name: tox dependency-version: 4.47.0
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **deps**: Bump the python-dependencies group with 2 updates
   ([`125cec8`](https://github.com/russoz-ansible/andebox/commit/125cec8a0e2d646bceafc4ab55191e39f8d35485))
 
+Bumps the python-dependencies group with 2 updates: [tox](https://github.com/tox-dev/tox) and
+  [pylint](https://github.com/pylint-dev/pylint).
+
+Updates `tox` from 4.36.0 to 4.44.0 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.36.0...4.44.0)
+
+Updates `pylint` from 4.0.4 to 4.0.5 - [Release
+  notes](https://github.com/pylint-dev/pylint/releases) -
+  [Commits](https://github.com/pylint-dev/pylint/compare/v4.0.4...v4.0.5)
+
+--- updated-dependencies: - dependency-name: tox dependency-version: 4.44.0
+
+dependency-type: direct:production
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies
+
+- dependency-name: pylint dependency-version: 4.0.5
+
+dependency-type: direct:development
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump the python-dependencies group with 3 updates
   ([`5811b69`](https://github.com/russoz-ansible/andebox/commit/5811b69c71369b850b0bd8e37f22502213c5b21d))
+
+Bumps the python-dependencies group with 3 updates: [tox](https://github.com/tox-dev/tox),
+  ruamel-yaml and [gitpython](https://github.com/gitpython-developers/GitPython).
+
+Updates `tox` from 4.32.0 to 4.33.0 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.32.0...4.33.0)
+
+Updates `ruamel-yaml` from 0.18.17 to 0.19.1
+
+Updates `gitpython` from 3.1.45 to 3.1.46 - [Release
+  notes](https://github.com/gitpython-developers/GitPython/releases) -
+  [Changelog](https://github.com/gitpython-developers/GitPython/blob/main/CHANGES) -
+  [Commits](https://github.com/gitpython-developers/GitPython/compare/3.1.45...3.1.46)
+
+--- updated-dependencies: - dependency-name: tox dependency-version: 4.33.0
+
+dependency-type: direct:production
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies
+
+- dependency-name: ruamel-yaml dependency-version: 0.19.1
+
+- dependency-name: gitpython dependency-version: 3.1.46
+
+dependency-type: direct:development
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **deps**: Bump tox in the python-dependencies group
   ([`89faf30`](https://github.com/russoz-ansible/andebox/commit/89faf30a57d0e144335befb2f72b85c313685bd2))
 
+Bumps the python-dependencies group with 1 update: [tox](https://github.com/tox-dev/tox).
+
+Updates `tox` from 4.49.0 to 4.49.1 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.49.0...4.49.1)
+
+--- updated-dependencies: - dependency-name: tox dependency-version: 4.49.1
+
+dependency-type: direct:production
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump tox in the python-dependencies group
   ([`f18bcc1`](https://github.com/russoz-ansible/andebox/commit/f18bcc13547abb9831b0419f0c85b1c6a7c99cba))
+
+Bumps the python-dependencies group with 1 update: [tox](https://github.com/tox-dev/tox).
+
+Updates `tox` from 4.47.0 to 4.49.0 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.47.0...4.49.0)
+
+--- updated-dependencies: - dependency-name: tox dependency-version: 4.49.0
+
+dependency-type: direct:production
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **deps**: Bump tox in the python-dependencies group
   ([`9bdcc73`](https://github.com/russoz-ansible/andebox/commit/9bdcc73bd4aa9c8c50923b8588f41fc83986de08))
 
+Bumps the python-dependencies group with 1 update: [tox](https://github.com/tox-dev/tox).
+
+Updates `tox` from 4.34.1 to 4.36.0 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.34.1...4.36.0)
+
+--- updated-dependencies: - dependency-name: tox dependency-version: 4.36.0
+
+dependency-type: direct:production
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump tox in the python-dependencies group
   ([`9aed892`](https://github.com/russoz-ansible/andebox/commit/9aed892faab349421eb90339d8d5b8329de24f94))
+
+Bumps the python-dependencies group with 1 update: [tox](https://github.com/tox-dev/tox).
+
+Updates `tox` from 4.33.0 to 4.34.1 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.33.0...4.34.1)
+
+--- updated-dependencies: - dependency-name: tox dependency-version: 4.34.1
+
+dependency-type: direct:production
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **deps**: Bump urllib3 from 2.6.1 to 2.6.3
   ([`384c7c8`](https://github.com/russoz-ansible/andebox/commit/384c7c82b83b08ef8d87591e61a354e084b599f3))
 
+Bumps [urllib3](https://github.com/urllib3/urllib3) from 2.6.1 to 2.6.3. - [Release
+  notes](https://github.com/urllib3/urllib3/releases) -
+  [Changelog](https://github.com/urllib3/urllib3/blob/main/CHANGES.rst) -
+  [Commits](https://github.com/urllib3/urllib3/compare/2.6.1...2.6.3)
+
+--- updated-dependencies: - dependency-name: urllib3 dependency-version: 2.6.3
+
+dependency-type: indirect ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump virtualenv from 20.35.4 to 20.36.1
   ([`045a31a`](https://github.com/russoz-ansible/andebox/commit/045a31a02043e18890b90146fab2c1875e39e227))
+
+Bumps [virtualenv](https://github.com/pypa/virtualenv) from 20.35.4 to 20.36.1. - [Release
+  notes](https://github.com/pypa/virtualenv/releases) -
+  [Changelog](https://github.com/pypa/virtualenv/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/pypa/virtualenv/compare/20.35.4...20.36.1)
+
+--- updated-dependencies: - dependency-name: virtualenv dependency-version: 20.36.1
+
+dependency-type: indirect ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **deps-dev**: Bump myst-parser from 4.0.1 to 5.0.0
   ([`230a3b7`](https://github.com/russoz-ansible/andebox/commit/230a3b740642ae38c0060b954e0e1c98c0ebea8f))
 
+Bumps [myst-parser](https://github.com/executablebooks/MyST-Parser) from 4.0.1 to 5.0.0. - [Release
+  notes](https://github.com/executablebooks/MyST-Parser/releases) -
+  [Changelog](https://github.com/executablebooks/MyST-Parser/blob/master/CHANGELOG.md) -
+  [Commits](https://github.com/executablebooks/MyST-Parser/compare/v4.0.1...v5.0.0)
+
+--- updated-dependencies: - dependency-name: myst-parser dependency-version: 5.0.0
+
+dependency-type: direct:development
+
+update-type: version-update:semver-major ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps-dev**: Bump sphinx from 8.2.3 to 9.0.4
   ([`b3d5b05`](https://github.com/russoz-ansible/andebox/commit/b3d5b0517ca0ed37792ce51dbd0fd3ef485630b0))
+
+Bumps [sphinx](https://github.com/sphinx-doc/sphinx) from 8.2.3 to 9.0.4. - [Release
+  notes](https://github.com/sphinx-doc/sphinx/releases) -
+  [Changelog](https://github.com/sphinx-doc/sphinx/blob/v9.0.4/CHANGES.rst) -
+  [Commits](https://github.com/sphinx-doc/sphinx/compare/v8.2.3...v9.0.4)
+
+--- updated-dependencies: - dependency-name: sphinx dependency-version: 9.0.4
+
+dependency-type: direct:development
+
+update-type: version-update:semver-major ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 ### Continuous Integration
 
@@ -105,6 +859,8 @@
 - **README**: Fix typo in command example
   ([`f4453ef`](https://github.com/russoz-ansible/andebox/commit/f4453ef0520edc2bee1b15534078c6059bc622cb))
 
+It is `andebox test -- units` instead of `unit`
+
 ### Features
 
 - **action/tox-test**: Add support to ansible-core 2.21
@@ -115,6 +871,8 @@
 - **action/test**: Change example in community.general
   ([`2d3707b`](https://github.com/russoz-ansible/andebox/commit/2d3707ba5f95fb7413b5eea93eacc0ebcfe8f5b9))
 
+The ignore entry for `lxc_container` has been removed.
+
 
 ## v1.9.0 (2025-12-08)
 
@@ -123,11 +881,72 @@
 - **deps**: Bump the python-dependencies group with 4 updates
   ([`97dc508`](https://github.com/russoz-ansible/andebox/commit/97dc5084ef2be7bfc844c93fb2575e1a2ce05795))
 
+Bumps the python-dependencies group with 4 updates:
+  [antsibull-docs](https://github.com/ansible-community/antsibull-docs),
+  [pylint](https://github.com/pylint-dev/pylint),
+  [pre-commit](https://github.com/pre-commit/pre-commit) and
+  [python-semantic-release](https://github.com/python-semantic-release/python-semantic-release).
+
+Updates `antsibull-docs` from 2.22.0 to 2.23.0 - [Release
+  notes](https://github.com/ansible-community/antsibull-docs/releases) -
+  [Changelog](https://github.com/ansible-community/antsibull-docs/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/ansible-community/antsibull-docs/compare/2.22.0...2.23.0)
+
+Updates `pylint` from 4.0.2 to 4.0.3 - [Release
+  notes](https://github.com/pylint-dev/pylint/releases) -
+  [Commits](https://github.com/pylint-dev/pylint/compare/v4.0.2...v4.0.3)
+
+Updates `pre-commit` from 4.4.0 to 4.5.0 - [Release
+  notes](https://github.com/pre-commit/pre-commit/releases) -
+  [Changelog](https://github.com/pre-commit/pre-commit/blob/main/CHANGELOG.md) -
+  [Commits](https://github.com/pre-commit/pre-commit/compare/v4.4.0...v4.5.0)
+
+Updates `python-semantic-release` from 10.5.1 to 10.5.2 - [Release
+  notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
+  [Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
+  -
+  [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v10.5.1...v10.5.2)
+
+--- updated-dependencies: - dependency-name: antsibull-docs dependency-version: 2.23.0
+
+dependency-type: direct:production
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies
+
+- dependency-name: pylint dependency-version: 4.0.3
+
+dependency-type: direct:development
+
+update-type: version-update:semver-patch
+
+- dependency-name: pre-commit dependency-version: 4.5.0
+
+- dependency-name: python-semantic-release dependency-version: 10.5.2
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Update project dependencies
   ([`716f661`](https://github.com/russoz-ansible/andebox/commit/716f661b6f8dbfbbe3ade37763686793f10d466e))
 
 - **deps-dev**: Bump pytest from 8.4.2 to 9.0.1
   ([`5f427a7`](https://github.com/russoz-ansible/andebox/commit/5f427a7e42c771109509163c50099eba625655cd))
+
+Bumps [pytest](https://github.com/pytest-dev/pytest) from 8.4.2 to 9.0.1. - [Release
+  notes](https://github.com/pytest-dev/pytest/releases) -
+  [Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest/compare/8.4.2...9.0.1)
+
+--- updated-dependencies: - dependency-name: pytest dependency-version: 9.0.1
+
+dependency-type: direct:development
+
+update-type: version-update:semver-major ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 ### Features
 
@@ -160,6 +979,8 @@
 - **context**: Add directories to top level exclusion when copying
   ([`53ecc1f`](https://github.com/russoz-ansible/andebox/commit/53ecc1fa35cac1835775ad3baa42652b4478c7da))
 
+- excluding `.nox`, `__pycache__`, `.ansible`, and `.ruff_cache`
+
 
 ## v1.7.1 (2025-11-10)
 
@@ -176,17 +997,166 @@
 - **deps**: Bump the python-dependencies group across 1 directory with 4 updates
   ([`2eef30b`](https://github.com/russoz-ansible/andebox/commit/2eef30b8d5c2944d44ba659b5eb64cfa384b8e44))
 
+Bumps the python-dependencies group with 4 updates in the / directory:
+  [ansible-core](https://github.com/ansible/ansible),
+  [antsibull-docs](https://github.com/ansible-community/antsibull-docs),
+  [pre-commit](https://github.com/pre-commit/pre-commit) and
+  [python-semantic-release](https://github.com/python-semantic-release/python-semantic-release).
+
+Updates `ansible-core` from 2.19.3 to 2.19.4 - [Release
+  notes](https://github.com/ansible/ansible/releases) -
+  [Commits](https://github.com/ansible/ansible/compare/v2.19.3...v2.19.4)
+
+Updates `antsibull-docs` from 2.21.0 to 2.22.0 - [Release
+  notes](https://github.com/ansible-community/antsibull-docs/releases) -
+  [Changelog](https://github.com/ansible-community/antsibull-docs/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/ansible-community/antsibull-docs/compare/2.21.0...2.22.0)
+
+Updates `pre-commit` from 4.3.0 to 4.4.0 - [Release
+  notes](https://github.com/pre-commit/pre-commit/releases) -
+  [Changelog](https://github.com/pre-commit/pre-commit/blob/main/CHANGELOG.md) -
+  [Commits](https://github.com/pre-commit/pre-commit/compare/v4.3.0...v4.4.0)
+
+Updates `python-semantic-release` from 10.4.1 to 10.5.1 - [Release
+  notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
+  [Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
+  -
+  [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v10.4.1...v10.5.1)
+
+--- updated-dependencies: - dependency-name: ansible-core dependency-version: 2.19.4
+
+dependency-type: direct:production
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies
+
+- dependency-name: antsibull-docs dependency-version: 2.22.0
+
+update-type: version-update:semver-minor
+
+- dependency-name: pre-commit dependency-version: 4.4.0
+
+dependency-type: direct:development
+
+- dependency-name: python-semantic-release dependency-version: 10.5.1
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump the python-dependencies group with 2 updates
   ([`4287c50`](https://github.com/russoz-ansible/andebox/commit/4287c50ae5ade9d6d6673b0e47d68e463ff43261))
+
+Bumps the python-dependencies group with 2 updates:
+  [argcomplete](https://github.com/kislyuk/argcomplete) and
+  [pylint](https://github.com/pylint-dev/pylint).
+
+Updates `argcomplete` from 3.6.2 to 3.6.3 - [Release
+  notes](https://github.com/kislyuk/argcomplete/releases) -
+  [Changelog](https://github.com/kislyuk/argcomplete/blob/main/Changes.rst) -
+  [Commits](https://github.com/kislyuk/argcomplete/compare/v3.6.2...v3.6.3)
+
+Updates `pylint` from 4.0.0 to 4.0.1 - [Release
+  notes](https://github.com/pylint-dev/pylint/releases) -
+  [Commits](https://github.com/pylint-dev/pylint/compare/v4.0.0...v4.0.1)
+
+--- updated-dependencies: - dependency-name: argcomplete dependency-version: 3.6.3
+
+dependency-type: direct:production
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies
+
+- dependency-name: pylint dependency-version: 4.0.1
+
+dependency-type: direct:development
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **deps**: Bump the python-dependencies group with 2 updates
   ([`9a53188`](https://github.com/russoz-ansible/andebox/commit/9a5318880e4ed0de57e9834759f78d9c8ca46ac8))
 
+Bumps the python-dependencies group with 2 updates:
+  [ansible-core](https://github.com/ansible/ansible) and [tox](https://github.com/tox-dev/tox).
+
+Updates `ansible-core` from 2.19.2 to 2.19.3 - [Release
+  notes](https://github.com/ansible/ansible/releases) -
+  [Commits](https://github.com/ansible/ansible/compare/v2.19.2...v2.19.3)
+
+Updates `tox` from 4.30.3 to 4.31.0 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.30.3...4.31.0)
+
+--- updated-dependencies: - dependency-name: ansible-core dependency-version: 2.19.3
+
+dependency-type: direct:production
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies
+
+- dependency-name: tox dependency-version: 4.31.0
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump the python-dependencies group with 3 updates
   ([`b4eff45`](https://github.com/russoz-ansible/andebox/commit/b4eff4504c5b94a7b8f6cd160e7834033627caf9))
 
+Bumps the python-dependencies group with 3 updates: [tox](https://github.com/tox-dev/tox),
+  ruamel-yaml and [pylint](https://github.com/pylint-dev/pylint).
+
+Updates `tox` from 4.31.0 to 4.32.0 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.31.0...4.32.0)
+
+Updates `ruamel-yaml` from 0.18.15 to 0.18.16
+
+Updates `pylint` from 4.0.1 to 4.0.2 - [Release
+  notes](https://github.com/pylint-dev/pylint/releases) -
+  [Commits](https://github.com/pylint-dev/pylint/compare/v4.0.1...v4.0.2)
+
+--- updated-dependencies: - dependency-name: tox dependency-version: 4.32.0
+
+dependency-type: direct:production
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies
+
+- dependency-name: ruamel-yaml dependency-version: 0.18.16
+
+update-type: version-update:semver-patch
+
+- dependency-name: pylint dependency-version: 4.0.2
+
+dependency-type: direct:development
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps-dev**: Bump pylint from 3.3.9 to 4.0.0
   ([`af5882b`](https://github.com/russoz-ansible/andebox/commit/af5882b2b3ae9b63b032c8381223f357ecdb4212))
+
+Bumps [pylint](https://github.com/pylint-dev/pylint) from 3.3.9 to 4.0.0. - [Release
+  notes](https://github.com/pylint-dev/pylint/releases) -
+  [Commits](https://github.com/pylint-dev/pylint/compare/v3.3.9...v4.0.0)
+
+--- updated-dependencies: - dependency-name: pylint dependency-version: 4.0.0
+
+dependency-type: direct:development
+
+update-type: version-update:semver-major ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **devcontainer**: Pin base image to Python 3.13, Debian bookworm
   ([`96eba87`](https://github.com/russoz-ansible/andebox/commit/96eba8732247fbe98cf2a58f6a5c549a9ea36d8a))
@@ -210,20 +1180,211 @@
 - **deps**: Bump the python-dependencies group across 1 directory with 3 updates
   ([`4dfce4b`](https://github.com/russoz-ansible/andebox/commit/4dfce4b3f49d7d5064ea1cc3c406988427204c5f))
 
+Bumps the python-dependencies group with 3 updates in the / directory:
+  [ansible-core](https://github.com/ansible/ansible),
+  [pytest-mock](https://github.com/pytest-dev/pytest-mock) and
+  [python-semantic-release](https://github.com/python-semantic-release/python-semantic-release).
+
+Updates `ansible-core` from 2.19.1 to 2.19.2 - [Release
+  notes](https://github.com/ansible/ansible/releases) -
+  [Commits](https://github.com/ansible/ansible/compare/v2.19.1...v2.19.2)
+
+Updates `pytest-mock` from 3.15.0 to 3.15.1 - [Release
+  notes](https://github.com/pytest-dev/pytest-mock/releases) -
+  [Changelog](https://github.com/pytest-dev/pytest-mock/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest-mock/compare/v3.15.0...v3.15.1)
+
+Updates `python-semantic-release` from 10.4.0 to 10.4.1 - [Release
+  notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
+  [Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
+  -
+  [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v10.4...v10.4.1)
+
+--- updated-dependencies: - dependency-name: ansible-core dependency-version: 2.19.2
+
+dependency-type: direct:production
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies
+
+- dependency-name: pytest-mock dependency-version: 3.15.1
+
+dependency-type: direct:development
+
+- dependency-name: python-semantic-release dependency-version: 10.4.1
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump the python-dependencies group with 2 updates
   ([`82fee57`](https://github.com/russoz-ansible/andebox/commit/82fee578dddd3ea33f09e0255adac14be8219c91))
+
+Bumps the python-dependencies group with 2 updates: [tox](https://github.com/tox-dev/tox) and
+  [pylint](https://github.com/pylint-dev/pylint).
+
+Updates `tox` from 4.30.2 to 4.30.3 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.30.2...4.30.3)
+
+Updates `pylint` from 3.3.8 to 3.3.9 - [Release
+  notes](https://github.com/pylint-dev/pylint/releases) -
+  [Commits](https://github.com/pylint-dev/pylint/compare/v3.3.8...v3.3.9)
+
+--- updated-dependencies: - dependency-name: tox dependency-version: 4.30.3
+
+dependency-type: direct:production
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies
+
+- dependency-name: pylint dependency-version: 3.3.9
+
+dependency-type: direct:development
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **deps**: Bump the python-dependencies group with 2 updates
   ([`8f152ce`](https://github.com/russoz-ansible/andebox/commit/8f152cea38ca7bbef3393d05002e33d27e38e08d))
 
+Bumps the python-dependencies group with 2 updates: [pyyaml](https://github.com/yaml/pyyaml) and
+  [furo](https://github.com/pradyunsg/furo).
+
+Updates `pyyaml` from 6.0.2 to 6.0.3 - [Release notes](https://github.com/yaml/pyyaml/releases) -
+  [Changelog](https://github.com/yaml/pyyaml/blob/6.0.3/CHANGES) -
+  [Commits](https://github.com/yaml/pyyaml/compare/6.0.2...6.0.3)
+
+Updates `furo` from 2025.7.19 to 2025.9.25 - [Release
+  notes](https://github.com/pradyunsg/furo/releases) -
+  [Changelog](https://github.com/pradyunsg/furo/blob/main/docs/changelog.md) -
+  [Commits](https://github.com/pradyunsg/furo/compare/2025.07.19...2025.09.25)
+
+--- updated-dependencies: - dependency-name: pyyaml dependency-version: 6.0.3
+
+dependency-type: direct:production
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies
+
+- dependency-name: furo dependency-version: 2025.9.25
+
+dependency-type: direct:development
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump the python-dependencies group with 2 updates
   ([`710b775`](https://github.com/russoz-ansible/andebox/commit/710b7759120a8634ba1523df3f480297798acfe3))
+
+Bumps the python-dependencies group with 2 updates:
+  [ansible-core](https://github.com/ansible/ansible) and [tox](https://github.com/tox-dev/tox).
+
+Updates `ansible-core` from 2.19.0 to 2.19.1 - [Release
+  notes](https://github.com/ansible/ansible/releases) -
+  [Commits](https://github.com/ansible/ansible/compare/v2.19.0...v2.19.1)
+
+Updates `tox` from 4.28.4 to 4.29.0 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.28.4...4.29.0)
+
+--- updated-dependencies: - dependency-name: ansible-core dependency-version: 2.19.1
+
+dependency-type: direct:production
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies
+
+- dependency-name: tox dependency-version: 4.29.0
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **deps**: Bump the python-dependencies group with 5 updates
   ([`9655c79`](https://github.com/russoz-ansible/andebox/commit/9655c79a3bec0d261de28619bc3cf13804c63c2c))
 
+Bumps the python-dependencies group with 5 updates:
+
+| Package | From | To | | --- | --- | --- | | [tox](https://github.com/tox-dev/tox) | `4.29.0` |
+  `4.30.2` | | [pytest](https://github.com/pytest-dev/pytest) | `8.4.1` | `8.4.2` | |
+  [pytest-mock](https://github.com/pytest-dev/pytest-mock) | `3.14.1` | `3.15.0` | |
+  [python-semantic-release](https://github.com/python-semantic-release/python-semantic-release) |
+  `10.3.1` | `10.4.0` | | [pytest-cov](https://github.com/pytest-dev/pytest-cov) | `6.2.1` | `6.3.0`
+  |
+
+Updates `tox` from 4.29.0 to 4.30.2 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.29.0...4.30.2)
+
+Updates `pytest` from 8.4.1 to 8.4.2 - [Release
+  notes](https://github.com/pytest-dev/pytest/releases) -
+  [Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest/compare/8.4.1...8.4.2)
+
+Updates `pytest-mock` from 3.14.1 to 3.15.0 - [Release
+  notes](https://github.com/pytest-dev/pytest-mock/releases) -
+  [Changelog](https://github.com/pytest-dev/pytest-mock/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest-mock/compare/v3.14.1...v3.15.0)
+
+Updates `python-semantic-release` from 10.3.1 to 10.4.0 - [Release
+  notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
+  [Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
+  -
+  [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v10.3.1...v10.4)
+
+Updates `pytest-cov` from 6.2.1 to 6.3.0 -
+  [Changelog](https://github.com/pytest-dev/pytest-cov/blob/master/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest-cov/compare/v6.2.1...v6.3.0)
+
+--- updated-dependencies: - dependency-name: tox dependency-version: 4.30.2
+
+dependency-type: direct:production
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies
+
+- dependency-name: pytest dependency-version: 8.4.2
+
+dependency-type: direct:development
+
+update-type: version-update:semver-patch
+
+- dependency-name: pytest-mock dependency-version: 3.15.0
+
+- dependency-name: python-semantic-release dependency-version: 10.4.0
+
+- dependency-name: pytest-cov dependency-version: 6.3.0
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps-dev**: Bump pytest-cov from 6.3.0 to 7.0.0
   ([`378c4b1`](https://github.com/russoz-ansible/andebox/commit/378c4b1edcbf3a1efa0a05a1bb55e29263c5c7cb))
+
+Bumps [pytest-cov](https://github.com/pytest-dev/pytest-cov) from 6.3.0 to 7.0.0. -
+  [Changelog](https://github.com/pytest-dev/pytest-cov/blob/master/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest-cov/compare/v6.3.0...v7.0.0)
+
+--- updated-dependencies: - dependency-name: pytest-cov dependency-version: 7.0.0
+
+dependency-type: direct:development
+
+update-type: version-update:semver-major ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 ### Documentation
 
@@ -250,8 +1411,12 @@
 - **action/test**: Validate some args combination
   ([`7b94f65`](https://github.com/russoz-ansible/andebox/commit/7b94f651f7f80b4342b4d6137ee5caacede6c9b0))
 
+- -R cannot be used with sanity - -ei can only be used with sanity
+
 - **cli**: Chance exit code for keyboard interrupt to 100
   ([`a0a1b91`](https://github.com/russoz-ansible/andebox/commit/a0a1b91ec6a8d0013559874e8816bce92b61bf47))
+
+To prevent clashing with ArgParser parameter validation which returns 2.
 
 ### Testing
 
@@ -275,14 +1440,105 @@
 - **deps**: Bump the python-dependencies group across 1 directory with 4 updates
   ([`42d377b`](https://github.com/russoz-ansible/andebox/commit/42d377b96e9075bbd87b56a062b6a6f02ff55ac1))
 
+Bumps the python-dependencies group with 4 updates in the / directory: ruamel-yaml,
+  [antsibull-docs](https://github.com/ansible-community/antsibull-docs),
+  [pylint](https://github.com/pylint-dev/pylint) and
+  [pre-commit](https://github.com/pre-commit/pre-commit).
+
+Updates `ruamel-yaml` from 0.18.12 to 0.18.15
+
+Updates `antsibull-docs` from 2.20.0 to 2.21.0 - [Release
+  notes](https://github.com/ansible-community/antsibull-docs/releases) -
+  [Changelog](https://github.com/ansible-community/antsibull-docs/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/ansible-community/antsibull-docs/compare/2.20.0...2.21.0)
+
+Updates `pylint` from 3.3.7 to 3.3.8 - [Release
+  notes](https://github.com/pylint-dev/pylint/releases) -
+  [Commits](https://github.com/pylint-dev/pylint/compare/v3.3.7...v3.3.8)
+
+Updates `pre-commit` from 4.2.0 to 4.3.0 - [Release
+  notes](https://github.com/pre-commit/pre-commit/releases) -
+  [Changelog](https://github.com/pre-commit/pre-commit/blob/main/CHANGELOG.md) -
+  [Commits](https://github.com/pre-commit/pre-commit/compare/v4.2.0...v4.3.0)
+
+--- updated-dependencies: - dependency-name: ruamel-yaml dependency-version: 0.18.15
+
+dependency-type: direct:production
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies
+
+- dependency-name: antsibull-docs dependency-version: 2.21.0
+
+update-type: version-update:semver-minor
+
+- dependency-name: pylint dependency-version: 3.3.8
+
+dependency-type: direct:development
+
+- dependency-name: pre-commit dependency-version: 4.3.0
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump the python-dependencies group with 3 updates
   ([`f5f077b`](https://github.com/russoz-ansible/andebox/commit/f5f077be8476c2c7fd16e1afa0e84e3e945cb24d))
+
+Bumps the python-dependencies group with 3 updates:
+  [ansible-core](https://github.com/ansible/ansible), [tox](https://github.com/tox-dev/tox) and
+  [antsibull-docs](https://github.com/ansible-community/antsibull-docs).
+
+Updates `ansible-core` from 2.18.6 to 2.18.7 - [Release
+  notes](https://github.com/ansible/ansible/releases) -
+  [Commits](https://github.com/ansible/ansible/compare/v2.18.6...v2.18.7)
+
+Updates `tox` from 4.27.0 to 4.28.0 - [Release notes](https://github.com/tox-dev/tox/releases) -
+  [Changelog](https://github.com/tox-dev/tox/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/tox-dev/tox/compare/4.27.0...4.28.0)
+
+Updates `antsibull-docs` from 2.18.0 to 2.19.1 - [Release
+  notes](https://github.com/ansible-community/antsibull-docs/releases) -
+  [Changelog](https://github.com/ansible-community/antsibull-docs/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/ansible-community/antsibull-docs/compare/2.18.0...2.19.1)
+
+--- updated-dependencies: - dependency-name: ansible-core dependency-version: 2.18.7
+
+dependency-type: direct:production
+
+update-type: version-update:semver-patch
+
+dependency-group: python-dependencies
+
+- dependency-name: tox dependency-version: 4.28.0
+
+update-type: version-update:semver-minor
+
+- dependency-name: antsibull-docs dependency-version: 2.19.1
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **deps**: Update project dependencies
   ([`ed2d793`](https://github.com/russoz-ansible/andebox/commit/ed2d79340a9796707dbe0894472ae110a6098223))
 
 - **deps-dev**: Bump furo from 2024.8.6 to 2025.7.19
   ([`c779ee6`](https://github.com/russoz-ansible/andebox/commit/c779ee6042cbea608151e67dcb56ebacc70293eb))
+
+Bumps [furo](https://github.com/pradyunsg/furo) from 2024.8.6 to 2025.7.19. - [Release
+  notes](https://github.com/pradyunsg/furo/releases) -
+  [Changelog](https://github.com/pradyunsg/furo/blob/main/docs/changelog.md) -
+  [Commits](https://github.com/pradyunsg/furo/compare/2024.08.06...2025.07.19)
+
+--- updated-dependencies: - dependency-name: furo dependency-version: 2025.7.19
+
+dependency-type: direct:development
+
+update-type: version-update:semver-major ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 ### Features
 
@@ -305,6 +1561,9 @@
 - **action/yaml-doc**: Fix the rewrapping of long lines
   ([`82cfc60`](https://github.com/russoz-ansible/andebox/commit/82cfc60069d24c32b1f3a00124e1c02de759e0a3))
 
+When a long line is already split in two, ruamel.yaml seems to be adding a trailing space to the
+  first line.
+
 
 ## v1.5.0 (2025-07-13)
 
@@ -316,8 +1575,53 @@
 - **deps**: Bump the python-dependencies group with 2 updates
   ([`8f77cb6`](https://github.com/russoz-ansible/andebox/commit/8f77cb64b44c8420d628258786f0b691ac9b6359))
 
+Bumps the python-dependencies group with 2 updates:
+  [antsibull-docs](https://github.com/ansible-community/antsibull-docs) and
+  [python-semantic-release](https://github.com/python-semantic-release/python-semantic-release).
+
+Updates `antsibull-docs` from 2.17.1 to 2.18.0 - [Release
+  notes](https://github.com/ansible-community/antsibull-docs/releases) -
+  [Changelog](https://github.com/ansible-community/antsibull-docs/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/ansible-community/antsibull-docs/compare/2.17.1...2.18.0)
+
+Updates `python-semantic-release` from 10.1.0 to 10.2.0 - [Release
+  notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
+  [Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
+  -
+  [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v10.1...v10.2)
+
+--- updated-dependencies: - dependency-name: antsibull-docs dependency-version: 2.18.0
+
+dependency-type: direct:production
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies
+
+- dependency-name: python-semantic-release dependency-version: 10.2.0
+
+dependency-type: direct:development
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps**: Bump urllib3 from 2.4.0 to 2.5.0 in the pip group
   ([`79f096f`](https://github.com/russoz-ansible/andebox/commit/79f096fcaf42036f9cfc820be5093ad49e0129dc))
+
+Bumps the pip group with 1 update: [urllib3](https://github.com/urllib3/urllib3).
+
+Updates `urllib3` from 2.4.0 to 2.5.0 - [Release notes](https://github.com/urllib3/urllib3/releases)
+  - [Changelog](https://github.com/urllib3/urllib3/blob/main/CHANGES.rst) -
+  [Commits](https://github.com/urllib3/urllib3/compare/2.4.0...2.5.0)
+
+--- updated-dependencies: - dependency-name: urllib3 dependency-version: 2.5.0
+
+dependency-type: indirect
+
+dependency-group: pip ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 - **deps**: Update project dependencies
   ([`4c543ce`](https://github.com/russoz-ansible/andebox/commit/4c543ceeb0ad5bd3c97604888c51c0d04e1ccaf6))
@@ -356,6 +1660,34 @@
 - **deps-dev**: Bump the python-dependencies group with 2 updates
   ([`c410c87`](https://github.com/russoz-ansible/andebox/commit/c410c875425db7c2ecc06ea7e050d6e99d9fab04))
 
+Bumps the python-dependencies group with 2 updates:
+  [python-semantic-release](https://github.com/python-semantic-release/python-semantic-release) and
+  [pytest-cov](https://github.com/pytest-dev/pytest-cov).
+
+Updates `python-semantic-release` from 10.0.2 to 10.1.0 - [Release
+  notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
+  [Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
+  -
+  [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v10.0.2...v10.1)
+
+Updates `pytest-cov` from 6.1.1 to 6.2.1 -
+  [Changelog](https://github.com/pytest-dev/pytest-cov/blob/master/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest-cov/compare/v6.1.1...v6.2.1)
+
+--- updated-dependencies: - dependency-name: python-semantic-release dependency-version: 10.1.0
+
+dependency-type: direct:development
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies
+
+- dependency-name: pytest-cov dependency-version: 6.2.1
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 ### Documentation
 
 - Revamp the high-level doc page for actions
@@ -381,6 +1713,8 @@
 
 - Fix action docsite test
   ([`1a9a278`](https://github.com/russoz-ansible/andebox/commit/1a9a278743808c54ef98bdd67293f7d93e4d756b))
+
+Submitting this as a fix to ensure the new release process is triggered.
 
 
 ## v1.4.0 (2025-06-14)
@@ -495,6 +1829,36 @@
 - **deps**: Bump the python-dependencies group across 1 directory with 2 updates
   ([`0a428ef`](https://github.com/russoz-ansible/andebox/commit/0a428ef08ca8be4465d93334269d64ab0e078822))
 
+Bumps the python-dependencies group with 2 updates in the / directory:
+  [antsibull-docs](https://github.com/ansible-community/antsibull-docs) and
+  [pytest](https://github.com/pytest-dev/pytest).
+
+Updates `antsibull-docs` from 2.16.3 to 2.17.0 - [Release
+  notes](https://github.com/ansible-community/antsibull-docs/releases) -
+  [Changelog](https://github.com/ansible-community/antsibull-docs/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/ansible-community/antsibull-docs/compare/2.16.3...2.17.0)
+
+Updates `pytest` from 8.3.5 to 8.4.0 - [Release
+  notes](https://github.com/pytest-dev/pytest/releases) -
+  [Changelog](https://github.com/pytest-dev/pytest/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest/compare/8.3.5...8.4.0)
+
+--- updated-dependencies: - dependency-name: antsibull-docs dependency-version: 2.17.0
+
+dependency-type: direct:production
+
+update-type: version-update:semver-minor
+
+dependency-group: python-dependencies
+
+- dependency-name: pytest dependency-version: 8.4.0
+
+dependency-type: direct:development
+
+dependency-group: python-dependencies ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **tox**: Update tox action `docs` to install the namesake group in the poetry venv
   ([`f0405f4`](https://github.com/russoz-ansible/andebox/commit/f0405f42817493789579a6c340551d17ed54a553))
 
@@ -516,6 +1880,12 @@
 - **action/ignores**: Remove restriction to spec parameter
   ([`d4dea99`](https://github.com/russoz-ansible/andebox/commit/d4dea99a4634b9e04d73070a0e741be7629afdc9))
 
+Parameter was previously restricted t a list of choices based on the existing filenames. Now not
+  only that restriction is completely gone, but the parameter itself has been renamed from
+  `--ignore-file-spec` (or `-ifs`) to `--spec` (or `-s`). Tests have been updated and the two xfail
+  tests are now passing. Dependency `looseversion` is no lonoger used and has been removed from the
+  project.
+
 ### Refactoring
 
 - Move definition of `__version__` to `andebox/__init.py__`
@@ -525,6 +1895,9 @@
 
 - **coverage**: Do not generate coverage by default
   ([`ba1c31b`](https://github.com/russoz-ansible/andebox/commit/ba1c31b661d0b16bd0c4382a9c7c87a5778f25b2))
+
+That should streamline local builds, but the CI workflows now run `pytest --cov` to force the
+  generation of coverage information.
 
 
 ## v1.1.2 (2025-06-03)
@@ -596,6 +1969,8 @@
 - **action/docsite**: Rename test and mark as xfail
   ([`1446614`](https://github.com/russoz-ansible/andebox/commit/144661457b71e86f8dfa2a7e4fe66626693dde32))
 
+The test is passing, but it is quite long. A different strategy should be used for this one.
+
 - **action/yaml-doc**: Add more testcases
   ([`05c4c8e`](https://github.com/russoz-ansible/andebox/commit/05c4c8e004c6d3a1270283e29774e55771736b42))
 
@@ -642,6 +2017,16 @@
 - **deps**: Bump ruamel-yaml from 0.18.10 to 0.18.12
   ([`07b2e86`](https://github.com/russoz-ansible/andebox/commit/07b2e86c4c361c1be53cb0af46748321e6da20c8))
 
+Bumps ruamel-yaml from 0.18.10 to 0.18.12.
+
+--- updated-dependencies: - dependency-name: ruamel-yaml dependency-version: 0.18.12
+
+dependency-type: direct:production
+
+update-type: version-update:semver-patch ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 ### Continuous Integration
 
 - Simplify pytest command line
@@ -649,6 +2034,9 @@
 
 - **dependabot**: Tuning parameters
   ([`e60e453`](https://github.com/russoz-ansible/andebox/commit/e60e4531094e308ec3c75213656554e95f424099))
+
+- add devcontainers update - use auto rebase strategy for both updates - enable grouping for python
+  updates
 
 ### Documentation
 
@@ -662,6 +2050,9 @@
 
 - **action/tox-test**: Update the initial tox config file
   ([`4241e41`](https://github.com/russoz-ansible/andebox/commit/4241e41f57800b3e07407be0e96fee3d53577d04))
+
+Changes: * remove envs for Ansible community packages * update envs for `ansible-core` versions 2.15
+  up to 2.18, plus `dev`
 
 ### Refactoring
 
@@ -682,11 +2073,17 @@
 - Improve execution of andebox in tests
   ([`913be97`](https://github.com/russoz-ansible/andebox/commit/913be973d64d0b83246e3546db1b376810da8931))
 
+* `run_andebox` now mocks `cli:run()` * `AndeboxTestHelper` had to be adjusted to add the outcome of
+  the executor to the `data` dict * executor for the `ansibletest` tests now ensure to add the
+  return code (from `cli.run()`) in the test's data
+
 - Make fixture git_repo suitable as setup for test helper
   ([`2778648`](https://github.com/russoz-ansible/andebox/commit/2778648db976ca14c5228ded3b3db3abad5d7d77))
 
 - Revamp run_andebox fixture for test helper
   ([`65b8026`](https://github.com/russoz-ansible/andebox/commit/65b80264161b8b0f9f5fee9e6a317ac72848f3cc))
+
+Now `run_andebox` can function straight in as `executor` in `AndeboxTestHelper`
 
 - **action/docsite**: Add basic test
   ([`f683505`](https://github.com/russoz-ansible/andebox/commit/f68350546b0e66f8b4c17d5f6dd7a3ec10129b75))
@@ -705,8 +2102,36 @@
 - **deps-dev**: Bump pytest-mock from 3.14.0 to 3.14.1
   ([`a9dd3d1`](https://github.com/russoz-ansible/andebox/commit/a9dd3d1e932bc7948cdbe270d01c1d0cde2360d8))
 
+Bumps [pytest-mock](https://github.com/pytest-dev/pytest-mock) from 3.14.0 to 3.14.1. - [Release
+  notes](https://github.com/pytest-dev/pytest-mock/releases) -
+  [Changelog](https://github.com/pytest-dev/pytest-mock/blob/main/CHANGELOG.rst) -
+  [Commits](https://github.com/pytest-dev/pytest-mock/compare/v3.14.0...v3.14.1)
+
+--- updated-dependencies: - dependency-name: pytest-mock dependency-version: 3.14.1
+
+dependency-type: direct:development
+
+update-type: version-update:semver-patch ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
 - **deps-dev**: Bump python-semantic-release from 9.21.1 to 10.0.2
   ([`2baa652`](https://github.com/russoz-ansible/andebox/commit/2baa65229f363703e269f72f89e2d85df7d74ca7))
+
+Bumps [python-semantic-release](https://github.com/python-semantic-release/python-semantic-release)
+  from 9.21.1 to 10.0.2. - [Release
+  notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
+  [Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
+  -
+  [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v9.21.1...v10.0.2)
+
+--- updated-dependencies: - dependency-name: python-semantic-release dependency-version: 10.0.2
+
+dependency-type: direct:development
+
+update-type: version-update:semver-major ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
 
 
 ## v0.98.1 (2025-05-31)
@@ -835,6 +2260,8 @@
 - Move load_module_vars() in tests/test_action_yaml_doc.py
   ([`c096378`](https://github.com/russoz-ansible/andebox/commit/c096378104f7fd650879f295fd0de00d7e255faa))
 
+For readability
+
 - **tests**: Change testcase field from `output` to `expected`
   ([`6032251`](https://github.com/russoz-ansible/andebox/commit/603225177fe5e0dfd3303d0d438240628edd10fe))
 
@@ -843,8 +2270,13 @@
 - Create class AndeboxTestHelper
   ([`3598622`](https://github.com/russoz-ansible/andebox/commit/359862222898b3dad6946dc359c15b83d465ac2a))
 
+Refactored out of existing tests
+
 - Revamp of AndeboxTestHelper
   ([`3ef9b32`](https://github.com/russoz-ansible/andebox/commit/3ef9b326094bbe9a40d8c2320e4df0a5cc4e7a55))
+
+* Streamline the logic and the separation of concerns between the test files and the helper code. *
+  Add a number of minor improvements.
 
 - **action/ansibletest**: Use AndeboxTestHelper
   ([`de27943`](https://github.com/russoz-ansible/andebox/commit/de2794362ea61f9797d96e111e79aa45d8640d95))
@@ -868,6 +2300,14 @@
 
 - Install requirements by default
   ([`90d3fcf`](https://github.com/russoz-ansible/andebox/commit/90d3fcf80fb5583fc203e28b4c4d15058d72ea5d))
+
+When running unit or integration tests, install the Ansible dependencies defined in the
+  corresponding `requirements.yml` file. The semantics of the `-R` parameter has been inverted, and
+  its long form has been renamed to `--skip-requirements`. As the suggests, when passed, that option
+  skips the installation of those requirements.
+
+The `vagrant` action is affected - requirements should be installed when running andebox inside the
+  VM, so the `-R` has been removed from that execution.
 
 
 ## v0.95.1 (2025-05-27)
@@ -945,6 +2385,9 @@
 - Improve dependecy handling in actions
   ([`32c6ab3`](https://github.com/russoz-ansible/andebox/commit/32c6ab3855e148a542fa32180dbfe98c01c56bb0))
 
+In both `vagrant` and `yaml-doc` actions, dependency handling now does a better job in terms of good
+  practices in code and informing hte user of the issue
+
 ### Refactoring
 
 - **yaml_doc**: Remove redundant assert for json_samples
@@ -963,6 +2406,8 @@
 
 - **yaml_doc**: Use counter to generate unique sample id
   ([`b6001a4`](https://github.com/russoz-ansible/andebox/commit/b6001a4ec40b1e8bd6a2d1f5ed920138fcc52507))
+
+Even when the contents are the same
 
 ### Testing
 
@@ -1229,10 +2674,10 @@
 - Make install_requirements command verbose
   ([`5e42fe9`](https://github.com/russoz-ansible/andebox/commit/5e42fe9d926dbfb70c60e3e8562651cc581e2e6d))
 
-- **ansible-test**: -R added to testcase
+- **ansible-test**: -r added to testcase
   ([`c6dae6e`](https://github.com/russoz-ansible/andebox/commit/c6dae6e69eeb69b111c63be2be0fa865d8813490))
 
-- **ansible-test**: -R now accepted for unit test as well
+- **ansible-test**: -r now accepted for unit test as well
   ([`529e7e9`](https://github.com/russoz-ansible/andebox/commit/529e7e9e629112efe628bb91e1c936c831607b70))
 
 
@@ -1453,5 +2898,3 @@
 
 
 ## v0.2.0 (2021-03-25)
-
-- Initial Release
