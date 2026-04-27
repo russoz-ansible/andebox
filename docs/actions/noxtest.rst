@@ -10,7 +10,7 @@ All session definitions are encapsulated inside ``andebox`` itself.
 Version Matrix
 ^^^^^^^^^^^^^^
 ``andebox`` maintains an internal matrix of valid ``ansible-core`` × Python version combinations.
-The default run executes **one Python version per ansible-core version** (shown in **bold** below).
+The default run executes **one Python version per ansible-core version** (shown below).
 All supported combinations can be targeted using ``--ansible-core`` and ``--python``.
 
 .. include:: ../_generated/noxtest_matrix.rst
