@@ -28,10 +28,11 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: |
+        run: >
           python -m pip install --upgrade pip
-          pip install poetry poethepoet
-          poetry install --with dev
+          && pip install poetry poethepoet
+          && poetry lock --check
+          && poetry install --with dev
 
       - name: Run linter and tests
         env:

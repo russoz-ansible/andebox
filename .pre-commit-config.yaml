@@ -19,6 +19,14 @@ repos:
       - id: check-json
       - id: check-toml
       - id: check-yaml
+  - repo: local
+    hooks:
+      - id: poetry-lock-check
+        name: Verify poetry.lock is up to date
+        language: system
+        entry: poetry lock --check
+        files: ^pyproject\.toml$
+        pass_filenames: false
   # - repo: https://github.com/fsfe/reuse-tool
   #   rev: v1.1.0
   #   hooks:

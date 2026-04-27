@@ -29,10 +29,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install Poetry and poe
-        run: |
+        run: >
           python -m pip install --upgrade pip
-          pip install poetry poethepoet
-          poetry lock
+          && pip install poetry poethepoet
+          && poetry lock --check
 
       - name: Install all dependencies (including dev)
         run: poetry install --with dev,docs
