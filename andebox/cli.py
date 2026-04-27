@@ -12,8 +12,9 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-import andebox.actions
 import typer
+
+import andebox.actions
 
 from . import __version__
 from .exceptions import AndeboxException

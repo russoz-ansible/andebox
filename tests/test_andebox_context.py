@@ -9,13 +9,10 @@
 from contextlib import chdir as set_dir
 
 import pytest
-from andebox.context import AndeboxUnknownContext
-from andebox.context import ContextType
-from andebox.context import create_context
 
-from .utils import GenericTestCase
-from .utils import GIT_REPO_AC
-from .utils import GIT_REPO_CG
+from andebox.context import AndeboxUnknownContext, ContextType, create_context
+
+from .utils import GIT_REPO_AC, GIT_REPO_CG, GenericTestCase
 
 
 @pytest.fixture

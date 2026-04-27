@@ -9,21 +9,15 @@
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any
-from typing import Callable
-from typing import Dict
-from typing import Generator
-from typing import List
+from typing import Any, Callable, Dict, Generator, List
 
 import pytest
-from andebox.cli import run as cli_run
-from andebox.context import AnsibleCoreContext
-from andebox.context import CollectionContext
-from andebox.context import ContextType
 from git import Repo
 
-from .utils import AndeboxTestHelper
-from .utils import GenericTestCase
+from andebox.cli import run as cli_run
+from andebox.context import AnsibleCoreContext, CollectionContext, ContextType
+
+from .utils import AndeboxTestHelper, GenericTestCase
 
 
 @pytest.fixture(scope="session")
@@ -89,11 +83,7 @@ def run_andebox(mocker):
         mocker.patch("sys.argv", ["andebox"] + args)
         if context_type is not None:
             mock_base_dir_type = mocker.patch("andebox.context._base_dir_type")
-            mock_base_dir_type.return_value = (
-                AnsibleCoreContext
-                if context_type == ContextType.ANSIBLE_CORE
-                else CollectionContext
-            )
+            mock_base_dir_type.return_value = AnsibleCoreContext if context_type == ContextType.ANSIBLE_CORE else CollectionContext
         return cli_run()
 
     def _make_run_andebox(tc: GenericTestCase) -> dict:

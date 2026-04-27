@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 # code: language=python tabSize=4
 #
-# (C) 2025 Alexei Znamensky
+# (C) 2026 Alexei Znamensky
 # Licensed under the MIT License. See LICENSES/MIT.txt for details.
-# SPDX-FileCopyrightText: 2025 Alexei Znamensky
+# SPDX-FileCopyrightText: 2026 Alexei Znamensky
 # SPDX-License-Identifier: MIT
 #
 from unittest.mock import MagicMock
 
 import pytest
-from andebox.actions.noxtest import register_sessions
-from andebox.actions.noxtest import select_sessions
-from andebox.actions.noxtest import session_name
-from andebox.actions.noxtest import VERSION_MATRIX
+
+from andebox.actions.noxtest import VERSION_MATRIX, register_sessions, select_sessions, session_name
 
 from .utils import load_test_cases
 
@@ -148,16 +146,12 @@ def test_register_sessions_called_once_per_matrix_entry(nox_mocks):
 def test_register_sessions_names_match_matrix(nox_mocks):
     nox_mock = nox_mocks
     registered = {c.kwargs["name"] for c in nox_mock.session.call_args_list}
-    assert registered == {
-        session_name(ver, py) for ver, _, all_pys in VERSION_MATRIX for py in all_pys
-    }
+    assert registered == {session_name(ver, py) for ver, _, all_pys in VERSION_MATRIX for py in all_pys}
 
 
 def test_register_sessions_python_matches_matrix(nox_mocks):
     nox_mock = nox_mocks
-    registered = {
-        c.kwargs["name"]: c.kwargs["python"] for c in nox_mock.session.call_args_list
-    }
+    registered = {c.kwargs["name"]: c.kwargs["python"] for c in nox_mock.session.call_args_list}
     for ac_ver, _, all_pys in VERSION_MATRIX:
         for py in all_pys:
             assert registered[session_name(ac_ver, py)] == py
@@ -165,9 +159,7 @@ def test_register_sessions_python_matches_matrix(nox_mocks):
 
 def test_register_sessions_default_matches_matrix(nox_mocks):
     nox_mock = nox_mocks
-    registered = {
-        c.kwargs["name"]: c.kwargs["default"] for c in nox_mock.session.call_args_list
-    }
+    registered = {c.kwargs["name"]: c.kwargs["default"] for c in nox_mock.session.call_args_list}
     for ac_ver, default_py, all_pys in VERSION_MATRIX:
         for py in all_pys:
             assert registered[session_name(ac_ver, py)] == (py == default_py)

@@ -7,14 +7,12 @@
 import re
 from functools import partial
 from pathlib import Path
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 import typer
 import yaml
 
 from ..context import andebox_context
-
 
 PLUGIN_TYPES = (
     "connection",
@@ -44,24 +42,14 @@ def _print_runtime(name, node, info_type, current_version):
     if redir and is_info_type("R"):
         print(f"R {name}: redirected to {redir}")
     elif tomb and is_info_type("T"):
-        print(
-            f"T {name}: terminated in {tomb['removal_version']}: {tomb['warning_text']}"
-        )
+        print(f"T {name}: terminated in {tomb['removal_version']}: {tomb['warning_text']}")
     elif depre and is_info_type("D"):
-        print(
-            f"D {name}: deprecation in {depre['removal_version']} (current={current_version}): {depre['warning_text']}"
-        )
+        print(f"D {name}: deprecation in {depre['removal_version']} (current={current_version}): {depre['warning_text']}")
 
 
-def _runtime_process_plugin(
-    plugin_routing, plugin_types, name_tests, info_type, current_version
-):
+def _runtime_process_plugin(plugin_routing, plugin_types, name_tests, info_type, current_version):
     for plugin_type in plugin_types:
-        matching = [
-            name
-            for name in plugin_routing[plugin_type]
-            if any(test(name) for test in name_tests)
-        ]
+        matching = [name for name in plugin_routing[plugin_type] if any(test(name) for test in name_tests)]
         for name in matching:
             _print_runtime(
                 f"{plugin_type} {name}",
@@ -77,9 +65,7 @@ app = typer.Typer(name="runtime", help="returns information from runtime.yml")
 @app.callback(invoke_without_command=True)
 def runtime_cmd(
     ctx: typer.Context,
-    plugin_type: Optional[str] = typer.Option(
-        None, "--plugin-type", "-pt", help="specify the plugin type to be searched"
-    ),
+    plugin_type: Optional[str] = typer.Option(None, "--plugin-type", "-pt", help="specify the plugin type to be searched"),
     regex: bool = typer.Option(
         False,
         "--regex",
@@ -95,9 +81,7 @@ def runtime_cmd(
     ),
     plugin_names: List[str] = typer.Argument(...),
 ) -> None:
-    parsed_info_type = (
-        partial(info_type_param, RUNTIME_TYPES)(info_type) if info_type else None
-    )
+    parsed_info_type = partial(info_type_param, RUNTIME_TYPES)(info_type) if info_type else None
 
     with andebox_context(ctx, require_collection=True) as context:
         with open(Path("meta") / "runtime.yml") as runtime_yml:

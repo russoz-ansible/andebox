@@ -13,7 +13,6 @@ import typer
 
 from ..context import andebox_context
 
-
 app = typer.Typer(name="docsite", help="builds collection docsite")
 
 
@@ -26,16 +25,10 @@ def docsite_cmd(
         "-k",
         help="keep temporary collection directory after execution",
     ),
-    open_: bool = typer.Option(
-        False, "--open", "-o", help="open browser pointing to main page after build"
-    ),
-    dest_dir: Path = typer.Option(
-        ..., "--dest-dir", "-d", help="directory where docsite is generated"
-    ),
+    open_: bool = typer.Option(False, "--open", "-o", help="open browser pointing to main page after build"),
+    dest_dir: Path = typer.Option(..., "--dest-dir", "-d", help="directory where docsite is generated"),
 ) -> None:
-    with andebox_context(
-        ctx, require_collection=True, make_temp_tree=True, keep=keep
-    ) as context:
+    with andebox_context(ctx, require_collection=True, make_temp_tree=True, keep=keep) as context:
         dest_dir.mkdir(mode=0o755, parents=True, exist_ok=True)
         if not (dest_dir / "build.sh").exists():
             subprocess.run(

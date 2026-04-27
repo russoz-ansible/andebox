@@ -35,9 +35,7 @@ src = Path()
 gen_dir = src / "_generated"
 gen_dir.mkdir(parents=True, exist_ok=True)
 out_file = gen_dir / "andebox_help.rst"
-proc = subprocess.run(
-    ["andebox", "--help"], capture_output=True, text=True, check=False
-)
+proc = subprocess.run(["andebox", "--help"], capture_output=True, text=True, check=False)
 indented = textwrap.indent(proc.stdout.rstrip("\n"), "   ")
 content = ".. code-block:: text\n\n" + indented + "\n"
 with open(out_file, "w", encoding="utf-8") as fh:
