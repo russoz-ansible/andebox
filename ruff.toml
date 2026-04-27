@@ -1,0 +1,22 @@
+# (C) 2026 Alexei Znamensky
+# Licensed under the MIT License. See LICENSES/MIT.txt for details.
+# SPDX-FileCopyrightText: 2026 Alexei Znamensky
+# SPDX-License-Identifier: MIT
+#
+
+line-length = 160
+target-version = "py311"
+exclude = ["docs/source/conf.py"]
+
+[lint]
+select = ["E", "W", "F", "I"]
+ignore = ["E203"]
+
+[lint.mccabe]
+max-complexity = 10
+
+[lint.isort]
+known-first-party = ["andebox"]
+
+[lint.per-file-ignores]
+"tests/test_action_yaml_doc.py" = ["E501"]

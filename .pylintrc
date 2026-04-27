@@ -1,7 +1,0 @@
-# (C) 2025 Alexei Znamensky
-# Licensed under the MIT License. See LICENSES/MIT.txt for details.
-# SPDX-FileCopyrightText: 2025 Alexei Znamensky
-# SPDX-License-Identifier: MIT
-
-[MESSAGES CONTROL]
-disable=C0301,C0103,C0114,C0115,C0116,C0209,W1514,R1735

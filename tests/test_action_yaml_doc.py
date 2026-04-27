@@ -11,11 +11,7 @@ import importlib.util
 
 import pytest
 
-from .utils import GenericTestCase
-from .utils import load_test_cases
-from .utils import verify_patterns
-from .utils import verify_return_code
-
+from .utils import GenericTestCase, load_test_cases, verify_patterns, verify_return_code
 
 TEST_CASES_MOCK = load_test_cases(
     """
@@ -174,7 +170,7 @@ TEST_CASES_MOCK = load_test_cases(
     DOCUMENTATION: |
       short_description: test plugin
       description:
-        - Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in U(https://andebox.readthedocs.io/en/latest/actions.html). # noqa: E501
+        - Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in U(https://andebox.readthedocs.io/en/latest/actions.html).
       options: {}
   expected:
     DOCUMENTATION: |
@@ -628,11 +624,7 @@ def yaml_doc_executor(run_andebox):
 
     def _executor(tc):
         tc_input = dict(tc.input)
-        tc_input["args"] = (
-            ["-c", "some.collection", "yaml-doc"]
-            + tc_input.get("yaml_doc_args", [])
-            + [f"plugins/modules/{tc.data['pyfile']}"]
-        )
+        tc_input["args"] = ["-c", "some.collection", "yaml-doc"] + tc_input.get("yaml_doc_args", []) + [f"plugins/modules/{tc.data['pyfile']}"]
         tc_input["andebox_context_type"] = "collection"
 
         tc2 = GenericTestCase(

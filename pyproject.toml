@@ -57,8 +57,6 @@ antsibull-docs = ">=2.16.3"
 [tool.poetry.group.dev.dependencies]
 pytest = ">=7.3.1"
 pytest-mock = ">=3.10.0"
-pylint = ">=2.17.4"
-flake8 = ">=6"
 gitpython = ">=3.1.44"
 pre-commit = ">=4.2.0"
 python-semantic-release = ">=9.21.1"
@@ -67,6 +65,8 @@ junit-xml = ">=1.9"
 pytest-skip-slow = ">=0.0.5"
 sphinx = ">=8.2.3"
 asciinwriter = ">=0.2.2"
+ruff = ">=0.9.0"
+poethepoet = ">=0.27.0"
 
 [tool.poetry.group.docs.dependencies]
 furo = ">=2024.8.6"
@@ -101,3 +101,29 @@ upload_to_vcs_release = true
 [tool.semantic_release.remote]
 type = "github"
 repository = "russoz-ansible/andebox"
+
+[tool.poe.tasks]
+test = "pytest -v --cov --cov-branch"
+lint = "ruff check ."
+fmt = "ruff format ."
+
+[tool.poe.tasks.check]
+sequence = [
+  {cmd = "ruff check ."},
+  {cmd = "ruff format --check ."},
+]
+
+[tool.poe.tasks.qa]
+sequence = ["check", "test"]
+
+[tool.poe.tasks.docs]
+sequence = [
+  {cmd = "rm -rf docs/_build"},
+  {cmd = "sphinx-build -b html docs docs/_build/html"},
+]
+
+[tool.poe.tasks.deps]
+sequence = [
+  {cmd = "poetry update"},
+  {cmd = "poetry lock"},
+]
