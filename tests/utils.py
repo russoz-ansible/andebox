@@ -9,20 +9,13 @@
 import re
 import sys
 from contextlib import chdir as set_dir
-from dataclasses import dataclass
-from dataclasses import field
+from dataclasses import dataclass, field
 from pathlib import Path
 from types import MappingProxyType
-from typing import Any
-from typing import Callable
-from typing import Dict
-from typing import List
-from typing import Mapping
-from typing import Sequence
+from typing import Any, Callable, Dict, List, Mapping, Sequence
 
 import pytest
 import yaml
-
 
 GIT_REPO_CG = "https://github.com/ansible-collections/community.general.git"
 GIT_REPO_AC = "https://github.com/ansible/ansible.git"
@@ -83,7 +76,6 @@ FuncOrFuncList = Callable | List[Callable]
 
 
 class AndeboxTestHelper:
-
     def __init__(
         self,
         testcase: GenericTestCase,
@@ -122,18 +114,16 @@ class AndeboxTestHelper:
             elif marker_params is None:
                 request.node.add_marker(marker())
             else:
-                raise TypeError(
-                    f"Unsupported marker parameters type: {type(marker_params)}"
-                )
+                raise TypeError(f"Unsupported marker parameters type: {type(marker_params)}")
 
     @staticmethod
     def _execute(executor_callable: Callable, testcase: GenericTestCase) -> None:
         executor_name = getattr(executor_callable, "__name__", repr(executor_callable))
         executor_result = executor_callable(testcase)
         if executor_result is not None:
-            assert isinstance(
-                executor_result, Mapping
-            ), f"Data returned from executor function {executor_name} must be a Mapping or None, but got {type(executor_result)}"
+            assert isinstance(executor_result, Mapping), (
+                f"Data returned from executor function {executor_name} must be a Mapping or None, but got {type(executor_result)}"
+            )
             testcase.data.update(executor_result)
 
     def run(self) -> None:
@@ -141,9 +131,9 @@ class AndeboxTestHelper:
         for setup in self.setups:
             update_data = setup(self.testcase)
             if update_data:
-                assert isinstance(
-                    update_data, Mapping
-                ), f"Data returned from setup function {getattr(setup, '__name__', repr(setup))} must be a Mapping but got {type(update_data)}"
+                assert isinstance(update_data, Mapping), (
+                    f"Data returned from setup function {getattr(setup, '__name__', repr(setup))} must be a Mapping but got {type(update_data)}"
+                )
                 self.testcase.data.update(update_data)
         self.fixtures["capfd"].readouterr()
 
@@ -155,15 +145,11 @@ class AndeboxTestHelper:
                     AndeboxTestHelper._execute(self.executor, self.testcase)
 
                 actual_classname = exc_info.value.__class__.__name__
-                assert (
-                    actual_classname == expected_classname
-                ), f"Expected exception class {expected_classname}, but got {actual_classname}"
+                assert actual_classname == expected_classname, f"Expected exception class {expected_classname}, but got {actual_classname}"
 
                 expected_value = expected_exception.get("value")
                 if expected_value:
-                    assert expected_value in str(
-                        exc_info.value
-                    ), f"Expected exception message to contain '{expected_value}', but got: {exc_info.value}"
+                    assert expected_value in str(exc_info.value), f"Expected exception message to contain '{expected_value}', but got: {exc_info.value}"
             else:
                 AndeboxTestHelper._execute(self.executor, self.testcase)
 
@@ -209,9 +195,7 @@ def verify_return_code(testcase: GenericTestCase) -> None:
     expected_rc = expected.get("rc")
 
     if expected_rc is not None:
-        assert (
-            expected_rc == data["rc"]
-        ), f"Expected return code {expected_rc}, but got {data['rc']}"
+        assert expected_rc == data["rc"], f"Expected return code {expected_rc}, but got {data['rc']}"
 
 
 def validate_stdout(testcase: GenericTestCase) -> None:

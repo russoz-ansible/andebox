@@ -9,12 +9,7 @@ import json
 import re
 from io import StringIO
 from pathlib import Path
-from typing import Any
-from typing import Callable
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 try:
     from ruamel.yaml import YAML
@@ -26,9 +21,8 @@ except ImportError as e:
 
 import typer
 
-from ..exceptions import AndeboxException
 from ..context import andebox_context
-
+from ..exceptions import AndeboxException
 
 FIXME_TAG = "__FIXME__"
 JSON_SAMPLE_PREFIX = "JSONSAMPLE"
@@ -72,10 +66,7 @@ OFFENDING_SPEC = [
     dict(regexp=r"\s(?:[Jj]son|[Dd]ns|[Hh]tml|[Vv]m)[\s\.,]", apply=str.upper),
 ]
 
-OFFENDING_SPEC = [
-    (re.compile(f"(.*[^(])({x['regexp']})({x.get('plural', '')})([^)]?.*)"), x)
-    for x in OFFENDING_SPEC
-]
+OFFENDING_SPEC = [(re.compile(f"(.*[^(])({x['regexp']})({x.get('plural', '')})([^)]?.*)"), x) for x in OFFENDING_SPEC]
 
 
 class YAMLDocException(Exception):
@@ -93,13 +84,9 @@ def remove_quotes(s: str) -> str:
 def is_json_content(sample: str, type_: str) -> bool:
     output_sample = sample.strip()
     if type_ == "list":
-        return output_sample.startswith("[") or remove_quotes(output_sample).startswith(
-            "["
-        )
+        return output_sample.startswith("[") or remove_quotes(output_sample).startswith("[")
     elif type_ == "dict":
-        return output_sample.startswith("{") or remove_quotes(output_sample).startswith(
-            "{"
-        )
+        return output_sample.startswith("{") or remove_quotes(output_sample).startswith("{")
     return False
 
 
@@ -129,9 +116,7 @@ class AnsibleDocProcessor:
 
     def make_yaml_instance(self) -> YAML:
         if IMPORT_ERROR:
-            raise AndeboxException(
-                "Missing dependency for action 'yaml-doc': "
-            ) from IMPORT_ERROR
+            raise AndeboxException("Missing dependency for action 'yaml-doc': ") from IMPORT_ERROR
 
         yaml = YAML()
         yaml.indent(**self.yaml_indents)
@@ -174,9 +159,7 @@ class AnsibleDocProcessor:
 
     def _store_json_sample(self, sample: Any, has_indent: bool) -> str:
         json_str = json.dumps(sample, indent=self.indent if has_indent else None)
-        sample_hash = hashlib.md5(
-            (json_str + str(self.json_sample_id_count)).encode()
-        ).hexdigest()[:8]
+        sample_hash = hashlib.md5((json_str + str(self.json_sample_id_count)).encode()).hexdigest()[:8]
         sample_id = f"{'ID' if has_indent else 'NI'}{JSON_SAMPLE_PREFIX}-{sample_hash}"
         self.json_samples[sample_id] = json_str
         self.json_sample_id_count += 1
@@ -201,16 +184,10 @@ class AnsibleDocProcessor:
             has_indent = True
         elif len(sample) > self.width:
             has_indent = True
-        elif type_ == "list" and (
-            len(json_sample) > 3
-            or any(isinstance(x, (dict, list)) for x in json_sample)
-        ):
+        elif type_ == "list" and (len(json_sample) > 3 or any(isinstance(x, (dict, list)) for x in json_sample)):
             assert isinstance(json_sample, list), "Expected a list for JSON sample"
             has_indent = True
-        elif type_ == "dict" and (
-            len(json_sample) > 2
-            or any(isinstance(x, (dict, list)) for x in json_sample.values())
-        ):
+        elif type_ == "dict" and (len(json_sample) > 2 or any(isinstance(x, (dict, list)) for x in json_sample.values())):
             assert isinstance(json_sample, dict), "Expected a dict for JSON sample"
             has_indent = True
         else:
@@ -218,36 +195,26 @@ class AnsibleDocProcessor:
         # Store the JSON and return a placeholder ID
         return self._store_json_sample(json_sample, has_indent)
 
-    def process_options(
-        self, opts: Dict[str, Any], suboptions_kw: str
-    ) -> Dict[str, Any]:
+    def process_options(self, opts: Dict[str, Any], suboptions_kw: str) -> Dict[str, Any]:
         try:
             for option in opts.values():
                 if "description" in option:
-                    option["description"] = self.process_description(
-                        option["description"]
-                    )
+                    option["description"] = self.process_description(option["description"])
                 if suboptions_kw in option:
-                    option[suboptions_kw] = self.process_options(
-                        option[suboptions_kw], suboptions_kw
-                    )
+                    option[suboptions_kw] = self.process_options(option[suboptions_kw], suboptions_kw)
                 if "sample" in option and option["type"] in ("list", "dict"):
                     sample = self.process_sample(option["sample"], option["type"])
                     option["sample"] = sample
             return opts
         except json.decoder.JSONDecodeError as e:
-            raise YAMLDocException(
-                opts, suboptions_kw, f'SAMPLE={option["sample"]}'
-            ) from e
+            raise YAMLDocException(opts, suboptions_kw, f"SAMPLE={option['sample']}") from e
         except Exception as e:
             raise YAMLDocException(opts, suboptions_kw) from e
 
     def process_documentation(self, data: Dict[str, Any]) -> Dict[str, Any]:
         try:
             if short_desc := data.get("short_description"):
-                data["short_description"] = (
-                    str(self.process_description(short_desc)).rstrip(".").rstrip()
-                )
+                data["short_description"] = str(self.process_description(short_desc)).rstrip(".").rstrip()
             if desc := data.get("description"):
                 data["description"] = self.process_description(desc)
             if notes := data.get("notes"):
@@ -274,9 +241,7 @@ class AnsibleDocProcessor:
             "DOCUMENTATION": self.process_documentation,
             "RETURN": self.process_return,
         }
-        return processors_map.get(
-            variable, self.process_documentation if in_doc_fragments else lambda x: x
-        )
+        return processors_map.get(variable, self.process_documentation if in_doc_fragments else lambda x: x)
 
     def process_yaml(self, quoted_content: List[str], processor: Callable) -> List[str]:
         data = self.read_yaml("\n".join(quoted_content))
@@ -287,9 +252,7 @@ class AnsibleDocProcessor:
         yaml_content = [s.rstrip() for s in self.dump_yaml(data).splitlines()]
 
         if isinstance(data, list):
-            yaml_content = [
-                (line[2:] if line.startswith("  ") else line) for line in yaml_content
-            ]
+            yaml_content = [(line[2:] if line.startswith("  ") else line) for line in yaml_content]
         while yaml_content and yaml_content[0] == "":
             yaml_content.pop(0)
 
@@ -340,9 +303,7 @@ class AnsibleDocProcessor:
 
     def postprocess_json_samples(self, content: List[str]) -> List[str]:
         result = []
-        sample_pattern = re.compile(
-            rf"^(\s+sample:)\s+['\"]?((ID|NI){JSON_SAMPLE_PREFIX}-[0-9a-f]{{8}})['\"]?$"
-        )
+        sample_pattern = re.compile(rf"^(\s+sample:)\s+['\"]?((ID|NI){JSON_SAMPLE_PREFIX}-[0-9a-f]{{8}})['\"]?$")
 
         for line in content:
             match = sample_pattern.match(line)
@@ -356,9 +317,7 @@ class AnsibleDocProcessor:
 
             if json_indent == "ID":
                 json_lines = self.json_samples[sample_id].splitlines()
-                base_indent = " " * (
-                    len(indented_sample_key) - len("sample:") + self.indent
-                )
+                base_indent = " " * (len(indented_sample_key) - len("sample:") + self.indent)
                 result.append(f"{indented_sample_key}")
                 result.extend(f"{base_indent}{line}" for line in json_lines)
             else:
@@ -382,7 +341,7 @@ class AnsibleDocProcessor:
             if match := LINE_RE.match(line):
                 lead_spaces = len(match.group(1)) * " "
                 line_split = line.split(" ")
-                first_part = f'{" ".join(line_split[:-1])}'
+                first_part = f"{' '.join(line_split[:-1])}"
                 last_part = f"{lead_spaces}{line_split[-1]}"
 
                 if len(first_part) > hard_limit:
@@ -400,9 +359,7 @@ class AnsibleDocProcessor:
         """Process a single file."""
         QUOTE_RE_FRAG = r'(?:"|\'){3}'
         VAR_RE_FRAG = r"(?:[A-Z]+)"
-        ONELINE_RE = re.compile(
-            rf"^\s*{VAR_RE_FRAG}\s*=\s*r?{QUOTE_RE_FRAG}.*{QUOTE_RE_FRAG}$"
-        )
+        ONELINE_RE = re.compile(rf"^\s*{VAR_RE_FRAG}\s*=\s*r?{QUOTE_RE_FRAG}.*{QUOTE_RE_FRAG}$")
         FIRST_LINE_RE = re.compile(rf"^(\s*{VAR_RE_FRAG})\s*=\s*r?{QUOTE_RE_FRAG}(.*)$")
 
         print(f"Opening file {file_path}")
@@ -424,23 +381,14 @@ class AnsibleDocProcessor:
                     continue
 
                 updated_lines.append(first_line)
-                processor = self.get_processor(
-                    "DOCUMENTATION" if is_doc_frag else in_variable
-                )
+                processor = self.get_processor("DOCUMENTATION" if is_doc_frag else in_variable)
                 try:
                     outbound_content = self.process_yaml(quoted_content, processor)
                 except ComposerError as e:
-                    if (
-                        in_variable != "EXAMPLES"
-                        or "expected a single document" not in str(e)
-                    ):
-                        raise YAMLDocException(
-                            f"Error processing YAML in {file_path} at line {line_no + 1}: {e}"
-                        ) from e
+                    if in_variable != "EXAMPLES" or "expected a single document" not in str(e):
+                        raise YAMLDocException(f"Error processing YAML in {file_path} at line {line_no + 1}: {e}") from e
                     outbound_content = quoted_content
-                updated_lines.extend(
-                    self.postprocess_content(in_variable, outbound_content)
-                )
+                updated_lines.extend(self.postprocess_content(in_variable, outbound_content))
                 updated_lines.append('"""')
 
                 in_variable = ""
@@ -463,9 +411,7 @@ class AnsibleDocProcessor:
                 file.writelines([f"{x}\n" for x in updated_lines])
 
 
-app = typer.Typer(
-    name="yaml-doc", help="analyze and/or reformat YAML documentation in plugins"
-)
+app = typer.Typer(name="yaml-doc", help="analyze and/or reformat YAML documentation in plugins")
 
 
 @app.callback(invoke_without_command=True)
@@ -484,15 +430,9 @@ def yaml_doc_cmd(
         help="fix potential style-related offending constructs, implies (--offenders)",
     ),
     dry_run: bool = typer.Option(False, "--dry-run", "-n", help="do not modify files"),
-    width: int = typer.Option(
-        120, "--width", "-w", help="width for the YAML output (default: 120)"
-    ),
-    indent: int = typer.Option(
-        2, "--indent", "-i", help="indentation for the YAML output (default: 2)"
-    ),
-    files: List[Path] = typer.Argument(
-        ..., help="Files where to search for YAML content"
-    ),
+    width: int = typer.Option(120, "--width", "-w", help="width for the YAML output (default: 120)"),
+    indent: int = typer.Option(2, "--indent", "-i", help="indentation for the YAML output (default: 2)"),
+    files: List[Path] = typer.Argument(..., help="Files where to search for YAML content"),
 ) -> None:
     with andebox_context(ctx):
         processor = AnsibleDocProcessor(

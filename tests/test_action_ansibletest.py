@@ -8,11 +8,7 @@
 #
 import pytest
 
-from .utils import GIT_REPO_AC
-from .utils import GIT_REPO_CG
-from .utils import load_test_cases
-from .utils import verify_patterns
-from .utils import verify_return_code
+from .utils import GIT_REPO_AC, GIT_REPO_CG, load_test_cases, verify_patterns, verify_return_code
 
 TEST_CASES = load_test_cases(
     f"""

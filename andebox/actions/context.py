@@ -8,8 +8,7 @@
 #
 import typer
 
-from ..context import andebox_context
-from ..context import ContextType
+from ..context import ContextType, andebox_context
 
 
 def printline(title, content):

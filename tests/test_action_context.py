@@ -8,8 +8,7 @@
 #
 import pytest
 
-from .utils import load_test_cases
-from .utils import verify_patterns
+from .utils import load_test_cases, verify_patterns
 
 TEST_CASES = load_test_cases(
     r"""

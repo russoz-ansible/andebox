@@ -8,10 +8,7 @@
 #
 import pytest
 
-from .utils import GenericTestCase
-from .utils import GIT_REPO_CG
-from .utils import validate_stdout
-from .utils import verify_patterns
+from .utils import GIT_REPO_CG, GenericTestCase, validate_stdout, verify_patterns
 
 
 @pytest.mark.slow
@@ -34,9 +31,7 @@ def test_action_docsite(make_helper, git_repo, run_andebox, tmp_path):
 
     def validate_index_html(testcase):
         index_html = doc_dir / "build" / "html" / "index.html"
-        assert (
-            index_html.exists()
-        ), f"index.html was not generated in {doc_dir}/_build/html/"
+        assert index_html.exists(), f"index.html was not generated in {doc_dir}/_build/html/"
 
     test = make_helper(
         testcase,

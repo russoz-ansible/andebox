@@ -6,8 +6,7 @@
 # SPDX-License-Identifier: MIT
 import logging
 from pathlib import Path
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 import typer
 
@@ -15,8 +14,8 @@ try:
     vagrant_logger = logging.getLogger("vagrant")
     prev_level = vagrant_logger.level
     vagrant_logger.setLevel(logging.ERROR)
-    from fabric.connection import Connection
     import vagrant
+    from fabric.connection import Connection
 
     vagrant_logger.setLevel(prev_level)
 
@@ -24,8 +23,8 @@ try:
 except ImportError as e:
     IMPORT_ERROR = e
 
-from ..exceptions import AndeboxException
 from ..context import andebox_context
+from ..exceptions import AndeboxException
 
 
 class VagrantError(AndeboxException):
@@ -47,18 +46,12 @@ def vagrant_cmd(
         "-n",
         help="""name of the vagrant VM (default: "default")""",
     ),
-    destroy: bool = typer.Option(
-        False, "--destroy", "-d", help="destroy the VM after the test"
-    ),
-    sudo: bool = typer.Option(
-        False, "--sudo", "-s", help="use sudo to run andebox inside the VM"
-    ),
+    destroy: bool = typer.Option(False, "--destroy", "-d", help="destroy the VM after the test"),
+    sudo: bool = typer.Option(False, "--sudo", "-s", help="use sudo to run andebox inside the VM"),
     integration_test_params: Optional[List[str]] = typer.Argument(None),
 ) -> None:
     if IMPORT_ERROR:
-        raise AndeboxException(
-            f"Missing dependency for action 'vagrant': {IMPORT_ERROR}"
-        ) from IMPORT_ERROR
+        raise AndeboxException(f"Missing dependency for action 'vagrant': {IMPORT_ERROR}") from IMPORT_ERROR
 
     opts = ctx.obj or {}
     venv = opts.get("venv") or Path("/venv")
@@ -82,14 +75,9 @@ def vagrant_cmd(
                     "key_filename": v.keyfile(vm_name=name),
                 },
             ) as c:
-
                 print(f"== BEGIN vagrant andebox: {name} ".ljust(80, "="))
                 with c.cd("/vagrant"):
-                    andebox_path = (
-                        context.binary_path("andebox")
-                        if context.venv
-                        else str(venv / "bin" / "andebox")
-                    )
+                    andebox_path = context.binary_path("andebox") if context.venv else str(venv / "bin" / "andebox")
                     vparams = list(integration_test_params or [])
                     if vparams[:1] == ["--"]:
                         vparams = vparams[1:]

@@ -6,8 +6,7 @@
 # SPDX-License-Identifier: MIT
 import subprocess
 from pathlib import Path
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 import typer
 
@@ -83,12 +82,8 @@ app = typer.Typer(
 @app.callback(invoke_without_command=True)
 def tox_test_cmd(
     ctx: typer.Context,
-    env: Optional[str] = typer.Option(
-        None, "--env", "-e", help="tox environments to run the test in"
-    ),
-    list_: bool = typer.Option(
-        False, "--list", "-l", help="list all tox environments (tox -a)"
-    ),
+    env: Optional[str] = typer.Option(None, "--env", "-e", help="tox environments to run the test in"),
+    list_: bool = typer.Option(False, "--list", "-l", help="list all tox environments (tox -a)"),
     recreate: bool = typer.Option(
         False,
         "--recreate",

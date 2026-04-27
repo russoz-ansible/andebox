@@ -5,15 +5,13 @@
 # SPDX-FileCopyrightText: 2026 Alexei Znamensky
 # SPDX-License-Identifier: MIT
 from pathlib import Path
-from typing import List
-from typing import Optional
+from typing import List, Optional
 from unittest.mock import patch
 
 import typer
 
 from ..context import andebox_context
 from ..exceptions import AndeboxException
-
 
 # (ansible-core version, default python, all supported pythons)
 VERSION_MATRIX = [
@@ -57,9 +55,7 @@ def register_sessions(nox_module) -> None:
                     session.run("andebox", "test", *session.posargs, external=True)
 
                 session_func.__name__ = name
-                nox_module.session(python=python, name=name, default=is_default)(
-                    session_func
-                )
+                nox_module.session(python=python, name=name, default=is_default)(session_func)
 
             make(ac_ver, py, py == default_py)
 
@@ -114,9 +110,7 @@ def run_nox(
 @app.callback(invoke_without_command=True)
 def nox_test_cmd(
     ctx: typer.Context,
-    session: Optional[List[str]] = typer.Option(
-        None, "--session", "-s", help="nox session(s) to run directly"
-    ),
+    session: Optional[List[str]] = typer.Option(None, "--session", "-s", help="nox session(s) to run directly"),
     list_: bool = typer.Option(False, "--list", "-l", help="list all nox sessions"),
     reuse_venv: bool = typer.Option(
         False,

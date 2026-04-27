@@ -7,12 +7,10 @@
 # SPDX-License-Identifier: MIT
 #
 import pytest
+
 from tests.utils import validate_stdout
 
-from .utils import GIT_REPO_CG
-from .utils import load_test_cases
-from .utils import verify_patterns
-
+from .utils import GIT_REPO_CG, load_test_cases, verify_patterns
 
 TEST_CASES = load_test_cases(
     f"""
@@ -56,7 +54,5 @@ TEST_CASES_IDS = [item.id for item in TEST_CASES]
 
 @pytest.mark.parametrize("testcase", TEST_CASES, ids=TEST_CASES_IDS)
 def test_action_ignores(make_helper, git_repo, testcase, run_andebox):
-    test = make_helper(
-        testcase, git_repo, run_andebox, [verify_patterns, validate_stdout]
-    )
+    test = make_helper(testcase, git_repo, run_andebox, [verify_patterns, validate_stdout])
     test.run()

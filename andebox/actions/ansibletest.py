@@ -5,14 +5,11 @@
 # SPDX-FileCopyrightText: 2021 Alexei Znamensky
 # SPDX-License-Identifier: MIT
 import subprocess
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 import typer
 
-from ..context import andebox_context
-from ..context import ContextType
-
+from ..context import ContextType, andebox_context
 
 app = typer.Typer(
     name="test",
@@ -23,9 +20,7 @@ app = typer.Typer(
 @app.callback(invoke_without_command=True)
 def ansible_test_cmd(
     ctx: typer.Context,
-    keep: bool = typer.Option(
-        False, "--keep", "-k", help="keep temporary directory after execution"
-    ),
+    keep: bool = typer.Option(False, "--keep", "-k", help="keep temporary directory after execution"),
     exclude_from_ignore: bool = typer.Option(
         False,
         "--exclude-from-ignore",
@@ -44,9 +39,7 @@ def ansible_test_cmd(
         "--galaxy-retry",
         help="Number of times to retry requirements installation on failure (default: 3)",
     ),
-    test: str = typer.Argument(
-        ..., help="test type", metavar="[sanity|units|integration]"
-    ),
+    test: str = typer.Argument(..., help="test type", metavar="[sanity|units|integration]"),
     ansible_test_params: Optional[List[str]] = typer.Argument(None),
 ) -> None:
     if skip_requirements and test == "sanity":

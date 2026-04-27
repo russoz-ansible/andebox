@@ -25,11 +25,7 @@ def test_doc_build():
         text=True,
         cwd=str(project_root),
     )
-    assert (
-        result.returncode == 0
-    ), f"sphinx-build failed: {result.stderr}\n{result.stdout}"
-    assert (
-        "build succeeded" in result.stdout.lower()
-    ), f"Sphinx did not report successful build: {result.stdout}"
+    assert result.returncode == 0, f"sphinx-build failed: {result.stderr}\n{result.stdout}"
+    assert "build succeeded" in result.stdout.lower(), f"Sphinx did not report successful build: {result.stdout}"
     index_html = build_dir / "html" / "index.html"
     assert index_html.exists(), "index.html was not generated in docs/_build/html/"

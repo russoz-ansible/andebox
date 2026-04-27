@@ -7,8 +7,7 @@
 import re
 import sys
 from dataclasses import dataclass
-from functools import reduce
-from functools import total_ordering
+from functools import reduce, total_ordering
 from pathlib import Path
 from typing import Optional
 
@@ -18,9 +17,7 @@ from ..context import andebox_context
 
 
 class IgnoreFileEntry:
-    pattern = re.compile(
-        r"^(?P<filename>\S+)\s(?P<ignore>\S+)(?:\s+#\s*(?P<comment>\S.*\S))?\s*$"
-    )
+    pattern = re.compile(r"^(?P<filename>\S+)\s(?P<ignore>\S+)(?:\s+#\s*(?P<comment>\S.*\S))?\s*$")
     filter_files = None
     filter_checks = None
     file_parts_depth = None
@@ -64,23 +61,17 @@ class IgnoreFileEntry:
 
         ffilter = IgnoreFileEntry.filter_files
         if ffilter is not None:
-            ffilter = (
-                ffilter if isinstance(ffilter, re.Pattern) else re.compile(ffilter)
-            )
+            ffilter = ffilter if isinstance(ffilter, re.Pattern) else re.compile(ffilter)
             if not ffilter.search(match.group("filename")):
                 return None
 
         ifilter = IgnoreFileEntry.filter_checks
         if ifilter is not None:
-            ifilter = (
-                ifilter if isinstance(ifilter, re.Pattern) else re.compile(ifilter)
-            )
+            ifilter = ifilter if isinstance(ifilter, re.Pattern) else re.compile(ifilter)
             if not ifilter.search(match.group("ignore")):
                 return None
 
-        return IgnoreFileEntry(
-            match.group("filename"), match.group("ignore"), match.group("comment")
-        )
+        return IgnoreFileEntry(match.group("filename"), match.group("ignore"), match.group("comment"))
 
 
 # pragma: no cover
@@ -127,11 +118,7 @@ def _make_fh_list_for_version(sanity_test_path, ignore_file_spec):
     if ignore_file_spec:
         return [open(sanity_test_path / f"ignore-{ignore_file_spec}.txt")]
 
-    return [
-        p.open()
-        for p in sanity_test_path.iterdir()
-        if p.name.startswith("ignore-") and p.name.endswith(".txt")
-    ]
+    return [p.open() for p in sanity_test_path.iterdir() if p.name.startswith("ignore-") and p.name.endswith(".txt")]
 
 
 def _read_ignore_file(fh):
@@ -147,10 +134,7 @@ def _read_ignore_file(fh):
 def _retrieve_ignore_entries(sanity_test_path, ignore_file_spec):
     return reduce(
         lambda a, b: a + b,
-        [
-            _read_ignore_file(fh)
-            for fh in _make_fh_list_for_version(sanity_test_path, ignore_file_spec)
-        ],
+        [_read_ignore_file(fh) for fh in _make_fh_list_for_version(sanity_test_path, ignore_file_spec)],
     )
 
 
@@ -166,12 +150,8 @@ app = typer.Typer(name="ignores", help="gathers stats on ignore*.txt file(s)")
 @app.callback(invoke_without_command=True)
 def ignores_cmd(
     ctx: typer.Context,
-    spec: Optional[str] = typer.Option(
-        None, "--spec", "-s", help="use ignore-SPEC.txt, or pass '-' to read from stdin"
-    ),
-    depth: Optional[int] = typer.Option(
-        None, "--depth", "-d", help="path depth for grouping files"
-    ),
+    spec: Optional[str] = typer.Option(None, "--spec", "-s", help="use ignore-SPEC.txt, or pass '-' to read from stdin"),
+    depth: Optional[int] = typer.Option(None, "--depth", "-d", help="path depth for grouping files"),
     filter_files: Optional[str] = typer.Option(
         None,
         "--filter-files",

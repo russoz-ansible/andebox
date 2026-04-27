@@ -10,18 +10,12 @@ import subprocess
 import sys
 import tempfile
 import time
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from contextlib import chdir as set_dir
-from contextlib import contextmanager
-from contextlib import nullcontext
+from contextlib import contextmanager, nullcontext
 from enum import Enum
 from pathlib import Path
-from typing import Any
-from typing import Generator
-from typing import Optional
-from typing import Tuple
-from typing import Type
+from typing import Any, Generator, Optional, Tuple, Type
 
 import typer
 import yaml
@@ -140,9 +134,7 @@ class AbstractContext(ABC):
             print(f"Removing temporary directory: {self.full_dir}")
             shutil.rmtree(self.top_dir)
 
-    def copy_exclude_lines(
-        self, src: Path, dest: Path, exclusion_filenames: list[str]
-    ) -> None:
+    def copy_exclude_lines(self, src: Path, dest: Path, exclusion_filenames: list[str]) -> None:
         with src.open("r") as src_file, dest.open("w") as dest_file:
             for line in src_file.readlines():
                 if not any(line.startswith(f) for f in exclusion_filenames):
@@ -217,10 +209,7 @@ class CollectionContext(AbstractContext):
         print(f"collection = {self.namespace}.{self.collection}", file=sys.stderr)
         os.putenv(
             "ANSIBLE_COLLECTIONS_PATH",
-            ":".join(
-                [str(top_dir)]
-                + os.environ.get("ANSIBLE_COLLECTIONS_PATH", "").split(":")
-            ),
+            ":".join([str(top_dir)] + os.environ.get("ANSIBLE_COLLECTIONS_PATH", "").split(":")),
         )
 
     def read_coll_meta(self) -> tuple[str, str, str]:
@@ -252,11 +241,7 @@ class CollectionContext(AbstractContext):
             print("")
         path_arg = ["-p", f"{path}"] if path else []
 
-        cmd = (
-            [self.binary_path("ansible-galaxy"), "collection", "install"]
-            + path_arg
-            + ["-r", f"{reqs}", "-vvv", "--force"]
-        )
+        cmd = [self.binary_path("ansible-galaxy"), "collection", "install"] + path_arg + ["-r", f"{reqs}", "-vvv", "--force"]
         print(f"Running: {cmd}")
         delay = 10
         for attempt in range(1, retries + 1):
@@ -266,9 +251,7 @@ class CollectionContext(AbstractContext):
             except subprocess.CalledProcessError:
                 if attempt == retries:
                     raise
-                print(
-                    f"Install requirements failed (attempt {attempt}/{retries}), retrying in {delay}s..."
-                )
+                print(f"Install requirements failed (attempt {attempt}/{retries}), retrying in {delay}s...")
                 time.sleep(delay)
 
 
@@ -305,9 +288,7 @@ def _determine_base_dir() -> Tuple[Path, ConcreteContextType]:
         raise AndeboxUnknownContext(f"Cannot determine context for: {cur_dir}") from e
 
 
-def create_context(
-    collection: Optional[str] = None, venv: Optional[Path] = None
-) -> ConcreteContext:
+def create_context(collection: Optional[str] = None, venv: Optional[Path] = None) -> ConcreteContext:
     base_dir, basedir_type = _determine_base_dir()
     return basedir_type(base_dir, collection=collection, venv=venv)
 
@@ -325,9 +306,7 @@ def andebox_context(
         venv=opts.get("venv"),
     )
     if require_collection and context.type != ContextType.COLLECTION:
-        raise AndeboxException(
-            f"Action '{ctx.info_name}' must be executed in a collection context!"
-        )
+        raise AndeboxException(f"Action '{ctx.info_name}' must be executed in a collection context!")
     with set_dir(context.base_dir):
         try:
             with context.temp_tree(keep=keep) if make_temp_tree else nullcontext():
