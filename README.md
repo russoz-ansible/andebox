@@ -38,7 +38,7 @@ will like the `tox-test` subcommand as well.
 Gathering stats from the ignore files can be quite annoying, especially if they are long. One can run:
 
 ```
-$ andebox ignores -s2.17 -fc validate-modules:parameter-state-invalid-choice
+$ andebox ignores -s2.20 -fc validate-modules:parameter-state-invalid-choice
      1  plugins/modules/consul_session.py validate-modules:parameter-state-invalid-choice
      1  plugins/modules/osx_defaults.py validate-modules:parameter-state-invalid-choice
      1  plugins/modules/parted.py validate-modules:parameter-state-invalid-choice

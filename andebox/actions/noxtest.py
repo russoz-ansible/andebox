@@ -14,7 +14,6 @@ from ..exceptions import AndeboxException
 
 # (ansible-core version, default python, all supported pythons)
 VERSION_MATRIX = [
-    ("2.17", "3.11", ["3.10", "3.11", "3.12"]),
     ("2.18", "3.12", ["3.11", "3.12", "3.13"]),
     ("2.19", "3.12", ["3.11", "3.12", "3.13"]),
     ("2.20", "3.13", ["3.12", "3.13", "3.14"]),
@@ -121,7 +120,7 @@ def nox_test_cmd(
         None,
         "--ansible-core",
         "-a",
-        help="ansible-core version(s) to test against (e.g. 2.17)",
+        help="ansible-core version(s) to test against (e.g. 2.19, 2.20)",
     ),
     python: Optional[List[str]] = typer.Option(
         None,

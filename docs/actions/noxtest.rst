@@ -20,7 +20,7 @@ Parameters
 The following parameters are supported:
 
 ``--ansible-core`` / ``-a``
-    Restrict the run to one or more specific ``ansible-core`` versions (e.g. ``2.17``, ``2.19``).
+    Restrict the run to one or more specific ``ansible-core`` versions (e.g. ``2.19``, ``2.20``).
     May be repeated. When omitted, all versions in the matrix are eligible.
 
 ``--python`` / ``-p``
@@ -30,7 +30,7 @@ The following parameters are supported:
 ``--session`` / ``-s``
     Pass one or more nox session names directly, bypassing matrix filtering.
     Session names follow the pattern ``acX.YY-pZ.WW``
-    (e.g. ``ac2.17-p3.12``).
+    (e.g. ``ac2.20-p3.14``).
 
 ``--list`` / ``-l``
     List all available nox sessions without running anything.
@@ -55,8 +55,8 @@ Usage Examples
     # Run sanity tests with defaults (one python per ansible-core)
     andebox nox-test -- sanity --docker default
 
-    # Run only against ansible-core 2.17 and 2.18
-    andebox nox-test --ansible-core 2.17 --ansible-core 2.18 -- sanity --docker default
+    # Run only against ansible-core 2.19 and 2.20
+    andebox nox-test --ansible-core 2.19 --ansible-core 2.20 -- sanity --docker default
 
     # Run only with Python 3.12
     andebox nox-test --python 3.12 -- sanity --docker default
