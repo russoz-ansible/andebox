@@ -30,15 +30,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install poetry
+          pip install poetry poethepoet
           poetry install --with dev
 
       - name: Run linter and tests
         env:
           PYTHONPATH: .
-        run: |
-          poetry run ruff check .
-          poetry run pytest -v --cov
+        run: poe qa
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
@@ -72,16 +70,14 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install poetry
+          pip install poetry poethepoet
           poetry install --with dev
 
       - name: Create Release
         env:
           POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
           GH_TOKEN: ${{ github.token }}
-        run: |
-          poetry run semantic-release --verbose version
-          poetry run semantic-release --verbose publish
+        run: poe release
 
       - name: Check if dist folder has content
         id: check_dist

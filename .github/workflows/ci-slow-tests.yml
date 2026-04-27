@@ -28,17 +28,17 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install Poetry
+      - name: Install Poetry and poe
         run: |
           python -m pip install --upgrade pip
-          pip install poetry
+          pip install poetry poethepoet
           poetry lock
 
       - name: Install all dependencies (including dev)
         run: poetry install --with dev,docs
 
       - name: Run all tests including slow
-        run: poetry run pytest -v --cov --slow
+        run: poe test --slow
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
