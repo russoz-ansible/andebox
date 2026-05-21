@@ -40,3 +40,4 @@ docs/.buildinfo
 coverage.xml
 htmlcov
 junit.xml
+.devcontainer/devcontainer-lock.json
