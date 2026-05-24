@@ -68,5 +68,8 @@ jobs:
       - name: Lint
         run: poe lint
 
+      - name: License check
+        run: poe license-check
+
       - name: Run tests
         run: poe test
