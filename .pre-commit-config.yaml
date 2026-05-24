@@ -27,7 +27,7 @@ repos:
         entry: poetry check --lock
         files: ^pyproject\.toml$
         pass_filenames: false
-  # - repo: https://github.com/fsfe/reuse-tool
-  #   rev: v1.1.0
-  #   hooks:
-  #     - id: reuse
+  - repo: https://github.com/fsfe/reuse-tool
+    rev: v6.2.0
+    hooks:
+      - id: reuse
