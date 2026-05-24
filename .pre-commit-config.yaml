@@ -5,7 +5,7 @@
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.12
+    rev: v0.15.14
     hooks:
       - id: ruff-check
         args: [--fix]
@@ -24,7 +24,7 @@ repos:
       - id: poetry-lock-check
         name: Verify poetry.lock is up to date
         language: system
-        entry: poetry lock --check
+        entry: poetry check --lock
         files: ^pyproject\.toml$
         pass_filenames: false
   # - repo: https://github.com/fsfe/reuse-tool
