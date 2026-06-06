@@ -16,6 +16,7 @@ on:
 
 jobs:
   test:
+    name: Slow CI (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     strategy:
       matrix:
         deps:
