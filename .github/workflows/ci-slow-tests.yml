@@ -6,7 +6,7 @@
 name: Weekly Slow Tests
 
 permissions:
-  contents: write
+  contents: read
 
 on:
   schedule:
@@ -18,15 +18,26 @@ jobs:
   test:
     strategy:
       matrix:
-        python-version: ["3.11", "3.12", "3.13"]
+        deps:
+          - ansible: stable-2.18
+            python: "3.11"
+          - ansible: stable-2.19
+            python: "3.12"
+          - ansible: stable-2.20
+            python: "3.13"
+          - ansible: stable-2.21
+            python: "3.13"
+          - ansible: devel
+            python: "3.14"
+
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.deps.python }}
 
       - name: Install Poetry and poe
         run: >
@@ -36,11 +47,14 @@ jobs:
       - name: Install all dependencies (including dev)
         run: poetry install --with dev,docs
 
+      - name: Install ansible-core (${{ matrix.deps.ansible }})
+        run: poetry run pip install --force-reinstall https://github.com/ansible/ansible/archive/${{ matrix.deps.ansible }}.tar.gz --disable-pip-version-check
+
       - name: Run all tests including slow
         run: poe test --slow
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
