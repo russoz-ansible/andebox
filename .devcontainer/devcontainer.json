@@ -2,7 +2,7 @@
   "name": "Andebox Dev Container",
   "image": "mcr.microsoft.com/devcontainers/python:3.14-bookworm",
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    "ghcr.io/devcontainers/features/docker-in-docker:4": {}
   },
   "customizations": {
     "vscode": {
