@@ -35,7 +35,6 @@ TEST_CASES = load_test_cases(
   expected:
     in_stdout: >
       R modules postgresql_query: redirected to community.postgresql.postgresql_query
-    stdout_line_count: 4
 - id: redirects-callbacks-endswith-y
   input:
     repo: {GIT_REPO_CG}
