@@ -22,7 +22,7 @@ updates:
           - "patch"
 
   - package-ecosystem: "devcontainers"
-    directory: ".devcontainer"
+    directory: "/"
     schedule:
       interval: "weekly"
     rebase-strategy: auto
