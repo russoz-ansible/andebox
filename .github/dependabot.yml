@@ -26,3 +26,12 @@ updates:
     schedule:
       interval: "weekly"
     rebase-strategy: auto
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      ci:
+        patterns:
+          - "*"
