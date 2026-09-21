@@ -52,10 +52,12 @@ deps =
   ansible-core~=2.21.0
   andebox>1.10
 
+; 2.22 has no final release yet: the a0 suffix lets pip pick up betas/RCs
+; (~=2.22.0 means >=2.22.0, which does not match 2.22.0b1). Drop it once released.
 [testenv:ac222]
 basepython = python3.14
 deps =
-  ansible-core~=2.22.0
+  ansible-core~=2.22.0a0
   andebox>1.10
 
 [testenv:dev]
