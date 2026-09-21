@@ -22,6 +22,12 @@ VERSION_MATRIX = [
     ("devel", "3.14", ["3.13", "3.14", "3.15"]),
 ]
 
+# ansible-core versions with no final release yet. Their specifier gets an ``a0``
+# suffix so pip considers betas/RCs: ``~=2.22.0`` means ``>=2.22.0`` and therefore
+# does not match ``2.22.0b1``, which sorts below it. Drop a version from here once
+# it is released.
+PRERELEASE_VERSIONS = {"2.22"}
+
 
 class NoxTestError(AndeboxException):
     pass
@@ -48,7 +54,8 @@ def register_sessions(nox_module) -> None:
                     if av == "devel":
                         pkg = "https://github.com/ansible/ansible/archive/devel.tar.gz"
                     else:
-                        pkg = f"ansible-core~={av}.0"
+                        suffix = "a0" if av in PRERELEASE_VERSIONS else ""
+                        pkg = f"ansible-core~={av}.0{suffix}"
                     session.install(pkg, "andebox")
                     session.chdir(session.invoked_from)
                     session.run("andebox", "test", *session.posargs, external=True)
