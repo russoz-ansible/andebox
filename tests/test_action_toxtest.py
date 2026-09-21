@@ -103,7 +103,7 @@ def test_make_default_tox_ini_structure():
 
 def test_make_default_tox_ini_envs():
     content = _make_default_tox_ini()
-    for env in ("ac218", "ac219", "ac220", "ac221", "dev"):
+    for env in ("ac218", "ac219", "ac220", "ac221", "ac222", "dev"):
         assert env in content
 
 
