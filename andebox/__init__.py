@@ -5,4 +5,4 @@
 # SPDX-FileCopyrightText: 2021-2025 Alexei Znamensky
 # SPDX-License-Identifier: MIT
 
-__version__ = "2.0.0"
+__version__ = "2.1.0"
