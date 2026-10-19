@@ -1,6 +1,37 @@
 # CHANGELOG
 
 
+## v2.1.1 (2026-10-19)
+
+### Bug Fixes
+
+- **deps**: Bump the python-dependencies group across 1 directory with 3 updates
+  ([`792050c`](https://github.com/russoz-ansible/andebox/commit/792050c960b19b32db044e64a0e56fa6180bbc46))
+
+### Chores
+
+- Set dependabot commit prefix to "fix"
+  ([`b05c925`](https://github.com/russoz-ansible/andebox/commit/b05c9257afd29f05238b18ce950565dab90985cc))
+
+- **deps**: Bump multidict from 6.7.1 to 6.9.1
+  ([`6701f5a`](https://github.com/russoz-ansible/andebox/commit/6701f5a434128013bbf8d65935766bf603b02b42))
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`1bf5a43`](https://github.com/russoz-ansible/andebox/commit/1bf5a43f87a692ef7e474b239296c39d8ad48ab0))
+
+- **deps**: Bump the python-dependencies group with 3 updates
+  ([`a230c8b`](https://github.com/russoz-ansible/andebox/commit/a230c8b8a8b62b8d3570d16e55c86c07ba91fefd))
+
+- **deps**: Bump the python-dependencies group with 4 updates
+  ([`f7ccad1`](https://github.com/russoz-ansible/andebox/commit/f7ccad1729425c6664c128867838ebfdcd4670e4))
+
+- **deps**: Bump urllib3 from 2.7.0 to 2.8.0
+  ([`a8f3c8f`](https://github.com/russoz-ansible/andebox/commit/a8f3c8fd3176bed357b09743427c35c18b1147bd))
+
+- **deps**: Bump virtualenv from 21.7.4 to 21.7.13
+  ([`f6bb197`](https://github.com/russoz-ansible/andebox/commit/f6bb197aaf5c98a9dcab7d1fdcdd5f818093bd94))
+
+
 ## v2.1.0 (2026-09-21)
 
 ### Bug Fixes
