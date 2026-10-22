@@ -50,6 +50,8 @@ jobs:
             python: "3.11"
           - ansible: devel
             python: "3.12"
+          - ansible: devel
+            python: "3.13"
 
     runs-on: ubuntu-latest
 
