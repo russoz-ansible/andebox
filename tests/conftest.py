@@ -24,15 +24,17 @@ def git_repo(tmp_path_factory) -> Callable[[Any], dict]:
     cloned_repos = {}
 
     def _clone(testcase: GenericTestCase) -> dict:
-        url = testcase.input["repo"]
-        if url in cloned_repos:
-            dest = cloned_repos[url]
+        repo = testcase.input["repo"]
+        if repo in cloned_repos:
+            dest = cloned_repos[repo]
         else:
+            # repo may be "<url>#<branch>" to clone a specific branch
+            url, _, branch = repo.partition("#")
             repo_name = url.rstrip("/").split("/")[-1].replace(".git", "")
             dest = tmp_path_factory.mktemp(repo_name)
-            print(f"Cloning {url} into {dest}")
-            Repo.clone_from(url, dest, depth=1)
-            cloned_repos[url] = dest
+            print(f"Cloning {repo} into {dest}")
+            Repo.clone_from(url, dest, depth=1, branch=branch or None)
+            cloned_repos[repo] = dest
         return {"basedir": dest}
 
     return _clone

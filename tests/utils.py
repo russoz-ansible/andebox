@@ -17,7 +17,7 @@ import pytest
 import yaml
 
 GIT_REPO_CG = "https://github.com/ansible-collections/community.general.git"
-GIT_REPO_AC = "https://github.com/ansible/ansible.git"
+GIT_REPO_AC = "https://github.com/ansible/ansible.git#stable-2.21"
 
 
 @dataclass
