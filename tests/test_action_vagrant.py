@@ -14,7 +14,7 @@ from .utils import GenericTestCase, load_test_cases, verify_return_code
 
 def _make_collection(path):
     (path / "meta").mkdir(parents=True)
-    (path / "meta" / "runtime.yml").write_text("requires_ansible: '>=2.18'\n")
+    (path / "meta" / "runtime.yml").write_text("requires_ansible: '>=2.20'\n")
     (path / "galaxy.yml").write_text("namespace: test\nname: coll\nversion: 1.0.0\n")
 
 
