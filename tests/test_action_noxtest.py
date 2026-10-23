@@ -43,10 +43,10 @@ TEST_CASES_SELECT = load_test_cases(
 
 - id: ansible-core-only
   input:
-    ansible_cores: ["2.18"]
+    ansible_cores: ["2.20"]
     pythons: null
   expected:
-    sessions: ["ac2.18-p3.11", "ac2.18-p3.12", "ac2.18-p3.13"]
+    sessions: ["ac2.20-p3.12", "ac2.20-p3.13", "ac2.20-p3.14"]
 
 - id: python-only
   input:
@@ -54,22 +54,20 @@ TEST_CASES_SELECT = load_test_cases(
     pythons: ["3.12"]
   expected:
     sessions:
-      - ac2.18-p3.12
-      - ac2.19-p3.12
       - ac2.20-p3.12
       - ac2.21-p3.12
 
 - id: valid-combination
   input:
-    ansible_cores: ["2.18"]
+    ansible_cores: ["2.20"]
     pythons: ["3.12"]
   expected:
-    sessions: ["ac2.18-p3.12"]
+    sessions: ["ac2.20-p3.12"]
 
 - id: invalid-combination
   input:
-    ansible_cores: ["2.18"]
-    pythons: ["3.14"]
+    ansible_cores: ["2.20"]
+    pythons: ["3.11"]
   expected:
     sessions: null
 
@@ -103,17 +101,17 @@ TEST_CASES_SELECT = load_test_cases(
 
 - id: multiple-cores-single-python
   input:
-    ansible_cores: ["2.18", "2.19"]
+    ansible_cores: ["2.20", "2.21"]
     pythons: ["3.12"]
   expected:
-    sessions: ["ac2.18-p3.12", "ac2.19-p3.12"]
+    sessions: ["ac2.20-p3.12", "ac2.21-p3.12"]
 
 - id: single-core-filters-out-unsupported-pythons
   input:
-    ansible_cores: ["2.18"]
+    ansible_cores: ["2.20"]
     pythons: ["3.11", "3.12", "3.13"]
   expected:
-    sessions: ["ac2.18-p3.11", "ac2.18-p3.12", "ac2.18-p3.13"]
+    sessions: ["ac2.20-p3.12", "ac2.20-p3.13"]
 """
 )
 TEST_CASES_SELECT_IDS = [tc.id for tc in TEST_CASES_SELECT]

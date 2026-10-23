@@ -20,8 +20,6 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.18
-          - stable-2.19
           - stable-2.20
           - stable-2.21
           - devel
@@ -32,12 +30,6 @@ jobs:
           - "3.14"
           # - "3.15"
         exclude:
-          - ansible: stable-2.18
-            python: "3.12"
-          - ansible: stable-2.18
-            python: "3.14"
-          - ansible: stable-2.19
-            python: "3.12"
           - ansible: stable-2.20
             python: "3.11"
           - ansible: stable-2.20

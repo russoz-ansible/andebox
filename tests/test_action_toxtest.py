@@ -43,10 +43,10 @@ TEST_CASES = load_test_cases(
 
 - id: env
   input:
-    args: [tox-test, --env, ac218]
+    args: [tox-test, --env, ac220]
   expected:
     rc: 0
-    cmd: ["tox", "-c", "{TOX_INI_FILENAME}", "-e", "ac218", "--"]
+    cmd: ["tox", "-c", "{TOX_INI_FILENAME}", "-e", "ac220", "--"]
 
 - id: params
   input:
@@ -64,10 +64,10 @@ TEST_CASES = load_test_cases(
 
 - id: all-opts
   input:
-    args: [tox-test, --list, --recreate, --env, ac219]
+    args: [tox-test, --list, --recreate, --env, ac221]
   expected:
     rc: 0
-    cmd: ["tox", "-c", "{TOX_INI_FILENAME}", "-a", "-r", "-e", "ac219", "--"]
+    cmd: ["tox", "-c", "{TOX_INI_FILENAME}", "-a", "-r", "-e", "ac221", "--"]
 
 - id: nonzero-rc
   input:
@@ -103,7 +103,7 @@ def test_make_default_tox_ini_structure():
 
 def test_make_default_tox_ini_envs():
     content = _make_default_tox_ini()
-    for env in ("ac218", "ac219", "ac220", "ac221", "ac222", "dev"):
+    for env in ("ac220", "ac221", "ac222", "dev"):
         assert env in content
 
 

@@ -20,7 +20,7 @@ Parameters
 The following parameters are supported:
 
 ``--ansible-core`` / ``-a``
-    Restrict the run to one or more specific ``ansible-core`` versions (e.g. ``2.19``, ``2.20``).
+    Restrict the run to one or more specific ``ansible-core`` versions (e.g. ``2.20``, ``2.21``).
     May be repeated. When omitted, all versions in the matrix are eligible.
 
 ``--python`` / ``-p``
@@ -55,14 +55,14 @@ Usage Examples
     # Run sanity tests with defaults (one python per ansible-core)
     andebox nox-test -- sanity --docker default
 
-    # Run only against ansible-core 2.19 and 2.20
-    andebox nox-test --ansible-core 2.19 --ansible-core 2.20 -- sanity --docker default
+    # Run only against ansible-core 2.20 and 2.21
+    andebox nox-test --ansible-core 2.20 --ansible-core 2.21 -- sanity --docker default
 
     # Run only with Python 3.12
     andebox nox-test --python 3.12 -- sanity --docker default
 
     # Run a specific ansible-core + python combination
-    andebox nox-test --ansible-core 2.19 --python 3.13 -- units --docker default
+    andebox nox-test --ansible-core 2.20 --python 3.13 -- units --docker default
 
     # List all available sessions
     andebox nox-test --list

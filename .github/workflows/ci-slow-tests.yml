@@ -20,10 +20,6 @@ jobs:
     strategy:
       matrix:
         deps:
-          - ansible: stable-2.18
-            python: "3.11"
-          - ansible: stable-2.19
-            python: "3.13"
           - ansible: stable-2.20
             python: "3.13"
           - ansible: stable-2.21
