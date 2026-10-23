@@ -27,7 +27,7 @@ TEST_CASES = load_test_cases(
     args:
       - ignores
       - -s
-      - "2.19"
+      - "2.20"
       - -H-5
   expected:
     in_stdout: "1  tests/unit/plugins/modules/test_gio_mime.yaml no-smart-quotes"
@@ -38,7 +38,7 @@ TEST_CASES = load_test_cases(
     args:
       - ignores
       - -s
-      - "2.19"
+      - "2.20"
       - -H0
       - -ff
       - test_gio_mime
