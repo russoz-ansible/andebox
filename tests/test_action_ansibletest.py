@@ -90,9 +90,6 @@ TEST_CASES = load_test_cases(
       ModuleNotFoundError: No module named 'ansible_collections.community.internal_test_tools'
 
 - id: ac-sanity-ei
-  flags:
-    skip_py:
-      - "3.11"
   input:
     repo: {GIT_REPO_AC}
     args:

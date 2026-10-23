@@ -24,7 +24,7 @@ How to Contribute
 
 Development Setup
 -----------------
-- **Python 3.11+** is required.
+- **Python 3.12+** is required.
 - This project uses [tox](https://tox.readthedocs.io/) for all development tasks (testing, linting, docs, etc).
 - **VS Code Dev Container**: This repository includes a [Dev Container](https://code.visualstudio.com/docs/devcontainers/containers) configuration. It is highly recommended to use it for development, as it provides a pre-configured environment with all necessary tools and dependencies.
 - Install tox if you don't have it:
@@ -80,7 +80,7 @@ Testing
 
      tox
      # or for a specific Python version:
-     tox -e py311
+     tox -e py312
 
 - Coverage is measured with **pytest-cov**. Aim for high coverage.
 - If your nwly written test is very slow (minutes to run), mark it with ``@pytest.mark.slow``. These "slow" tests will not be part of

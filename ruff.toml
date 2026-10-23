@@ -5,7 +5,7 @@
 #
 
 line-length = 160
-target-version = "py311"
+target-version = "py312"
 exclude = ["docs/source/conf.py"]
 
 [lint]

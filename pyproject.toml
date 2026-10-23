@@ -18,7 +18,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
@@ -40,12 +39,8 @@ andebox = "andebox.cli:run"
 "Changelog" = "https://github.com/russoz-ansible/andebox/blob/main/CHANGELOG.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-ansible-core = [
-    { version = ">=2.18.0", python = ">=3.11" },
-    { version = ">=2.19.0", python = ">=3.11" },
-    { version = ">=2.20.0", python = ">=3.12" },
-]
+python = "^3.12"
+ansible-core = ">=2.20.0"
 pyyaml = ">=5.4"
 python-vagrant = ">=1.0.0"
 fabric = ">=3.1.0"
