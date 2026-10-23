@@ -23,7 +23,7 @@ Parameters
 The following parameters are supported:
 
 ``--env``, ``-e``
-    Tox environments to run the test in (for example ``ac216``, ``dev``).
+    Tox environments to run the test in (for example ``ac220``, ``dev``).
 
 ``--list``, ``-l``
     List all tox environments (equivalent to ``tox -a``).
