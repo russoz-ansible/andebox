@@ -1,6 +1,57 @@
 # CHANGELOG
 
 
+## v2.2.0 (2026-10-26)
+
+### Bug Fixes
+
+- **deps**: Bump aiohttp from 3.14.3 to 3.14.4
+  ([`bf8c6ed`](https://github.com/russoz-ansible/andebox/commit/bf8c6ed6693048b28cea4fa64f7792d35fb47f04))
+
+- **deps**: Bump certifi from 2026.7.22 to 2026.10.19
+  ([`401513e`](https://github.com/russoz-ansible/andebox/commit/401513e81af8aa6dedaee9cbbabf28781e2bfcc2))
+
+- **deps**: Bump the python-dependencies group with 7 updates
+  ([`a19da26`](https://github.com/russoz-ansible/andebox/commit/a19da263b811b364e96796b8f3738d45dc664d75))
+
+- **deps**: Bump virtualenv from 21.7.13 to 21.14.9
+  ([`fc3a13d`](https://github.com/russoz-ansible/andebox/commit/fc3a13dfd4512f06188fd7a7bac3521f70f5b453))
+
+- **deps**: Update dependencies
+  ([`8e03d0d`](https://github.com/russoz-ansible/andebox/commit/8e03d0db47a6fd2931a302d5be3387c1eebb4ebc))
+
+### Chores
+
+- **docs**: Build Read the Docs on Ubuntu 24.04
+  ([`e5223fa`](https://github.com/russoz-ansible/andebox/commit/e5223fa83ebc9c75c9ccc107e29af95bd33b7d19))
+
+### Continuous Integration
+
+- Drop Python 3.12 from the test matrix
+  ([`41082d7`](https://github.com/russoz-ansible/andebox/commit/41082d7aec01cf55e10e6c531aa2d15b192aa011))
+
+### Documentation
+
+- **tox-test**: Update --env example to a supported version
+  ([`27118f8`](https://github.com/russoz-ansible/andebox/commit/27118f88832508c6ac48eed9dc6412c14ce4bc3f))
+
+### Features
+
+- Drop support for ansible-core 2.18 and 2.19
+  ([`4301351`](https://github.com/russoz-ansible/andebox/commit/430135180b69831df82497b38edf94d288e6c689))
+
+- Drop support for Python 3.11
+  ([`587e1cb`](https://github.com/russoz-ansible/andebox/commit/587e1cb4d273ca90e85c463735df7727f06daa6d))
+
+### Testing
+
+- Pin ansible-core test repo to stable-2.21
+  ([`5936b22`](https://github.com/russoz-ansible/andebox/commit/5936b22ea68887c4a7c489d212a16d024a95f3ca))
+
+- Use ansible-core 2.20 in fixtures and ignorefile tests
+  ([`97fb116`](https://github.com/russoz-ansible/andebox/commit/97fb1169d92bc20311b9d91c54f546fb4a762d4b))
+
+
 ## v2.1.1 (2026-10-19)
 
 ### Bug Fixes
