@@ -35,6 +35,20 @@ toplevel_exclusion = (
 )
 
 
+def git_ignored_paths(source_dir: Path) -> set[Path]:
+    """Return paths under source_dir (relative to it) that git considers ignored.
+
+    Fully ignored directories are reported as a single entry. Returns an empty set
+    when source_dir is not inside a git work tree or git is not available.
+    """
+    cmd = ["git", "ls-files", "-z", "--others", "--ignored", "--exclude-standard", "--directory"]
+    try:
+        result = subprocess.run(cmd, cwd=source_dir, capture_output=True, text=True, check=True)
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        return set()
+    return {Path(path.rstrip("/")) for path in result.stdout.split("\0") if path}
+
+
 class AndeboxUnknownContext(AndeboxException):
     pass
 
@@ -100,14 +114,22 @@ class AbstractContext(ABC):
 
     def copy_tree(self) -> None:
         # copy files to tmp ansible coll dir
-        for entry in Path.cwd().iterdir():
-            if any(entry.name.startswith(x) for x in toplevel_exclusion):
+        source_dir = Path.cwd()
+        ignored = git_ignored_paths(source_dir)
+
+        def ignore_gitignored(directory: str, names: list[str]) -> set[str]:
+            rel_dir = Path(directory).relative_to(source_dir)
+            return {name for name in names if rel_dir / name in ignored}
+
+        for entry in source_dir.iterdir():
+            if any(entry.name.startswith(x) for x in toplevel_exclusion) or entry.relative_to(source_dir) in ignored:
                 continue
             if entry.is_dir():
                 shutil.copytree(
                     entry,
                     self.full_dir / entry.name,
                     symlinks=True,
+                    ignore=ignore_gitignored,
                     ignore_dangling_symlinks=True,
                 )
             else:
