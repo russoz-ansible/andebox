@@ -22,6 +22,7 @@ jobs:
         ansible:
           - stable-2.20
           - stable-2.21
+          - stable-2.22
           - devel
         python:
           - "3.13"

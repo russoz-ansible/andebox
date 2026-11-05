@@ -24,6 +24,8 @@ jobs:
             python: "3.13"
           - ansible: stable-2.21
             python: "3.13"
+          - ansible: stable-2.22
+            python: "3.14"
           - ansible: devel
             python: "3.14"
 
