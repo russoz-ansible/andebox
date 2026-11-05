@@ -24,7 +24,7 @@ VERSION_MATRIX = [
 # suffix so pip considers betas/RCs: ``~=2.22.0`` means ``>=2.22.0`` and therefore
 # does not match ``2.22.0b1``, which sorts below it. Drop a version from here once
 # it is released.
-PRERELEASE_VERSIONS = {"2.22"}
+PRERELEASE_VERSIONS: set[str] = set()
 
 
 class NoxTestError(AndeboxException):
