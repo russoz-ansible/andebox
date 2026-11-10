@@ -1,6 +1,38 @@
 # CHANGELOG
 
 
+## v2.3.0 (2026-11-10)
+
+### Bug Fixes
+
+- **action/noxtest**: Treat ansible-core 2.22 as released
+  ([`6e615ff`](https://github.com/russoz-ansible/andebox/commit/6e615ff7fa4e5c3b43f66d5627b5cde43ee7ae7c))
+
+- **action/toxtest**: Treat ansible-core 2.22 as released
+  ([`0ada0a0`](https://github.com/russoz-ansible/andebox/commit/0ada0a071fd6fa5ca4ebe454a7187249b83acdce))
+
+- **deps**: Bump the python-dependencies group with 4 updates
+  ([`f01872c`](https://github.com/russoz-ansible/andebox/commit/f01872c3c1775f04dfb9f4f1dd1a498f04265332))
+
+### Continuous Integration
+
+- Add ansible-core 2.22 to the test matrices
+  ([`579a050`](https://github.com/russoz-ansible/andebox/commit/579a05011031ef487104a84f6738f60b7604bf93))
+
+### Features
+
+- **context**: Skip git-ignored files when copying the tree
+  ([`61890cb`](https://github.com/russoz-ansible/andebox/commit/61890cb85e4aec0ed4eea1748c738e10646578bc))
+
+### Testing
+
+- Keep ansible-core test repo pinned to stable-2.21
+  ([`421aafd`](https://github.com/russoz-ansible/andebox/commit/421aafd62aa06d12c808bae73dde5acf3461ef27))
+
+- Pin ansible-core test repo to stable-2.22
+  ([`5eaf6b8`](https://github.com/russoz-ansible/andebox/commit/5eaf6b885867f49fda786a75ad3dd09e6ff7c36b))
+
+
 ## v2.2.0 (2026-10-26)
 
 ### Bug Fixes
