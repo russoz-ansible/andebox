@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v2.3.1 (2026-11-17)
+
+### Bug Fixes
+
+- **deps-dev**: Bump soupsieve from 3.0.4 to 4.0
+  ([`43ef185`](https://github.com/russoz-ansible/andebox/commit/43ef185b936663b8f464876e89beacca19329a65))
+
+
 ## v2.3.0 (2026-11-10)
 
 ### Bug Fixes
