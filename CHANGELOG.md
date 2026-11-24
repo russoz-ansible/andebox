@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v2.3.2 (2026-11-24)
+
+### Bug Fixes
+
+- **deps**: Bump the python-dependencies group across 1 directory with 5 updates
+  ([`fc480f2`](https://github.com/russoz-ansible/andebox/commit/fc480f2793ecf7aa159efdb74f0ddbed833adb66))
+
+
 ## v2.3.1 (2026-11-17)
 
 ### Bug Fixes
